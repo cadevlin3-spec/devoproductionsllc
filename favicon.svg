@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <rect width="400" height="400" fill="#ffffff"/>
+  <circle cx="200" cy="200" r="180" fill="#000000"/>
+  <circle cx="200" cy="200" r="162" fill="none" stroke="#ffffff" stroke-width="2"/>
+  <!-- soundwave mark -->
+  <g fill="#ffffff">
+    <rect x="150" y="150" width="9" height="40"  rx="4.5"/>
+    <rect x="168" y="132" width="9" height="76"  rx="4.5"/>
+    <rect x="186" y="116" width="9" height="108" rx="4.5"/>
+    <rect x="204" y="132" width="9" height="76"  rx="4.5"/>
+    <rect x="222" y="150" width="9" height="40"  rx="4.5"/>
+  </g>
+  <text x="200" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" letter-spacing="3" fill="#ffffff">DEVO</text>
+  <text x="200" y="292" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" letter-spacing="9" fill="#ffffff">PRODUCTIONS</text>
+  <!-- curved top text -->
+  <path id="arc" d="M 60 200 A 140 140 0 0 1 340 200" fill="none"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="600" letter-spacing="6" fill="#ffffff">
+    <textPath href="#arc" startOffset="50%" text-anchor="middle">DJ · WEDDINGS · EVENTS · SOUND</textPath>
+  </text>
+</svg>
