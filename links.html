@@ -3,92 +3,105 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Devo Productions — All Links</title>
-<meta name="description" content="Book Devo Productions: schedule a call, send an inquiry, follow on Instagram, or get in touch. Mobile DJ, weddings & events, church sound consulting & training.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="icon" type="image/png" href="favicon-512.png">
-<link rel="apple-touch-icon" href="favicon-512.png">
-<meta property="og:title" content="Devo Productions — All Links">
+<title>Devo Productions | All Links</title>
+<meta name="description" content="Book Devo Productions: schedule a call, check your date, see services and the gallery, or get in touch. Mobile DJ, weddings & events, church sound.">
+<link rel="canonical" href="https://devoproductionsllc.com/links">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/favicon-512.png">
+<meta property="og:site_name" content="Devo Productions">
+<meta property="og:title" content="Devo Productions | All Links">
 <meta property="og:description" content="Better sound without breaking the budget. Serving people, not just events.">
-<meta property="og:image" content="favicon-512.png">
+<meta property="og:image" content="https://devoproductionsllc.com/favicon-512.png">
+<meta property="og:url" content="https://devoproductionsllc.com/links">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--black:#0a0a0a;--white:#ffffff;--gray:#9a9a9a;--line:#2a2a2a}
+  :root{--black:#0a0a0a;--white:#fff;--gray:#9a9a9a;--line:#262626;--accent:#e4a93b;--accent-ink:#1a1408;--ease:cubic-bezier(.22,.61,.36,1)}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Inter',system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:56px 20px 40px}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;min-height:100svh;position:relative;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:0;background:url('/img/work_crowd3.jpg') center/cover;filter:grayscale(100%);opacity:.16;z-index:-2}
+  body::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at top,rgba(10,10,10,.4),#0a0a0a 70%);z-index:-1}
   a{color:inherit;text-decoration:none}
-  .wrap{width:100%;max-width:520px;text-align:center}
-  .logo{width:84px;height:auto;margin:0 auto 18px;display:block;color:var(--white)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .wrap{width:100%;max-width:520px;margin:0 auto;padding:56px 20px 40px;text-align:center}
+  .avatar{width:104px;height:104px;border-radius:50%;margin:0 auto 20px;display:block;box-shadow:0 0 0 3px var(--black),0 0 0 5px var(--accent)}
   h1{font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-size:30px;line-height:1.1}
   .tag{font-family:'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;font-size:13px;color:var(--gray);margin-top:10px}
-  .bio{color:#cfcfcf;font-size:15px;margin:18px auto 34px;max-width:420px}
-  .links{display:flex;flex-direction:column;gap:14px}
-  .link{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border:1px solid var(--line);background:#111;text-align:left;transition:.2s}
+  .bio{color:#cfcfcf;font-size:15px;margin:16px auto 32px;max-width:400px}
+  .group{font-family:'Oswald';text-transform:uppercase;letter-spacing:4px;font-size:12px;color:var(--gray);margin:30px 0 12px;display:flex;align-items:center;gap:12px}
+  .group::before,.group::after{content:"";flex:1;height:1px;background:var(--line)}
+  .links{display:flex;flex-direction:column;gap:12px}
+  .link{display:flex;align-items:center;gap:16px;padding:16px 20px;border:1px solid var(--line);background:rgba(20,20,20,.85);text-align:left;transition:background .2s var(--ease),color .2s,border-color .2s,transform .2s var(--ease)}
   .link:hover{background:var(--white);color:var(--black);border-color:var(--white);transform:translateY(-2px)}
-  .link .t{font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-size:16px}
-  .link .s{display:block;font-size:13px;color:var(--gray);font-family:'Inter',sans-serif;letter-spacing:0;text-transform:none;font-weight:400;margin-top:2px}
+  .link .ic{width:40px;height:40px;flex-shrink:0;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;transition:.2s}
+  .link .ic svg{width:18px;height:18px;stroke:currentColor}
+  .link:hover .ic{border-color:#ccc}
+  .link .t{flex:1;font-family:'Oswald',sans-serif;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;font-size:16px;line-height:1.25}
+  .link .s{display:block;font-size:13px;color:var(--gray);font-family:'Inter',sans-serif;letter-spacing:0;text-transform:none;font-weight:400;margin-top:3px}
   .link:hover .s{color:#555}
-  .link .arr{font-family:'Oswald',sans-serif;font-size:20px}
-  .link.primary{background:var(--white);color:var(--black);border-color:var(--white)}
-  .link.primary .s{color:#555}
-  .link.primary:hover{background:transparent;color:var(--white)}
-  .link.primary:hover .s{color:var(--gray)}
+  .link .arr{font-family:'Oswald';font-size:20px;transition:transform .2s var(--ease)}
+  .link:hover .arr{transform:translateX(4px)}
+  .link.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .link.primary .s{color:#5a4413}
+  .link.primary .ic{border-color:rgba(0,0,0,.25)}
+  .link.primary:hover{background:var(--white);border-color:var(--white)}
+  .quick{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .quick .link{justify-content:center;padding:14px}
+  .quick .link .t{flex:none}
   footer{margin-top:44px;color:#6b6b6b;font-size:13px;letter-spacing:.5px}
   footer a{color:#cfcfcf;text-decoration:underline;text-underline-offset:3px}
+  footer a:hover{color:var(--accent)}
 </style>
 </head>
 <body>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="wave" viewBox="0 0 140 80">
-    <g fill="currentColor">
-      <rect x="2"   y="30" width="9" height="20" rx="4.5"/>
-      <rect x="20"  y="18" width="9" height="44" rx="4.5"/>
-      <rect x="38"  y="6"  width="9" height="68" rx="4.5"/>
-      <rect x="56"  y="18" width="9" height="44" rx="4.5"/>
-      <rect x="74"  y="30" width="9" height="20" rx="4.5"/>
-      <rect x="92"  y="18" width="9" height="44" rx="4.5"/>
-      <rect x="110" y="6"  width="9" height="68" rx="4.5"/>
-      <rect x="128" y="22" width="9" height="36" rx="4.5"/>
-    </g>
-  </symbol>
-</svg>
-
 <main class="wrap">
-  <svg class="logo" viewBox="0 0 140 80" aria-hidden="true"><use href="#wave"/></svg>
+  <img class="avatar" src="/favicon.svg" alt="Devo Productions logo">
   <h1>Devo Productions</h1>
   <p class="tag">Mobile DJ · Weddings &amp; Events · Church Sound</p>
   <p class="bio">Better sound without breaking the budget. Serving people, not just events.</p>
 
   <div class="links">
-    <a class="link primary" href="https://calendly.com/devoproductionsllc/30min" target="_blank" rel="noopener">
+    <a class="link primary" href="/book">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span>
+      <span class="t">Check Your Date<span class="s">Send an inquiry for your wedding or event</span></span><span class="arr">→</span>
+    </a>
+    <a class="link" href="https://calendly.com/devoproductionsllc/30min" target="_blank" rel="noopener">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
       <span class="t">Schedule a Call<span class="s">Book a free 30-minute chat</span></span><span class="arr">→</span>
-    </a>
-    <a class="link" href="/#contact">
-      <span class="t">Book Your Event<span class="s">Send an inquiry for your date</span></span><span class="arr">→</span>
-    </a>
-    <a class="link" href="https://www.instagram.com/devoproductionsllc" target="_blank" rel="noopener">
-      <span class="t">Instagram<span class="s">@devoproductionsllc</span></span><span class="arr">→</span>
-    </a>
-    <a class="link" href="/#work">
-      <span class="t">See the Work<span class="s">Weddings, events &amp; real setups</span></span><span class="arr">→</span>
-    </a>
-    <a class="link" href="/#services">
-      <span class="t">Services<span class="s">DJ, church sound consulting &amp; training</span></span><span class="arr">→</span>
-    </a>
-    <a class="link" href="tel:+15703175520">
-      <span class="t">Call or Text<span class="s">(570) 317-5520</span></span><span class="arr">→</span>
-    </a>
-    <a class="link" href="mailto:cade@devoproductionsllc.com">
-      <span class="t">Email<span class="s">cade@devoproductionsllc.com</span></span><span class="arr">→</span>
     </a>
   </div>
 
-  <footer>© Devo Productions LLC · <a href="/">Back to website</a></footer>
-</main>
+  <p class="group">Explore</p>
+  <div class="links">
+    <a class="link" href="/services">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M3 14v-4h4l5-4v16l-5-4H3z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg></span>
+      <span class="t">Services<span class="s">DJ &amp; MC, church sound consulting, training</span></span><span class="arr">→</span>
+    </a>
+    <a class="link" href="/gallery">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg></span>
+      <span class="t">See the Work<span class="s">Weddings, parties &amp; real setups</span></span><span class="arr">→</span>
+    </a>
+    <a class="link" href="/about">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></span>
+      <span class="t">About Cade<span class="s">The person behind the sound</span></span><span class="arr">→</span>
+    </a>
+    <a class="link" href="https://www.instagram.com/devoproductionsllc" target="_blank" rel="noopener">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+      <span class="t">Instagram<span class="s">@devoproductionsllc</span></span><span class="arr">→</span>
+    </a>
+  </div>
 
+  <p class="group">Get in Touch</p>
+  <div class="quick">
+    <a class="link" href="tel:+15703175520"><span class="t">Call / Text</span></a>
+    <a class="link" href="mailto:cade@devoproductionsllc.com"><span class="t">Email</span></a>
+  </div>
+
+  <footer>© Devo Productions LLC · <a href="/">Visit the full website</a></footer>
+</main>
 </body>
 </html>

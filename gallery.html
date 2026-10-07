@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery | Devo Productions</title>
+<meta name="description" content="Real nights, real dance floors, real setups. Photos from weddings, parties and outdoor events with Devo Productions.">
+<link rel="canonical" href="https://devoproductionsllc.com/gallery">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon-512.png">
+<link rel="apple-touch-icon" href="/favicon-512.png">
+<meta property="og:site_name" content="Devo Productions">
+<meta property="og:title" content="Gallery | Devo Productions">
+<meta property="og:description" content="Real nights, real dance floors, real setups. Photos from weddings, parties and outdoor events with Devo Productions.">
+<meta property="og:image" content="https://devoproductionsllc.com/img/work_crowd3.jpg">
+<meta property="og:url" content="https://devoproductionsllc.com/gallery">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+  .filters button{font-family:'Oswald';text-transform:uppercase;letter-spacing:1.6px;font-size:13.5px;padding:10px 20px;border:1px solid var(--line);background:#fff;cursor:pointer;transition:.2s}
+  .filters button:hover{border-color:var(--black)}
+  .filters button[aria-pressed="true"]{background:var(--black);color:#fff;border-color:var(--black)}
+  .gal{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:230px;gap:12px;grid-auto-flow:dense}
+  .gal button{all:unset;cursor:zoom-in;position:relative;overflow:hidden;background:#111;display:block}
+  .gal button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .gal img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:filter .5s,transform .6s var(--ease)}
+  .gal button:hover img,.gal button:focus-visible img{filter:grayscale(0);transform:scale(1.05)}
+  .gal .cap{position:absolute;left:0;right:0;bottom:0;padding:30px 16px 12px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.75));color:#fff;font-size:13px;opacity:0;transform:translateY(8px);transition:.3s var(--ease)}
+  .gal button:hover .cap,.gal button:focus-visible .cap{opacity:1;transform:none}
+  .gal .tall{grid-row:span 2}
+  .gal .wide{grid-column:span 2}
+  .gal .hide{display:none}
+
+  .lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.94);display:none;align-items:center;justify-content:center;padding:60px 70px}
+  .lb.open{display:flex}
+  .lb img{max-width:100%;max-height:100%;object-fit:contain;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  .lb .cap{position:absolute;left:0;right:0;bottom:18px;text-align:center;color:#cfcfcf;font-size:14px}
+  .lb .cap b{color:var(--accent);font-family:'Oswald';font-weight:500;letter-spacing:1.5px;margin-right:10px}
+  .lb button{position:absolute;background:none;border:1px solid #444;color:#fff;width:50px;height:50px;border-radius:50%;cursor:pointer;font-size:22px;display:grid;place-items:center;transition:.2s}
+  .lb button:hover{border-color:var(--accent);color:var(--accent)}
+  .lb .x{top:18px;right:18px}
+  .lb .prev{left:14px;top:50%;transform:translateY(-50%)}
+  .lb .next{right:14px;top:50%;transform:translateY(-50%)}
+  @media(max-width:960px){ .gal{grid-template-columns:repeat(2,1fr);grid-auto-rows:190px} }
+  @media(max-width:600px){ .lb{padding:70px 10px} .lb .prev,.lb .next{top:auto;bottom:50px;transform:none} .gal .wide{grid-column:span 2} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="wave" viewBox="0 0 140 80"><g fill="currentColor">
+    <rect x="2" y="30" width="9" height="20" rx="4.5"/><rect x="20" y="18" width="9" height="44" rx="4.5"/>
+    <rect x="38" y="6" width="9" height="68" rx="4.5"/><rect x="56" y="18" width="9" height="44" rx="4.5"/>
+    <rect x="74" y="30" width="9" height="20" rx="4.5"/><rect x="92" y="18" width="9" height="44" rx="4.5"/>
+    <rect x="110" y="6" width="9" height="68" rx="4.5"/><rect x="128" y="22" width="9" height="36" rx="4.5"/>
+  </g></symbol>
+</svg>
+<header class="site">
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="/" aria-label="Devo Productions home">
+        <svg viewBox="0 0 140 80" aria-hidden="true"><use href="#wave"/></svg>
+        <span class="name">Devo<small>Productions</small></span>
+      </a>
+      <div class="navlinks" id="nav">
+        <a href="/services">Services</a>
+        <a href="/about">About</a>
+        <a href="/gallery" aria-current="page">Gallery</a>
+        <a class="btn btn-solid" href="/book">Book Now</a>
+      </div>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="nav" aria-expanded="false"><span></span><span></span><span></span></button>
+    </nav>
+  </div>
+</header>
+<main id="main">
+
+<section class="page-hero">
+  <div class="bg" style="background-image:url('/img/work_crowd3.jpg')"></div>
+  <div class="wrap">
+    <p class="crumbs"><a href="/">Home</a> / Gallery</p>
+    <p class="kicker">In The Room</p>
+    <h1>The Work</h1>
+    <p class="lead">Real nights, real dance floors, real setups.</p>
+  </div>
+</section>
+
+<section aria-label="Photo gallery">
+  <div class="wrap">
+    <div class="filters" role="group" aria-label="Filter photos">
+      <button type="button" data-f="all" aria-pressed="true">All</button>
+      <button type="button" data-f="wedding" aria-pressed="false">Weddings</button>
+      <button type="button" data-f="party" aria-pressed="false">Parties</button>
+      <button type="button" data-f="outdoor" aria-pressed="false">Outdoor Events</button>
+      <button type="button" data-f="setup" aria-pressed="false">Setups</button>
+    </div>
+    <div class="gal" id="gal">
+      <button class="wide" data-cat="outdoor"><img src="/img/work_crowd3.jpg" alt="Outdoor dance floor packed with guests at night" loading="lazy"><span class="cap">Outdoor dance floor, packed at night</span></button>
+      <button data-cat="wedding"><img src="/img/img_1791.jpg" alt="Wedding reception dance floor" loading="lazy"><span class="cap">Wedding reception dance floor</span></button>
+      <button class="tall" data-cat="outdoor"><img src="/img/work_crowd1.jpg" alt="Packed outdoor dance floor under string lights" loading="lazy"><span class="cap">Under the string lights</span></button>
+      <button data-cat="wedding"><img src="/img/img_1792.jpg" alt="Bride and groom dancing" loading="lazy"><span class="cap">Bride &amp; groom's dance</span></button>
+      <button class="wide" data-cat="party setup"><img src="/img/birthday.jpg" alt="Sweet 16 birthday party stage and DJ setup" loading="lazy"><span class="cap">Sweet 16 stage &amp; DJ setup</span></button>
+      <button data-cat="wedding"><img src="/img/img_1793.jpg" alt="Packed dance floor at reception" loading="lazy"><span class="cap">Packed reception floor</span></button>
+      <button class="tall" data-cat="outdoor"><img src="/img/work_huddle.jpg" alt="Guests gathered in a group huddle on the dance floor" loading="lazy"><span class="cap">The group huddle</span></button>
+      <button data-cat="party setup"><img src="/img/christmas.jpg" alt="Holiday party sound setup with speakers" loading="lazy"><span class="cap">Holiday party sound setup</span></button>
+      <button data-cat="wedding"><img src="/img/img_1794.jpg" alt="Guests celebrating by the fireplace" loading="lazy"><span class="cap">Celebrating by the fireplace</span></button>
+      <button class="wide" data-cat="outdoor setup"><img src="/img/work_lights.jpg" alt="Outdoor evening event setup with speakers and LED light towers" loading="lazy"><span class="cap">Evening setup: speakers &amp; light towers</span></button>
+      <button data-cat="outdoor"><img src="/img/work_crowd2.jpg" alt="Guests dancing outdoors beneath string lights" loading="lazy"><span class="cap">Dancing outdoors</span></button>
+      <button data-cat="wedding"><img src="/img/img_1795.jpg" alt="Guests dancing and laughing" loading="lazy"><span class="cap">Dancing &amp; laughing</span></button>
+      <button data-cat="outdoor"><img src="/img/work_crowd4.jpg" alt="Guests dancing under string lights at an evening reception" loading="lazy"><span class="cap">Evening reception</span></button>
+    </div>
+  </div>
+</section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <button class="x" type="button" aria-label="Close">✕</button>
+  <button class="prev" type="button" aria-label="Previous photo">←</button>
+  <img id="lbImg" src="" alt="">
+  <button class="next" type="button" aria-label="Next photo">→</button>
+  <p class="cap" id="lbCap"></p>
+</div>
+
+<section class="cta-band" aria-labelledby="cta-h">
+  <svg class="wave-deco" viewBox="0 0 140 80" aria-hidden="true"><use href="#wave"/></svg>
+  <div class="wrap inner">
+    <div>
+      <h2 id="cta-h">Got a date? <em>Let's make it sound right.</em></h2>
+      <p>Tell me about your event or your room. I'll get back to you fast.</p>
+    </div>
+    <div class="actions on-dark">
+      <a class="btn btn-accent" href="/book">Check Availability <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="https://calendly.com/devoproductionsllc/30min" target="_blank" rel="noopener">Book a Call</a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var items=[].slice.call(document.querySelectorAll('#gal button'));
+  var btns=[].slice.call(document.querySelectorAll('.filters button'));
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    var f=b.dataset.f;
+    btns.forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});
+    items.forEach(function(it){it.classList.toggle('hide',f!=='all'&&it.dataset.cat.split(' ').indexOf(f)<0);});
+  });});
+
+  var lb=document.getElementById('lb'),img=document.getElementById('lbImg'),cap=document.getElementById('lbCap'),cur=0,opener=null;
+  function vis(){return items.filter(function(i){return !i.classList.contains('hide');});}
+  function show(i){var v=vis();cur=(i+v.length)%v.length;var el=v[cur].querySelector('img');img.src=el.src;img.alt=el.alt;cap.innerHTML='<b>'+(cur+1)+' / '+v.length+'</b>'+el.alt;}
+  function open(el){opener=el;lb.classList.add('open');document.body.style.overflow='hidden';show(vis().indexOf(el));lb.querySelector('.x').focus();}
+  function close(){lb.classList.remove('open');document.body.style.overflow='';if(opener)opener.focus();}
+  items.forEach(function(it){it.addEventListener('click',function(){open(it);});});
+  lb.querySelector('.x').onclick=close;
+  lb.querySelector('.prev').onclick=function(){show(cur-1);};
+  lb.querySelector('.next').onclick=function(){show(cur+1);};
+  lb.addEventListener('click',function(e){if(e.target===lb)close();});
+  document.addEventListener('keydown',function(e){if(!lb.classList.contains('open'))return;if(e.key==='Escape')close();if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1);});
+  var sx=0;lb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;},{passive:true});
+  lb.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(cur+(dx<0?1:-1));});
+})();
+</script>
+</main>
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="/" aria-label="Devo Productions home"><img class="badge" src="/favicon.svg" alt="Devo Productions badge logo"></a>
+        <p>Mobile DJ &amp; MC for weddings and events, plus church sound consulting &amp; training. Better sound without breaking the budget.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul><li><a href="/">Home</a></li><li><a href="/services">Services</a></li><li><a href="/about">About</a></li><li><a href="/gallery">Gallery</a></li><li><a href="/links">All Links</a></li></ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul><li><a href="/services#dj">Mobile DJ &amp; MC</a></li><li><a href="/services#church">Church Sound Consulting</a></li><li><a href="/services#training">Sound Training</a></li></ul>
+      </div>
+      <div>
+        <h4>Get in Touch</h4>
+        <ul><li><a href="/book">Book your date</a></li><li><a href="tel:+15703175520">(570) 317-5520</a></li><li><a href="mailto:cade@devoproductionsllc.com">cade@devoproductionsllc.com</a></li><li><a href="https://www.instagram.com/devoproductionsllc" target="_blank" rel="noopener">Instagram ↗</a></li></ul>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© <span id="yr">2026</span> Devo Productions LLC. All rights reserved.</span>
+      <span>Serving people, not just events.</span>
+    </div>
+  </div>
+</footer>
+<script src="/js/site.js" defer></script>
+</body>
+</html>
