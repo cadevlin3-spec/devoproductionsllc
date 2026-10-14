@@ -475,7 +475,7 @@ function drawerRefresh(force){
  '<div class="fields">'+
   df('Email','email',c.email,'email')+df('Phone','phone',c.phone,'tel')+
   '<div><label>Service</label><select class="in" id="f_service"><option value="">None</option>'+SERV.concat(c.service&&SERV.indexOf(c.service)<0?[c.service]:[]).map(function(s){return '<option'+(s===c.service?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></div>'+df('Event date','event_date',c.event_date,'date')+
-  df('Venue','venue',c.venue,'text')+
+  df('Venue','venue',c.venue,'text')+df('Quote ($)','value',c.value==null?'':c.value,'number')+
   '<div class="full"><label>What they sent</label><textarea class="in" id="f_message">'+esc(c.message)+'</textarea></div></div>'+
  (/wedding|event/i.test(c.service||'')?'<button class="planlink" data-plan="'+c.id+'"><div class="grow"><b>'+(/wedding/i.test(c.service)?'Wedding planning form':'Event planning form')+'</b><span>'+planPct(c)+'% filled out</span></div><div style="width:80px"><div class="bar"><i style="width:'+planPct(c)+'%"></i></div></div><span class="chip w">Open</span></button>':'')+
  '<div class="dsec"><h3><span>Still need from them</span><span>'+p.d+' of '+p.t+'</span></h3>'+(p.t?'<div class="bar" style="margin-bottom:8px"><i style="width:'+p.p+'%"></i></div>':'')+
@@ -487,7 +487,7 @@ function drawerRefresh(force){
  d.scrollTop=st;
  $('#dx').onclick=closeDrawer;
  function save(k,v){var cc=byId(c.id);if((cc[k]||'')===v)return;cc[k]=v;var b={};b[k]=v;api('PATCH','contacts/'+c.id,b).then(function(){if(k==='event_date'||k==='service'||k==='name')load()}).catch(function(e){toast(e.message)})}
- ['name','email','phone','venue','event_date','message','service'].forEach(function(k){var el=$('#f_'+k);if(el)el.addEventListener('change',function(){if(k==='name'&&!el.value.trim()){el.value=c.name;return}save(k,el.value.trim?el.value.trim():el.value)})});
+ ['name','email','phone','venue','event_date','message','service','value'].forEach(function(k){var el=$('#f_'+k);if(el)el.addEventListener('change',function(){if(k==='name'&&!el.value.trim()){el.value=c.name;return}save(k,el.value.trim?el.value.trim():el.value)})});
  d.querySelectorAll('[data-st]').forEach(function(b){b.onclick=function(){setStage(c.id,b.dataset.st)}});
  d.querySelectorAll('[data-due]').forEach(function(i){i.onchange=function(){api('PATCH','needs/'+i.dataset.due,{due:i.value}).then(load).catch(function(e){toast(e.message)})}});
  d.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){api('DELETE','needs/'+b.dataset.del).then(load)}});
@@ -508,7 +508,7 @@ function nudge(id){
  api('POST','contacts/'+id+'/notes',{text:'Opened a reminder email for: '+o.map(function(n){return n.label}).join(', ')}).then(load);
 }
 function exportCsv(){
- var rows=[['Name','Email','Phone','Service','Event date','Venue','Paid','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,c.paid?'Yes':'No',STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
+ var rows=[['Name','Email','Phone','Service','Event date','Venue','Quote','Paid','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,c.value,c.paid?'Yes':'No',STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
  var t=rows.map(function(r){return r.map(function(v){v=String(v==null?'':v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(',')}).join('\n');
  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='devo-customers.csv';a.click();
 }
