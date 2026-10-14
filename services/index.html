@@ -188,5 +188,11 @@ vs.forEach(function(v){io.observe(v);});
 })();
 
 </script>
+<script>
+/* iPhone Low Power Mode blocks autoplay until the first tap; start videos then */
+(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+function go(){[].slice.call(document.querySelectorAll('video')).forEach(function(v){if(v.paused&&(v.src||v.currentSrc||v.getAttribute('src'))){var p=v.play();if(p&&p.catch)p.catch(function(){})}})}
+['touchend','pointerup','click'].forEach(function(e){addEventListener(e,go,{once:true,passive:true})});})();
+</script>
 </body>
 </html>
