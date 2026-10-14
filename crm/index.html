@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#000000">
+<title>Devo CRM</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#000;--p1:#0b0b0c;--p2:#131315;--p3:#1b1b1e;--line:#ffffff14;--line2:#ffffff26;--tx:#f5f5f7;--mu:#a1a1a6;--mu2:#6e6e73;--r:18px}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+a{color:inherit;text-decoration:none}
+.h{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;letter-spacing:-.02em;line-height:1.02}
+.hide{display:none!important}
+/* auth */
+#auth{min-height:100vh;display:grid;place-items:center;padding:24px}
+.authbox{width:100%;max-width:380px;text-align:center}
+.authbox svg{width:84px;height:84px;margin-bottom:26px}
+.authbox h1{font-size:34px;margin-bottom:10px}
+.authbox p{color:var(--mu);margin-bottom:26px}
+.in{width:100%;background:var(--p2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;outline:0;transition:border-color .2s,background .2s}
+.in:focus{border-color:#ffffff66;background:var(--p3)}
+.in::placeholder{color:var(--mu2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--tx);color:#000;font-weight:600;border-radius:999px;padding:12px 22px;transition:transform .15s,opacity .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--p3);color:var(--tx);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--line2)}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btn.full{width:100%;margin-top:12px}
+.err{color:#ff9a9a;font-size:13px;min-height:20px;margin-top:10px}
+/* shell */
+#app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:6px}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 18px}
+.brand svg{width:40px;height:40px}
+.brand b{display:block;font-size:13px;letter-spacing:.14em}
+.brand span{font-size:12px;color:var(--mu2)}
+.nav{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--mu);font-weight:500;text-align:left;width:100%}
+.nav:hover{background:var(--p2);color:var(--tx)}
+.nav.on{background:var(--p3);color:var(--tx)}
+.nav svg{width:19px;height:19px;flex:none}
+.nav .ct{margin-left:auto;font-size:12px;background:var(--tx);color:#000;border-radius:99px;padding:1px 8px;font-weight:600}
+.sp{flex:1}
+main{min-width:0;padding:34px 36px 80px;max-width:1500px}
+.top{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap}
+.top h1{font-size:clamp(34px,5vw,56px)}
+.top .sub{color:var(--mu);margin-top:8px}
+.search{position:relative;width:260px;max-width:100%}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;color:var(--mu2)}
+.search .in{padding:11px 14px 11px 38px;border-radius:999px}
+/* cards & grids */
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:34px}
+.tile{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:20px;cursor:pointer;transition:border-color .2s,transform .2s}
+.tile:hover{border-color:var(--line2);transform:translateY(-2px)}
+.tile .n{font-size:44px}
+.tile .l{color:var(--mu);font-size:13px;margin-top:6px}
+.sec{margin-bottom:34px}
+.sec>h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu2);font-weight:600;margin-bottom:14px;font-family:Inter}
+.list{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.row{display:flex;align-items:center;gap:14px;background:var(--p1);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;transition:border-color .2s,background .2s;text-align:left;width:100%}
+.row:hover{border-color:var(--line2);background:var(--p2)}
+.av{width:40px;height:40px;border-radius:50%;background:var(--p3);border:1px solid var(--line);display:grid;place-items:center;font-weight:600;flex:none;font-size:14px}
+.grow{flex:1;min-width:0}
+.grow b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grow span{display:block;color:var(--mu);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;border:1px solid var(--line2);color:var(--mu);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.chip.w{background:var(--tx);color:#000;border-color:var(--tx)}
+.empty{color:var(--mu2);padding:22px;border:1px dashed var(--line2);border-radius:16px;text-align:center}
+.bar{height:4px;background:var(--p3);border-radius:9px;overflow:hidden;min-width:60px}
+.bar i{display:block;height:100%;background:var(--tx);border-radius:9px;transition:width .4s}
+/* pipeline */
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,1fr);gap:14px;overflow-x:auto;padding-bottom:16px;scroll-snap-type:x proximity}
+.col{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:14px;min-height:300px;scroll-snap-align:start;transition:border-color .2s}
+.col.over{border-color:#ffffff80}
+.col h3{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu);margin-bottom:12px;font-weight:600}
+.card{background:var(--p2);border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px;cursor:grab;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--line2);transform:translateY(-1px)}
+.card.drag{opacity:.4}
+.card b{font-weight:600;display:block}
+.card .m{color:var(--mu);font-size:12.5px;margin:3px 0 10px}
+.card .f{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mu)}
+/* waiting */
+.wcard{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:12px}
+.wcard header{display:flex;align-items:center;gap:14px;margin-bottom:12px;cursor:pointer}
+.wi{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.wi .d{margin-left:auto;font-size:12px;color:var(--mu)}
+.wi .d.od{color:#000;background:var(--tx);border-radius:99px;padding:1px 9px;font-weight:600}
+/* calendar */
+.calwrap{display:grid;grid-template-columns:1fr 320px;gap:20px}
+.cal{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.calh .h{font-size:26px}
+.ib{width:36px;height:36px;border-radius:50%;background:var(--p3);display:grid;place-items:center;border:1px solid var(--line)}
+.ib:hover{border-color:var(--line2)}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{font-size:11px;color:var(--mu2);text-align:center;padding:6px 0;letter-spacing:.1em}
+.day{min-height:92px;border:1px solid var(--line);border-radius:10px;padding:6px;font-size:12px;color:var(--mu);overflow:hidden}
+.day.td{border-color:#ffffff80}
+.day.off{opacity:.35}
+.ev{display:block;width:100%;text-align:left;background:var(--tx);color:#000;border-radius:6px;padding:2px 6px;margin-top:4px;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.q{background:var(--p3);color:var(--tx);border:1px solid var(--line2)}
+.ev.dbl{outline:2px solid #fff;outline-offset:1px}
+/* table */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu2);padding:10px 12px;font-weight:600}
+.tbl td{padding:13px 12px;border-top:1px solid var(--line)}
+.tbl tr.r{cursor:pointer}.tbl tr.r:hover td{background:var(--p1)}
+.tw{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);overflow:auto}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill{border:1px solid var(--line2);color:var(--mu);border-radius:99px;padding:7px 14px;font-size:13px;font-weight:500}
+.pill.on{background:var(--tx);color:#000;border-color:var(--tx)}
+/* drawer */
+#scrim{position:fixed;inset:0;background:#000a;backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity .25s;z-index:40}
+#scrim.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(560px,100%);background:var(--p1);border-left:1px solid var(--line2);transform:translateX(104%);transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:50;overflow-y:auto;padding:26px 26px 60px}
+#drawer.on{transform:none}
+.dh{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}
+.dh .nm{font-size:30px;word-break:break-word;background:none;border:0;outline:0;width:100%}
+.stages{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.fields label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu2);margin-bottom:5px;font-weight:600}
+.fields .full{grid-column:1/-1}
+.fields .in{padding:11px 13px;font-size:14px}
+textarea.in{resize:vertical;min-height:80px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.dsec{margin-bottom:28px}
+.dsec>h3{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu);font-weight:600;margin-bottom:12px}
+.chk{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.box{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line2);display:grid;place-items:center;flex:none;transition:all .15s}
+.box.on{background:var(--tx);border-color:var(--tx)}
+.box svg{width:13px;opacity:0}.box.on svg{opacity:1}
+.chk .t{flex:1;min-width:0}
+.chk.dn .t{color:var(--mu2);text-decoration:line-through}
+.chk input[type=date]{background:transparent;border:0;color:var(--mu);font-size:12px;width:116px;outline:0}
+.chk .x{color:var(--mu2);width:26px;height:26px;border-radius:8px}.chk .x:hover{background:var(--p3);color:var(--tx)}
+.addrow{display:flex;gap:8px;margin-top:12px}
+.addrow .in{padding:10px 14px;font-size:14px}
+.note{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.note small{display:block;color:var(--mu2);font-size:12px;margin-top:3px}
+.note.s{color:var(--mu)}
+.nb{white-space:pre-wrap;word-break:break-word}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);background:var(--tx);color:#000;border-radius:99px;padding:11px 20px;font-weight:600;opacity:0;transition:all .3s;z-index:90;pointer-events:none}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.tabbar{display:none}
+@media(max-width:900px){
+ #app{grid-template-columns:1fr}
+ aside{display:none}
+ main{padding:22px 16px 110px}
+ .tiles{grid-template-columns:1fr 1fr}
+ .calwrap{grid-template-columns:1fr}
+ .day{min-height:64px;padding:4px}.ev{font-size:10px;padding:1px 4px}
+ .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:#000d;backdrop-filter:blur(18px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));z-index:30}
+ .tabbar button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--mu2);padding:7px 0;border-radius:12px}
+ .tabbar button.on{color:var(--tx)}
+ .tabbar svg{width:22px;height:22px}
+ .fields{grid-template-columns:1fr}
+ #drawer{padding:20px 18px 70px}
+ .search{width:100%}
+ .tbl .hm{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="auth" class="hide">
+ <div class="authbox">
+  <svg viewBox="0 0 400 400" aria-label="Devo Productions"><circle cx="200" cy="200" r="180" fill="#000"/><circle cx="200" cy="200" r="162" fill="none" stroke="#fff" stroke-width="3"/><g fill="#fff"><rect x="150" y="150" width="9" height="40" rx="4.5"/><rect x="168" y="132" width="9" height="76" rx="4.5"/><rect x="186" y="116" width="9" height="108" rx="4.5"/><rect x="204" y="132" width="9" height="76" rx="4.5"/><rect x="222" y="150" width="9" height="40" rx="4.5"/></g><text x="200" y="262" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="58" font-weight="800" letter-spacing="3" fill="#fff">DEVO</text><text x="200" y="292" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="16" letter-spacing="9" fill="#fff">PRODUCTIONS</text></svg>
+  <h1 class="h" id="atitle">Sign in</h1>
+  <p id="asub">Enter your passcode to open the CRM</p>
+  <form id="aform">
+   <input class="in" id="apass" type="password" autocomplete="current-password" placeholder="Passcode" required>
+   <input class="in hide" id="apass2" type="password" autocomplete="new-password" placeholder="Confirm passcode" style="margin-top:10px">
+   <button class="btn full" id="abtn">Continue</button>
+   <div class="err" id="aerr"></div>
+  </form>
+ </div>
+</div>
+
+<div id="app" class="hide">
+ <aside>
+  <div class="brand"><svg viewBox="0 0 400 400"><circle cx="200" cy="200" r="180" fill="#000"/><circle cx="200" cy="200" r="162" fill="none" stroke="#fff" stroke-width="6"/><g fill="#fff"><rect x="150" y="150" width="14" height="60" rx="7"/><rect x="172" y="120" width="14" height="120" rx="7"/><rect x="194" y="90" width="14" height="180" rx="7"/><rect x="216" y="120" width="14" height="120" rx="7"/><rect x="238" y="150" width="14" height="60" rx="7"/></g></svg><div><b>DEVO</b><span>CRM</span></div></div>
+  <button class="btn sm" id="newbtn" style="margin:0 6px 12px">+ New customer</button>
+  <div id="nav"></div>
+  <div class="sp"></div>
+  <button class="nav" id="logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M15 4h3a2 2 0 012 2v12a2 2 0 01-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg>Sign out</button>
+ </aside>
+ <main id="main"></main>
+</div>
+<nav class="tabbar hide" id="tabbar"></nav>
+
+<div id="scrim"></div>
+<div id="drawer" aria-hidden="true"></div>
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var ST=['new','contacted','quoted','booked','planning','done','lost'];
+var STL={new:'New',contacted:'Contacted',quoted:'Quoted',booked:'Booked',planning:'Planning',done:'Done',lost:'Lost'};
+var ACTIVE=['contacted','quoted','booked','planning'];
+var SERV=['Wedding','Party / Event DJ','Church Sound Consulting','Sound Training','Something else'];
+var D={contacts:[],needs:[],notes:[]};
+var view='today',openId=null,calM=new Date(),filt='all',q='',showLost=false;
+var $=function(s,r){return (r||document).querySelector(s)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var ICO={
+ today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+ pipe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="6" rx="1.5"/></svg>',
+ wait:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>',
+ cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+ all:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M16 4.8a3.5 3.5 0 010 6.4M18 14.8c2 .7 3.2 2.3 3.5 5.2"/></svg>',
+ chk:'<svg viewBox="0 0 16 16" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5l3.2 3L13 4.5"/></svg>',
+ x:'<svg viewBox="0 0 24 24" width="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:block;margin:auto"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+ l:'<svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>',
+ r:'<svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
+ s:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
+};
+var NAV=[['today','Today'],['pipe','Pipeline'],['wait','Waiting on'],['cal','Calendar'],['all','Customers']];
+
+/* ---------- api ---------- */
+function api(method,path,body){
+ return fetch('/api/'+path,{method:method,credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined}).then(function(r){
+  return r.json().catch(function(){return {}}).then(function(j){
+   if(r.status===401&&path.indexOf('auth/')!==0){showAuth(false);throw new Error('auth')}
+   if(!r.ok)throw new Error(j.error||'Something went wrong');return j;});
+ });
+}
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove('on')},2200)}
+function load(){return api('GET','data').then(function(j){D=j;render();if(openId)drawerRefresh()})}
+
+/* ---------- dates ---------- */
+function pd(s){if(!s)return null;var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function today(){var d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())}
+function days(s){var d=pd(s);return d?Math.round((d-today())/864e5):null}
+function fmt(s,long){var d=pd(s);if(!d)return '';return d.toLocaleDateString('en-US',long?{weekday:'short',month:'short',day:'numeric',year:'numeric'}:{month:'short',day:'numeric'})}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function ago(s){var m=(Date.now()-new Date(s))/6e4;if(m<1)return 'just now';if(m<60)return Math.floor(m)+'m ago';if(m<1440)return Math.floor(m/60)+'h ago';var d=Math.floor(m/1440);return d<30?d+'d ago':fmt(s.slice(0,10))}
+function rel(s){var d=days(s);if(d===null)return '';if(d===0)return 'Today';if(d===1)return 'Tomorrow';if(d<0)return Math.abs(d)+'d overdue';return 'in '+d+'d'}
+
+/* ---------- data helpers ---------- */
+function byId(id){return D.contacts.filter(function(c){return c.id===id})[0]}
+function needsOf(id){return D.needs.filter(function(n){return n.contact_id===id})}
+function openNeeds(id){return needsOf(id).filter(function(n){return !n.done})}
+function prog(id){var n=needsOf(id);var d=n.filter(function(x){return x.done}).length;return {d:d,t:n.length,p:n.length?Math.round(d/n.length*100):0}}
+function ini(n){return (n||'?').split(/\s+/).slice(0,2).map(function(x){return x[0]}).join('').toUpperCase()}
+function match(c){if(!q)return true;var s=(c.name+' '+(c.email||'')+' '+(c.phone||'')+' '+(c.venue||'')+' '+(c.service||'')).toLowerCase();return s.indexOf(q.toLowerCase())>-1}
+function dblDates(){var m={};D.contacts.forEach(function(c){if(c.event_date&&(c.stage==='booked'||c.stage==='planning')){(m[c.event_date]=m[c.event_date]||[]).push(c.id)}});var o={};Object.keys(m).forEach(function(k){if(m[k].length>1)o[k]=m[k]});return o}
+
+/* ---------- shell ---------- */
+function showAuth(setup){
+ $('#app').classList.add('hide');$('#tabbar').classList.add('hide');$('#auth').classList.remove('hide');closeDrawer();
+ $('#atitle').textContent=setup?'Set a passcode':'Sign in';
+ $('#asub').textContent=setup?'Choose a passcode of at least 8 characters. You will use it to open the CRM':'Enter your passcode to open the CRM';
+ $('#apass2').classList.toggle('hide',!setup);$('#apass2').required=setup;$('#aform').dataset.setup=setup?'1':'';
+ $('#apass').autocomplete=setup?'new-password':'current-password';$('#apass').value='';$('#apass2').value='';$('#aerr').textContent='';
+ setTimeout(function(){$('#apass').focus()},50);
+}
+$('#aform').addEventListener('submit',function(e){
+ e.preventDefault();var setup=this.dataset.setup==='1',p=$('#apass').value;$('#aerr').textContent='';
+ if(setup&&p!==$('#apass2').value){$('#aerr').textContent='The passcodes do not match.';return}
+ $('#abtn').disabled=true;
+ api('POST',setup?'auth/setup':'auth/login',{passcode:p}).then(start).catch(function(er){$('#aerr').textContent=er.message}).then(function(){$('#abtn').disabled=false});
+});
+function start(){
+ $('#auth').classList.add('hide');$('#app').classList.remove('hide');$('#tabbar').classList.remove('hide');
+ return load();
+}
+$('#logout').addEventListener('click',function(){api('POST','auth/logout',{}).then(function(){showAuth(false)})});
+$('#newbtn').addEventListener('click',function(){newCustomer()});
+function go(v){view=v;if(v!=='all')filt='all';render();window.scrollTo(0,0)}
+function counts(){return {new:D.contacts.filter(function(c){return c.stage==='new'}).length}}
+function renderNav(){
+ var c=counts();
+ $('#nav').innerHTML=NAV.map(function(n){return '<button class="nav'+(view===n[0]?' on':'')+'" data-v="'+n[0]+'">'+ICO[n[0]]+n[1]+(n[0]==='pipe'&&c.new?'<span class="ct">'+c.new+'</span>':'')+'</button>'}).join('');
+ $('#tabbar').innerHTML=NAV.map(function(n){return '<button class="'+(view===n[0]?'on':'')+'" data-v="'+n[0]+'">'+ICO[n[0]]+n[1].replace('Waiting on','Waiting')+'</button>'}).join('');
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-v]');if(b&&(b.closest('#nav')||b.closest('#tabbar')))go(b.dataset.v)});
+
+function render(){
+ renderNav();
+ var m=$('#main');
+ m.innerHTML=({today:vToday,pipe:vPipe,wait:vWait,cal:vCal,all:vAll})[view]();
+ bind();
+}
+function head(title,sub,extra){
+ return '<div class="top"><div><h1 class="h">'+title+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div>'+(extra||'')+'</div>';
+}
+function searchBox(){return '<div class="search">'+ICO.s+'<input class="in" id="q" placeholder="Search customers" value="'+esc(q)+'"></div>'}
+function rowHtml(c,extra){
+ var p=prog(c.id);
+ return '<button class="row" data-open="'+c.id+'"><div class="av">'+esc(ini(c.name))+'</div><div class="grow"><b>'+esc(c.name)+'</b><span>'+esc([c.service,c.event_date?fmt(c.event_date):'',c.venue].filter(Boolean).join(' · ')||c.email||'')+'</span></div>'+(extra||'')+(p.t?'<div style="width:70px"><div class="bar"><i style="width:'+p.p+'%"></i></div></div>':'')+'<span class="chip">'+STL[c.stage]+'</span></button>';
+}
+
+/* ---------- views ---------- */
+function vToday(){
+ var hr=new Date().getHours(),g=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+ var nw=D.contacts.filter(function(c){return c.stage==='new'});
+ var act=D.contacts.filter(function(c){return ACTIVE.indexOf(c.stage)>-1});
+ var waiting=act.filter(function(c){return openNeeds(c.id).length});
+ var up=D.contacts.filter(function(c){var d=days(c.event_date);return d!==null&&d>=0&&d<=30&&(c.stage==='booked'||c.stage==='planning')}).sort(function(a,b){return a.event_date<b.event_date?-1:1});
+ var booked=D.contacts.filter(function(c){return (c.stage==='booked'||c.stage==='planning'||c.stage==='done')&&c.event_date&&c.event_date.slice(0,4)===String(new Date().getFullYear())}).length;
+ var due=[];D.needs.forEach(function(n){if(!n.done&&n.due){var c=byId(n.contact_id);if(c&&c.stage!=='lost'&&c.stage!=='done'&&days(n.due)<=7)due.push({n:n,c:c})}});
+ due.sort(function(a,b){return a.n.due<b.n.due?-1:1});
+ var dbl=dblDates();var dk=Object.keys(dbl);
+ return head(g+', Cade',new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}),searchBox())+
+ '<div class="tiles">'+
+  tile(nw.length,'New inquiries','pipe')+tile(waiting.length,'Waiting on clients','wait')+tile(up.length,'Events in 30 days','cal')+tile(booked,'Events this year','all')+'</div>'+
+ (dk.length?'<div class="sec"><h2>Double-booked</h2><div class="list">'+dk.map(function(k){return '<div class="row" style="cursor:default"><div class="grow"><b>'+fmt(k,true)+'</b><span>'+dbl[k].map(function(i){return esc(byId(i).name)}).join(' and ')+' are both booked</span></div></div>'}).join('')+'</div></div>':'')+
+ '<div class="sec"><h2>New inquiries</h2><div class="list">'+(nw.length?nw.map(function(c){return rowHtml(c,'<span style="color:var(--mu2);font-size:12px">'+ago(c.created_at)+'</span>')}).join(''):'<div class="empty">No new inquiries</div>')+'</div></div>'+
+ '<div class="sec"><h2>Due this week</h2><div class="list">'+(due.length?due.slice(0,8).map(function(x){return '<button class="row" data-open="'+x.c.id+'"><div class="av">'+esc(ini(x.c.name))+'</div><div class="grow"><b>'+esc(x.n.label)+'</b><span>'+esc(x.c.name)+'</span></div><span class="chip'+(days(x.n.due)<0?' w':'')+'">'+rel(x.n.due)+'</span></button>'}).join(''):'<div class="empty">Nothing due in the next 7 days</div>')+'</div></div>'+
+ '<div class="sec"><h2>Next events</h2><div class="list">'+(up.length?up.map(function(c){return rowHtml(c,'<span style="color:var(--mu);font-size:13px">'+fmt(c.event_date)+' · '+rel(c.event_date)+'</span>')}).join(''):'<div class="empty">No booked events in the next 30 days</div>')+'</div></div>';
+}
+function tile(n,l,v){return '<button class="tile" data-v="'+v+'" style="text-align:left"><div class="n h">'+n+'</div><div class="l">'+l+'</div></button>'}
+
+function vPipe(){
+ var cols=ST.filter(function(s){return s!=='lost'||showLost});
+ var html=head('Pipeline',D.contacts.filter(function(c){return c.stage!=='lost'&&c.stage!=='done'}).length+' in progress',searchBox()+'<button class="pill'+(showLost?' on':'')+'" id="tl">Show lost</button>')+'<div class="board">';
+ cols.forEach(function(s){
+  var cs=D.contacts.filter(function(c){return c.stage===s&&match(c)});
+  html+='<div class="col" data-stage="'+s+'"><h3><span>'+STL[s]+'</span><span>'+cs.length+'</span></h3>'+cs.map(function(c){
+   var p=prog(c.id);
+   return '<div class="card" draggable="true" data-open="'+c.id+'" data-id="'+c.id+'"><b>'+esc(c.name)+'</b><div class="m">'+esc([c.service,c.event_date?fmt(c.event_date):''].filter(Boolean).join(' · '))+'</div><div class="f">'+(p.t?'<div class="bar" style="flex:1"><i style="width:'+p.p+'%"></i></div><span>'+p.d+'/'+p.t+'</span>':'<span>No checklist</span>')+'</div></div>';
+  }).join('')+'</div>';
+ });
+ return html+'</div>';
+}
+
+function vWait(){
+ var list=D.contacts.filter(function(c){return ACTIVE.indexOf(c.stage)>-1&&openNeeds(c.id).length&&match(c)});
+ list.sort(function(a,b){var an=openNeeds(a.id).filter(function(n){return n.due}).map(function(n){return n.due}).sort()[0]||'9999',bn=openNeeds(b.id).filter(function(n){return n.due}).map(function(n){return n.due}).sort()[0]||'9999';return an<bn?-1:1});
+ return head('Waiting on','What I still need from each customer',searchBox())+
+ (list.length?list.map(function(c){
+  var o=openNeeds(c.id);
+  return '<div class="wcard"><header data-open="'+c.id+'"><div class="av">'+esc(ini(c.name))+'</div><div class="grow"><b>'+esc(c.name)+'</b><span>'+esc(c.service||'')+(c.event_date?' · '+fmt(c.event_date,true):'')+'</span></div><span class="chip">'+STL[c.stage]+'</span></header>'+
+  o.map(function(n){return '<div class="wi"><button class="box" data-tog="'+n.id+'" aria-label="Mark done">'+ICO.chk+'</button><span>'+esc(n.label)+'</span>'+(n.due?'<span class="d'+(days(n.due)<0?' od':'')+'">'+fmt(n.due)+'</span>':'')+'</div>'}).join('')+
+  '<div style="margin-top:12px"><button class="btn ghost sm" data-nudge="'+c.id+'">Email a reminder</button></div></div>';
+ }).join(''):'<div class="empty">You are all caught up. Nothing outstanding from any active customer.</div>');
+}
+
+function vCal(){
+ var y=calM.getFullYear(),m=calM.getMonth(),first=new Date(y,m,1),start=new Date(y,m,1-first.getDay());
+ var dbl=dblDates(),map={};
+ D.contacts.forEach(function(c){if(c.event_date&&c.stage!=='lost')(map[c.event_date]=map[c.event_date]||[]).push(c)});
+ var h=head('Calendar','',''),g='';
+ ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach(function(d){g+='<div class="dow">'+d+'</div>'});
+ for(var i=0;i<42;i++){var d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i),k=iso(d);
+  g+='<div class="day'+(d.getMonth()!==m?' off':'')+(k===iso(today())?' td':'')+'">'+d.getDate()+(map[k]||[]).map(function(c){var bk=c.stage==='booked'||c.stage==='planning'||c.stage==='done';return '<button class="ev'+(bk?'':' q')+(dbl[k]?' dbl':'')+'" data-open="'+c.id+'">'+esc(c.name)+'</button>'}).join('')+'</div>';}
+ var up=D.contacts.filter(function(c){return c.event_date&&days(c.event_date)>=0&&c.stage!=='lost'}).sort(function(a,b){return a.event_date<b.event_date?-1:1}).slice(0,12);
+ return h+'<div class="calwrap"><div class="cal"><div class="calh"><div class="h">'+calM.toLocaleDateString('en-US',{month:'long',year:'numeric'})+'</div><div style="display:flex;gap:8px"><button class="ib" id="cp">'+ICO.l+'</button><button class="pill" id="ct">Today</button><button class="ib" id="cn">'+ICO.r+'</button></div></div><div class="grid7">'+g+'</div><div style="margin-top:12px;color:var(--mu2);font-size:12px">Solid = booked · Outlined = not booked yet · Ringed = double-booked</div></div>'+
+ '<div class="sec"><h2>Upcoming</h2><div class="list">'+(up.length?up.map(function(c){return '<button class="row" data-open="'+c.id+'"><div class="grow"><b>'+esc(c.name)+'</b><span>'+fmt(c.event_date,true)+' · '+STL[c.stage]+'</span></div></button>'}).join(''):'<div class="empty">No upcoming events</div>')+'</div></div></div>';
+}
+
+function vAll(){
+ var list=D.contacts.filter(function(c){return (filt==='all'||c.stage===filt)&&match(c)});
+ return head('Customers',D.contacts.length+' total',searchBox()+'<button class="btn ghost sm" id="csv">Export CSV</button>')+
+ '<div class="filters">'+['all'].concat(ST).map(function(s){return '<button class="pill'+(filt===s?' on':'')+'" data-f="'+s+'">'+(s==='all'?'All':STL[s])+'</button>'}).join('')+'</div>'+
+ (list.length?'<div class="tw"><table class="tbl"><thead><tr><th>Name</th><th>Service</th><th>Event</th><th class="hm">Checklist</th><th>Stage</th></tr></thead><tbody>'+list.map(function(c){var p=prog(c.id);return '<tr class="r" data-open="'+c.id+'"><td><b>'+esc(c.name)+'</b><div style="color:var(--mu);font-size:13px">'+esc(c.email||'')+'</div></td><td>'+esc(c.service||'')+'</td><td>'+(c.event_date?fmt(c.event_date):'')+'</td><td class="hm">'+(p.t?p.d+'/'+p.t:'')+'</td><td><span class="chip">'+STL[c.stage]+'</span></td></tr>'}).join('')+'</tbody></table></div>':'<div class="empty">No customers match</div>');
+}
+
+/* ---------- bind view events ---------- */
+function bind(){
+ var s=$('#q');if(s){s.addEventListener('input',function(){q=s.value;var pos=s.selectionStart;render();var n=$('#q');n.focus();n.setSelectionRange(pos,pos)})}
+ var tl=$('#tl');if(tl)tl.addEventListener('click',function(){showLost=!showLost;render()});
+ var cp=$('#cp');if(cp){cp.onclick=function(){calM=new Date(calM.getFullYear(),calM.getMonth()-1,1);render()};$('#cn').onclick=function(){calM=new Date(calM.getFullYear(),calM.getMonth()+1,1);render()};$('#ct').onclick=function(){calM=new Date();render()}}
+ document.querySelectorAll('[data-f]').forEach(function(b){b.onclick=function(){filt=b.dataset.f;render()}});
+ var csv=$('#csv');if(csv)csv.onclick=exportCsv;
+ // drag and drop
+ document.querySelectorAll('.card[draggable]').forEach(function(c){
+  c.addEventListener('dragstart',function(e){e.dataTransfer.setData('text/plain',c.dataset.id);c.classList.add('drag')});
+  c.addEventListener('dragend',function(){c.classList.remove('drag')});
+ });
+ document.querySelectorAll('.col').forEach(function(col){
+  col.addEventListener('dragover',function(e){e.preventDefault();col.classList.add('over')});
+  col.addEventListener('dragleave',function(){col.classList.remove('over')});
+  col.addEventListener('drop',function(e){e.preventDefault();col.classList.remove('over');var id=e.dataTransfer.getData('text/plain');if(id)setStage(id,col.dataset.stage)});
+ });
+}
+document.addEventListener('click',function(e){
+ var t=e.target.closest('[data-tog]');
+ if(t){e.stopPropagation();toggleNeed(t.dataset.tog);return}
+ var n=e.target.closest('[data-nudge]');
+ if(n){e.stopPropagation();nudge(n.dataset.nudge);return}
+ var o=e.target.closest('[data-open]');
+ if(o&&!e.target.closest('#drawer'))openDrawer(o.dataset.open);
+});
+
+/* ---------- mutations ---------- */
+function setStage(id,s){var c=byId(id);if(!c||c.stage===s)return;c.stage=s;render();if(openId===id)drawerRefresh();api('PATCH','contacts/'+id,{stage:s}).then(load).catch(function(e){toast(e.message);load()})}
+function toggleNeed(id){var n=D.needs.filter(function(x){return x.id===id})[0];if(!n)return;n.done=n.done?0:1;render();if(openId)drawerRefresh();api('PATCH','needs/'+id,{done:!!n.done}).then(load).catch(function(e){toast(e.message);load()})}
+function newCustomer(){
+ openId='new';var d=$('#drawer');
+ d.innerHTML='<div class="dh"><h2 class="h" style="font-size:30px">New customer</h2><button class="ib" id="dx">'+ICO.x+'</button></div><div class="fields">'+
+  fld('Name','nn','text',1)+fld('Email','ne','email')+fld('Phone','np','tel')+
+  '<div><label>Service</label><select class="in" id="ns"><option value="">Choose</option>'+SERV.map(function(s){return '<option>'+s+'</option>'}).join('')+'</select></div>'+fld('Event date','nd','date')+fld('Venue','nv','text',0,1)+
+  '</div><button class="btn full" id="nsave">Add customer</button>';
+ showDrawer();$('#dx').onclick=closeDrawer;
+ $('#nsave').onclick=function(){var name=$('#nn').value.trim();if(!name){toast('Add a name');return}
+  api('POST','contacts',{name:name,email:$('#ne').value,phone:$('#np').value,service:$('#ns').value,event_date:$('#nd').value,venue:$('#nv').value}).then(function(r){return load().then(function(){openDrawer(r.id);toast('Added')})}).catch(function(e){toast(e.message)})};
+ setTimeout(function(){$('#nn').focus()},300);
+}
+function fld(l,id,t,req,full){return '<div'+(full?' class="full"':'')+'><label>'+l+'</label><input class="in" id="'+id+'" type="'+t+'"></div>'}
+
+/* ---------- drawer ---------- */
+function showDrawer(){$('#drawer').classList.add('on');$('#scrim').classList.add('on');$('#drawer').setAttribute('aria-hidden','false')}
+function closeDrawer(){openId=null;$('#drawer').classList.remove('on');$('#scrim').classList.remove('on');$('#drawer').setAttribute('aria-hidden','true')}
+$('#scrim').addEventListener('click',closeDrawer);
+function openDrawer(id){openId=id;drawerRefresh(true);showDrawer()}
+function drawerRefresh(force){
+ var c=byId(openId);if(!c){if(openId!=='new')closeDrawer();return}
+ var d=$('#drawer');
+ if(!force&&d.contains(document.activeElement)&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))return;
+ var st=d.scrollTop,p=prog(c.id),needs=needsOf(c.id),notes=D.notes.filter(function(n){return n.contact_id===c.id});
+ d.innerHTML=
+ '<div class="dh"><input class="nm h" id="f_name" value="'+esc(c.name)+'" aria-label="Name"><button class="ib" id="dx" aria-label="Close">'+ICO.x+'</button></div>'+
+ '<div class="stages">'+ST.map(function(s){return '<button class="pill'+(c.stage===s?' on':'')+'" data-st="'+s+'">'+STL[s]+'</button>'}).join('')+'</div>'+
+ '<div class="acts">'+(c.email?'<a class="btn ghost sm" href="mailto:'+esc(c.email)+'">Email</a>':'')+(c.phone?'<a class="btn ghost sm" href="tel:'+esc(c.phone.replace(/[^\d+]/g,''))+'">Call</a>':'')+(c.email&&p.t-p.d?'<button class="btn ghost sm" data-nudge="'+c.id+'">Email what I still need</button>':'')+'</div>'+
+ '<div class="fields">'+
+  df('Email','email',c.email,'email')+df('Phone','phone',c.phone,'tel')+
+  '<div><label>Service</label><select class="in" id="f_service"><option value="">None</option>'+SERV.concat(c.service&&SERV.indexOf(c.service)<0?[c.service]:[]).map(function(s){return '<option'+(s===c.service?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></div>'+df('Event date','event_date',c.event_date,'date')+
+  df('Venue','venue',c.venue,'text',1)+
+  '<div class="full"><label>What they sent</label><textarea class="in" id="f_message">'+esc(c.message)+'</textarea></div></div>'+
+ '<div class="dsec"><h3><span>Still need from them</span><span>'+p.d+' of '+p.t+'</span></h3>'+(p.t?'<div class="bar" style="margin-bottom:8px"><i style="width:'+p.p+'%"></i></div>':'')+
+  needs.map(function(n){return '<div class="chk'+(n.done?' dn':'')+'"><button class="box'+(n.done?' on':'')+'" data-tog="'+n.id+'" aria-label="Toggle">'+ICO.chk+'</button><span class="t">'+esc(n.label)+'</span><input type="date" value="'+esc(n.due||'')+'" data-due="'+n.id+'" aria-label="Due date"><button class="x" data-del="'+n.id+'" aria-label="Remove">'+ICO.x+'</button></div>'}).join('')+
+  '<div class="addrow"><input class="in" id="nl" placeholder="Add something you need"><input class="in" id="ndue" type="date" style="width:150px"><button class="btn sm" id="nadd">Add</button></div></div>'+
+ '<div class="dsec"><h3><span>Notes and activity</span></h3><div class="addrow" style="margin:0 0 6px"><textarea class="in" id="nt" rows="2" placeholder="Add a note" style="min-height:0"></textarea><button class="btn sm" id="ntadd" style="align-self:flex-end">Save</button></div>'+
+  notes.map(function(n){return '<div class="note'+(n.kind==='system'?' s':'')+'"><div class="nb">'+esc(n.text)+'</div><small>'+ago(n.created_at)+(n.kind==='note'?' · <button data-dn="'+n.id+'" style="color:var(--mu2);text-decoration:underline">delete</button>':'')+'</small></div>'}).join('')+'</div>'+
+ '<button class="btn ghost sm" id="del" style="color:#ff9a9a">Delete customer</button>';
+ d.scrollTop=st;
+ $('#dx').onclick=closeDrawer;
+ function save(k,v){var cc=byId(c.id);if((cc[k]||'')===v)return;cc[k]=v;var b={};b[k]=v;api('PATCH','contacts/'+c.id,b).then(function(){if(k==='event_date'||k==='service'||k==='name')load()}).catch(function(e){toast(e.message)})}
+ ['name','email','phone','venue','event_date','message','service'].forEach(function(k){var el=$('#f_'+k);if(el)el.addEventListener('change',function(){if(k==='name'&&!el.value.trim()){el.value=c.name;return}save(k,el.value.trim?el.value.trim():el.value)})});
+ d.querySelectorAll('[data-st]').forEach(function(b){b.onclick=function(){setStage(c.id,b.dataset.st)}});
+ d.querySelectorAll('[data-due]').forEach(function(i){i.onchange=function(){api('PATCH','needs/'+i.dataset.due,{due:i.value}).then(load).catch(function(e){toast(e.message)})}});
+ d.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){api('DELETE','needs/'+b.dataset.del).then(load)}});
+ d.querySelectorAll('[data-dn]').forEach(function(b){b.onclick=function(){api('DELETE','notes/'+b.dataset.dn).then(load)}});
+ var add=function(){var l=$('#nl').value.trim();if(!l)return;api('POST','contacts/'+c.id+'/needs',{label:l,due:$('#ndue').value}).then(load).catch(function(e){toast(e.message)})};
+ $('#nadd').onclick=add;$('#nl').addEventListener('keydown',function(e){if(e.key==='Enter')add()});
+ $('#ntadd').onclick=function(){var t=$('#nt').value.trim();if(!t)return;api('POST','contacts/'+c.id+'/notes',{text:t}).then(load).catch(function(e){toast(e.message)})};
+ $('#del').onclick=function(){if(confirm('Delete '+c.name+' and everything attached to them? This cannot be undone.'))api('DELETE','contacts/'+c.id).then(function(){closeDrawer();return load()}).then(function(){toast('Deleted')})};
+}
+function df(l,k,v,t,full){return '<div'+(full?' class="full"':'')+'><label>'+l+'</label><input class="in" id="f_'+k+'" type="'+t+'" value="'+esc(v)+'"></div>'}
+
+function nudge(id){
+ var c=byId(id);if(!c)return;var o=openNeeds(id);if(!o.length){toast('Nothing outstanding');return}
+ var first=(c.name||'there').split(/\s+/)[0];
+ var body='Hi '+first+',\n\nThanks again for choosing Devo Productions. To keep everything on track for your '+(c.event_date?'event on '+fmt(c.event_date,true):'event')+', here is what I still need from you:\n\n'+o.map(function(n){return '- '+n.label+(n.due?' (by '+fmt(n.due)+')':'')}).join('\n')+'\n\nReply here whenever you have it, and let me know if you have any questions.\n\nCade\nDevo Productions';
+ if(!c.email){toast('No email on file');return}
+ location.href='mailto:'+encodeURIComponent(c.email).replace('%40','@')+'?subject='+encodeURIComponent('A few things I still need for your event')+'&body='+encodeURIComponent(body);
+ api('POST','contacts/'+id+'/notes',{text:'Opened a reminder email for: '+o.map(function(n){return n.label}).join(', ')}).then(load);
+}
+function exportCsv(){
+ var rows=[['Name','Email','Phone','Service','Event date','Venue','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
+ var t=rows.map(function(r){return r.map(function(v){v=String(v==null?'':v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(',')}).join('\n');
+ var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='devo-customers.csv';a.click();
+}
+
+/* ---------- keys & refresh ---------- */
+document.addEventListener('keydown',function(e){
+ var tg=e.target.tagName;if(/INPUT|TEXTAREA|SELECT/.test(tg)){if(e.key==='Escape')e.target.blur();return}
+ if(e.key==='Escape')closeDrawer();
+ else if(e.key==='/'){var s=$('#q');if(s){e.preventDefault();s.focus()}}
+ else if(e.key==='n'&&!e.metaKey&&!e.ctrlKey){e.preventDefault();newCustomer()}
+});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&!$('#app').classList.contains('hide'))load().catch(function(){})});
+setInterval(function(){if(!document.hidden&&!$('#app').classList.contains('hide'))load().catch(function(){})},60000);
+
+api('GET','auth/status').then(function(s){if(!s.setup)showAuth(true);else if(!s.authed)showAuth(false);else start()}).catch(function(){showAuth(false);$('#aerr').textContent='Could not reach the server.'});
+})();
+</script>
+</body>
+</html>

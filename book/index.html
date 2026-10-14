@@ -182,11 +182,12 @@ btn.addEventListener('click',function(){
  var name=val('f-name'),email=val('f-email');
  if(!name||!/^\S+@\S+\.\S+$/.test(email)){showErr('Please add your name and a valid email so I can reply.');return;}
  busy=true;btn.textContent='Sending...';btn.style.opacity='.6';
- fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({access_key:KEY,subject:'New inquiry from devoproductionsllc.com',from_name:'Devo Productions Website',name:name,email:email,phone:val('f-phone'),event_type:val('f-type'),event_date:val('f-date'),venue:val('f-venue'),message:val('f-msg')})})
- .then(function(r){return r.json()}).then(function(d){
-  if(d&&d.success){var first=name.split(' ')[0];$('thanks-head').textContent='Thanks, '+first;$('inq-form').style.display='none';$('inq-thanks').style.display='block';$('inquiry').scrollIntoView({behavior:'smooth',block:'center'});}
-  else throw new Error('x');
- }).catch(function(){showErr('That did not send. You can email cade@devoproductionsllc.com.');})
+ var crm=fetch('/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name,email:email,phone:val('f-phone'),service:val('f-type'),event_date:val('f-date'),venue:val('f-venue'),message:val('f-msg')})}).then(function(r){return r.ok}).catch(function(){return false});
+ var mail=fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({access_key:KEY,subject:'New inquiry from devoproductionsllc.com',from_name:'Devo Productions Website',name:name,email:email,phone:val('f-phone'),event_type:val('f-type'),event_date:val('f-date'),venue:val('f-venue'),message:val('f-msg')})}).then(function(r){return r.json()}).then(function(d){return !!(d&&d.success)}).catch(function(){return false});
+ Promise.all([crm,mail]).then(function(res){
+  if(res[0]||res[1]){var first=name.split(' ')[0];$('thanks-head').textContent='Thanks, '+first;$('inq-form').style.display='none';$('inq-thanks').style.display='block';$('inquiry').scrollIntoView({behavior:'smooth',block:'center'});}
+  else showErr('That did not send. You can email cade@devoproductionsllc.com.');
+ })
  .then(function(){busy=false;btn.textContent='Send inquiry';btn.style.opacity='1';});
 });})();
 </script>
