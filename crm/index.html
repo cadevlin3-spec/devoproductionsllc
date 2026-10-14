@@ -181,12 +181,42 @@ textarea.in{resize:vertical;min-height:80px}
 .mnew{display:none}
 @media(max-width:900px){.mnew{display:inline-flex}.pl{padding:0 16px 120px}.plbar{margin:0 -16px 14px;padding:12px 16px}}
 @media print{
- body>*:not(#planner){display:none!important}
+ body>*:not(#planner):not(#sheet){display:none!important}
+ #planner:not(.on),#sheet:not(.on){display:none!important}
+ #sheet{position:static!important;transform:none!important;overflow:visible!important;background:#fff!important}
+ #sheet *{color:#000!important;background:none!important;border-color:#bbb!important}
+ .shbar,.noprint{display:none!important}
+ .sh{break-inside:avoid}
  html,body{background:#fff!important;color:#000!important}
  #planner{position:static!important;transform:none!important;overflow:visible!important;background:#fff!important;color:#000!important}
  .plbar,.plsave{display:none!important}
  .pl{max-width:none;padding:0}
 }
+
+#msgm{position:fixed;inset:0;background:#000a;z-index:90;display:none;align-items:center;justify-content:center;padding:16px}
+#msgm.on{display:flex}
+.mbox{background:var(--p1);border:1px solid var(--line2);border-radius:22px;padding:20px;width:min(560px,100%);max-height:92vh;overflow:auto}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:17px}
+.mt{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.mbox textarea{min-height:200px;font-size:15px;line-height:1.5;resize:vertical}
+.ma{display:flex;gap:8px;margin-top:12px}.mn{color:var(--mu2);font-size:12.5px;margin-top:8px}
+.btn[disabled]{opacity:.4;pointer-events:none}
+#sheet{position:fixed;inset:0;background:var(--bg);z-index:75;overflow-y:auto;transform:translateY(102%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#sheet.on{transform:none}
+.shi{max-width:760px;margin:0 auto;padding:0 22px 120px}
+.shbar{position:sticky;top:0;z-index:3;background:#000e;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);margin:0 -22px 22px;padding:14px 22px;display:flex;align-items:center;gap:14px;height:68px}
+.shn{font-size:clamp(34px,7vw,56px);margin-bottom:10px}
+.shm{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}.shm i{font-style:normal;border:1px solid var(--line2);border-radius:99px;padding:5px 13px;font-size:13.5px;color:var(--mu)}
+.sh{background:var(--p1);border:1px solid var(--line);border-radius:18px;padding:6px 20px 12px;margin-bottom:14px}
+.sh h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu2);font-weight:600;padding:14px 0 6px}
+.sr{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:7px 0;border-top:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.sr:first-of-type{border-top:0}.sr>span{color:var(--mu);font-size:14px}
+.sr.tl>span{font-family:Archivo,Inter,sans-serif;font-weight:800;color:var(--tx);font-size:16px}.sd{color:var(--mu);font-size:14px;margin-top:2px}
+.gr{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);cursor:pointer}.gr input{width:20px;height:20px;accent-color:#fff}
+.bars{display:flex;align-items:flex-end;gap:12px;height:150px;background:var(--p1);border:1px solid var(--line);border-radius:18px;padding:18px 18px 12px}
+.bc{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;font-size:12px;color:var(--mu)}
+.bv{width:100%;max-width:46px;background:var(--tx);border-radius:8px 8px 3px 3px;min-height:3px;position:relative}.bv em{position:absolute;top:-18px;left:0;right:0;text-align:center;font-style:normal;font-size:12px;color:var(--tx)}
+@media(max-width:700px){.sr{grid-template-columns:1fr;gap:2px}.shi{padding:0 16px 120px}.shbar{margin:0 -16px 18px;padding:12px 16px}.tiles{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -236,6 +266,7 @@ var view='today',openId=null,calM=new Date(),filt='all',q='',showLost=false;
 var $=function(s,r){return (r||document).querySelector(s)};
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
 var ICO={
+ stats:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>',
  today:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
  pipe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="10" rx="1.5"/><rect x="17" y="4" width="4" height="6" rx="1.5"/></svg>',
  wait:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/></svg>',
@@ -247,7 +278,7 @@ var ICO={
  r:'<svg viewBox="0 0 24 24" width="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>',
  s:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
 };
-var NAV=[['today','Today'],['pipe','Pipeline'],['wait','Waiting on'],['cal','Calendar'],['all','Customers']];
+var NAV=[['today','Today'],['pipe','Pipeline'],['wait','Waiting on'],['cal','Calendar'],['all','Customers'],['stats','Stats']];
 
 /* ---------- api ---------- */
 function api(method,path,body){
@@ -311,7 +342,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-v]')
 function render(){
  renderNav();
  var m=$('#main');
- m.innerHTML=({today:vToday,pipe:vPipe,wait:vWait,cal:vCal,all:vAll})[view]();
+ m.innerHTML=({today:vToday,pipe:vPipe,wait:vWait,cal:vCal,all:vAll,stats:vStats})[view]();
  bind();
 }
 function head(title,sub,extra){
@@ -340,6 +371,7 @@ function vToday(){
   tile(nw.length,'New inquiries','pipe')+tile(waiting.length,'Waiting on clients','wait')+tile(up.length,'Events in 30 days','cal')+tile(booked,'Events this year','all')+'</div>'+
  (dk.length?'<div class="sec"><h2>Double-booked</h2><div class="list">'+dk.map(function(k){return '<div class="row" style="cursor:default"><div class="grow"><b>'+fmt(k,true)+'</b><span>'+dbl[k].map(function(i){return esc(byId(i).name)}).join(' and ')+' are both booked</span></div></div>'}).join('')+'</div></div>':'')+
  (subs.length?'<div class="sec"><h2>Planning forms from couples</h2><div class="list">'+subs.map(function(x){return rowHtml(x.c,'<span style="color:var(--mu);font-size:13px">sent '+ago(x.p.submitted_at)+'</span>')}).join('')+'</div></div>':'')+
+ todayExtras()+
  '<div class="sec"><h2>New inquiries</h2><div class="list">'+(nw.length?nw.map(function(c){return rowHtml(c,'<span style="color:var(--mu2);font-size:12px">'+ago(c.created_at)+'</span>')}).join(''):'<div class="empty">No new inquiries</div>')+'</div></div>'+
  '<div class="sec"><h2>Due this week</h2><div class="list">'+(due.length?due.slice(0,8).map(function(x){return '<button class="row" data-open="'+x.c.id+'"><div class="av">'+esc(ini(x.c.name))+'</div><div class="grow"><b>'+esc(x.n.label)+'</b><span>'+esc(x.c.name)+'</span></div><span class="chip'+(days(x.n.due)<0?' w':'')+'">'+rel(x.n.due)+'</span></button>'}).join(''):'<div class="empty">Nothing due in the next 7 days</div>')+'</div></div>'+
  '<div class="sec"><h2>Next events</h2><div class="list">'+(up.length?up.map(function(c){return rowHtml(c,'<span style="color:var(--mu);font-size:13px">'+fmt(c.event_date)+' · '+rel(c.event_date)+'</span>')}).join(''):'<div class="empty">No booked events in the next 30 days</div>')+'</div></div>';
@@ -386,7 +418,7 @@ function vCal(){
 
 function vAll(){
  var list=D.contacts.filter(function(c){return (filt==='all'||c.stage===filt)&&match(c)});
- return head('Customers',D.contacts.length+' total',searchBox()+'<button class="btn ghost sm" id="csv">Export CSV</button>')+
+ return head('Customers',D.contacts.length+' total',searchBox()+'<button class="btn ghost sm" id="csv">Export CSV</button><button class="btn ghost sm" id="bkp">Backup</button>')+
  '<div class="filters">'+['all'].concat(ST).map(function(s){return '<button class="pill'+(filt===s?' on':'')+'" data-f="'+s+'">'+(s==='all'?'All':STL[s])+'</button>'}).join('')+'</div>'+
  (list.length?'<div class="tw"><table class="tbl"><thead><tr><th>Name</th><th>Service</th><th>Event</th><th>Paid</th><th class="hm">Checklist</th><th>Stage</th></tr></thead><tbody>'+list.map(function(c){var p=prog(c.id);return '<tr class="r" data-open="'+c.id+'"><td><b>'+esc(c.name)+'</b><div style="color:var(--mu);font-size:13px">'+esc(c.email||'')+'</div></td><td>'+esc(c.service||'')+'</td><td>'+(c.event_date?fmt(c.event_date):'')+'</td><td>'+(c.paid?'<span class="chip w">Paid</span>':'')+'</td><td class="hm">'+(p.t?p.d+'/'+p.t:'')+'</td><td><span class="chip">'+STL[c.stage]+'</span></td></tr>'}).join('')+'</tbody></table></div>':'<div class="empty">No customers match</div>');
 }
@@ -416,6 +448,10 @@ document.addEventListener('click',function(e){
  if(n){e.stopPropagation();nudge(n.dataset.nudge);return}
  var pd_=e.target.closest('[data-paid]');if(pd_){togglePaid(pd_.dataset.paid);return}
  var pb=e.target.closest('[data-plan]');if(pb){openPlan(pb.dataset.plan);return}
+ var mg=e.target.closest('[data-msg]');if(mg){openMsg(mg.dataset.msg);return}
+ var sh=e.target.closest('[data-sheet]');if(sh){openSheet(sh.dataset.sheet);return}
+ var ph=e.target.closest('[data-photo]');if(ph){togglePhoto(ph.dataset.photo);return}
+ var bk=e.target.closest('#bkp');if(bk){backup();return}
  var ml=e.target.closest('[data-mklink]');if(ml){mkLink(ml.dataset.mklink);return}
  var cl=e.target.closest('[data-copylink]');if(cl){copyLink(cl.dataset.copylink);return}
  var ma=e.target.closest('[data-maillink]');if(ma){mailLink(ma.dataset.maillink);return}
@@ -455,10 +491,10 @@ function drawerRefresh(force){
  d.innerHTML=
  '<div class="dh"><input class="nm h" id="f_name" value="'+esc(c.name)+'" aria-label="Name"><button class="ib" id="dx" aria-label="Close">'+ICO.x+'</button></div>'+
  '<div class="stages">'+ST.map(function(s){return '<button class="pill'+(c.stage===s?' on':'')+'" data-st="'+s+'">'+STL[s]+'</button>'}).join('')+'</div>'+
- '<div class="acts"><button class="pill'+(c.paid?' on':'')+'" data-paid="'+c.id+'">'+(c.paid?'Paid \u2713':'Not paid')+'</button>'+(c.email?'<a class="btn ghost sm" href="mailto:'+esc(c.email)+'">Email</a>':'')+(c.phone?'<a class="btn ghost sm" href="tel:'+esc(c.phone.replace(/[^\d+]/g,''))+'">Call</a>':'')+(c.email&&p.t-p.d?'<button class="btn ghost sm" data-nudge="'+c.id+'">Email what I still need</button>':'')+'</div>'+
+ '<div class="acts"><button class="pill'+(c.paid?' on':'')+'" data-paid="'+c.id+'">'+(c.paid?'Paid \u2713':'Not paid')+'</button>'+(c.email?'<a class="btn ghost sm" href="mailto:'+esc(c.email)+'">Email</a>':'')+(c.phone?'<a class="btn ghost sm" href="tel:'+esc(c.phone.replace(/[^\d+]/g,''))+'">Call</a>':'')+'<button class="btn ghost sm" data-msg="'+c.id+'">Message</button>'+(c.event_date?'<button class="btn ghost sm" data-sheet="'+c.id+'">Event sheet</button>':'')+'<button class="pill'+(planOf(c.id).photo_ok==='yes'?' on':'')+'" data-photo="'+c.id+'">'+(planOf(c.id).photo_ok==='yes'?'Photos OK \u2713':'Photos OK?')+'</button>'+(c.email&&p.t-p.d?'<button class="btn ghost sm" data-nudge="'+c.id+'">Email what I still need</button>':'')+'</div>'+
  '<div class="fields">'+
   df('Email','email',c.email,'email')+df('Phone','phone',c.phone,'tel')+
-  '<div><label>Service</label><select class="in" id="f_service"><option value="">None</option>'+SERV.concat(c.service&&SERV.indexOf(c.service)<0?[c.service]:[]).map(function(s){return '<option'+(s===c.service?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></div>'+df('Event date','event_date',c.event_date,'date')+
+  '<div><label>Service</label><select class="in" id="f_service"><option value="">None</option>'+SERV.concat(c.service&&SERV.indexOf(c.service)<0?[c.service]:[]).map(function(s){return '<option'+(s===c.service?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></div>'+'<div><label>Lead source</label><select class="in" id="f_source"><option value="">Unknown</option>'+SRC.concat(c.source&&SRC.indexOf(c.source)<0?[c.source]:[]).map(function(x){return '<option value="'+esc(x)+'"'+(x===c.source?' selected':'')+'>'+esc(cap(x))+'</option>'}).join('')+'</select></div>'+df('Event date','event_date',c.event_date,'date')+
   df('Venue','venue',c.venue,'text')+df('Quote ($)','value',c.value==null?'':c.value,'number')+
   '<div class="full"><label>What they sent</label><textarea class="in" id="f_message">'+esc(c.message)+'</textarea></div></div>'+
  (/wedding|event/i.test(c.service||'')?'<button class="planlink" data-plan="'+c.id+'"><div class="grow"><b>'+(/wedding/i.test(c.service)?'Wedding planning form':'Event planning form')+'</b><span>'+planPct(c)+'% filled out</span></div><div style="width:80px"><div class="bar"><i style="width:'+planPct(c)+'%"></i></div></div><span class="chip w">Open</span></button>'+linkBlock(c):'')+
@@ -471,7 +507,7 @@ function drawerRefresh(force){
  d.scrollTop=st;
  $('#dx').onclick=closeDrawer;
  function save(k,v){var cc=byId(c.id);if((cc[k]||'')===v)return;cc[k]=v;var b={};b[k]=v;api('PATCH','contacts/'+c.id,b).then(function(){if(k==='event_date'||k==='service'||k==='name')load()}).catch(function(e){toast(e.message)})}
- ['name','email','phone','venue','event_date','message','service','value'].forEach(function(k){var el=$('#f_'+k);if(el)el.addEventListener('change',function(){if(k==='name'&&!el.value.trim()){el.value=c.name;return}save(k,el.value.trim?el.value.trim():el.value)})});
+ ['name','email','phone','venue','event_date','message','service','value','source'].forEach(function(k){var el=$('#f_'+k);if(el)el.addEventListener('change',function(){if(k==='name'&&!el.value.trim()){el.value=c.name;return}save(k,el.value.trim?el.value.trim():el.value)})});
  d.querySelectorAll('[data-st]').forEach(function(b){b.onclick=function(){setStage(c.id,b.dataset.st)}});
  d.querySelectorAll('[data-due]').forEach(function(i){i.onchange=function(){api('PATCH','needs/'+i.dataset.due,{due:i.value}).then(load).catch(function(e){toast(e.message)})}});
  d.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){api('DELETE','needs/'+b.dataset.del).then(load)}});
@@ -492,7 +528,7 @@ function nudge(id){
  api('POST','contacts/'+id+'/notes',{text:'Opened a reminder email for: '+o.map(function(n){return n.label}).join(', ')}).then(load);
 }
 function exportCsv(){
- var rows=[['Name','Email','Phone','Service','Event date','Venue','Quote','Paid','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,c.value,c.paid?'Yes':'No',STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
+ var rows=[['Name','Email','Phone','Service','Event date','Venue','Source','Quote','Paid','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,c.source,c.value,c.paid?'Yes':'No',STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
  var t=rows.map(function(r){return r.map(function(v){v=String(v==null?'':v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(',')}).join('\n');
  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='devo-customers.csv';a.click();
 }
@@ -546,6 +582,122 @@ function mailLink(id){var c=byId(id),r=planRow(id);if(!c||!r||!r.token)return;va
  location.href='mailto:'+encodeURIComponent(c.email).replace('%40','@')+'?subject='+encodeURIComponent('Your Devo Productions planning form')+'&body='+encodeURIComponent(body);
  api('POST','contacts/'+id+'/notes',{text:'Opened an email with the planning form link.'}).then(load)}
 function offLink(id){if(!confirm('Turn off the couple link? The old link will stop working.'))return;api('POST','contacts/'+id+'/plan-link',{revoke:true}).then(load).then(function(){toast('Link turned off');drawerRefresh(true)}).catch(function(e){toast(e.message)})}
+
+/* ---------- extras: messages, sheet, stats, backup ---------- */
+var CAL_URL='https://calendly.com/devoproductionsllc/30min';
+function skey(s){s=(s||'').toLowerCase();if(s.indexOf('wedding')>-1)return 'wedding';if(s.indexOf('church')>-1)return 'church';if(s.indexOf('training')>-1)return 'training';if(s.indexOf('party')>-1||s.indexOf('event')>-1)return 'event';return 'other'}
+function firstName(c){return ((c.name||'').split(/\s*(?:&|\band\b)\s*/i)[0]||'').trim().split(/\s+/)[0]||'there'}
+function fmtT(t){var m=/^(\d{1,2}):(\d{2})$/.exec(t||'');if(!m)return t||'';var h=+m[1],ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m[2]+' '+ap}
+function lastTouch(c){var t=new Date(c.updated_at||c.created_at).getTime();D.notes.forEach(function(n){if(n.contact_id===c.id){var x=new Date(n.created_at).getTime();if(x>t)t=x}});return t}
+function quietDays(c){return Math.floor((Date.now()-lastTouch(c))/864e5)}
+function reviewLink(ask){var v='';try{v=localStorage.getItem('devo_review_link')||''}catch(e){}if(!v&&ask){v=(window.prompt('Paste your Google review link (saved on this device):')||'').trim();if(v){try{localStorage.setItem('devo_review_link',v)}catch(e){}}}return v}
+function templates(c){
+ var f=firstName(c),dt=c.event_date?fmt(c.event_date,true):'',ev=dt?'your event on '+dt:'your event',r=planRow(c.id),sig='\n\nCade\nDevo Productions',p=planOf(c.id);
+ var T=[
+  {k:'thanks',l:'Thanks for reaching out',s:'Thanks for reaching out to Devo Productions',b:'Hi '+f+',\n\nThanks for reaching out about '+ev+'. I would love to help. The easiest next step is a quick call so I can hear what you have in mind. Grab a time that works for you here:\n\n'+CAL_URL+'\n\nIf you would rather email back and forth, that works too.'+sig},
+  {k:'quote',l:'Quote follow-up',s:'Following up on your quote',b:'Hi '+f+',\n\nJust checking in on the quote for '+ev+'. Happy to answer any questions or adjust anything. If you are ready to move forward, reply here and I will get your date locked in.'+sig},
+  {k:'meet',l:'Book a planning meeting',s:'Let us set up your planning meeting',b:'Hi '+f+',\n\nLet us set up a planning meeting for '+ev+'. Pick a time that works for you here:\n\n'+CAL_URL+sig}
+ ];
+ if(r&&r.token)T.push({k:'plan',l:'Planning form link',s:'Your Devo Productions planning form',b:'Hi '+f+',\n\nHere is your private planning form for '+ev+'. It works great on a phone. Fill out what you know, skip what you do not, and come back anytime. It saves as you go.\n\n'+planUrl(r.token)+sig});
+ T.push({k:'pay',l:'Final payment reminder',s:'A quick reminder before '+(dt||'your event'),b:'Hi '+f+',\n\nA quick reminder about the final payment for '+ev+'. Let me know if you have any questions.'+sig});
+ T.push({k:'dayb',l:'Day-before check-in',s:'Looking forward to tomorrow',b:'Hi '+f+',\n\nLooking forward to '+(dt?'tomorrow ('+dt+')':'the event')+(c.venue?' at '+c.venue:'')+'. I plan to arrive'+(p.setup_time?' around '+fmtT(p.setup_time):' at the time we discussed')+' to get set up. Is there anything that has changed, or anyone I should know to find when I get there?'+sig});
+ T.push({k:'review',l:'Ask for a review',s:'Thank you from Devo Productions',b:'Hi '+f+',\n\nThank you again for having me be part of '+ev+'. It was a pleasure. If you have a minute, a quick review would mean a lot to a small business like mine:\n\n[REVIEW LINK]\n\nThanks again, and congratulations!'+sig.replace('\n\nCade','\n\nCade')});
+ return T;
+}
+function openMsg(id,pick){
+ var c=byId(id);if(!c)return;var T=templates(c),cur=T[0];
+ var m=document.getElementById('msgm');if(!m){m=document.createElement('div');m.id='msgm';document.body.appendChild(m)}
+ function draw(){
+  m.innerHTML='<div class="mbox"><div class="mh"><b>Message '+esc(firstName(c))+'</b><button class="ib" id="mx" aria-label="Close">'+ICO.x+'</button></div><div class="mt">'+T.map(function(t){return '<button class="pill'+(t.k===cur.k?' on':'')+'" data-mt="'+t.k+'">'+esc(t.l)+'</button>'}).join('')+'</div><textarea class="in" id="mb" rows="10">'+esc(cur.b)+'</textarea><div class="ma"><button class="btn sm" id="mem"'+(c.email?'':' disabled')+'>Email</button><button class="btn ghost sm" id="mtx"'+(c.phone?'':' disabled')+'>Text</button><button class="btn ghost sm" id="mcp">Copy</button></div>'+(c.email||c.phone?'':'<div class="mn">Add an email or phone to send directly.</div>')+'</div>';
+  m.classList.add('on');
+  m.querySelector('#mx').onclick=function(){m.classList.remove('on')};
+  m.onclick=function(e){if(e.target===m)m.classList.remove('on')};
+  m.querySelectorAll('[data-mt]').forEach(function(b){b.onclick=function(){cur=T.filter(function(t){return t.k===b.dataset.mt})[0];draw()}});
+  function body(){var b=m.querySelector('#mb').value;if(cur.k==='review'){var l=reviewLink(true);b=b.replace('[REVIEW LINK]',l||'[REVIEW LINK]')}return b}
+  function logIt(w){api('POST','contacts/'+c.id+'/notes',{text:(cur.k==='review'?'Opened a review request '+w:'Opened a message ('+cur.l.toLowerCase()+') '+w)}).then(load)}
+  m.querySelector('#mem').onclick=function(){var b=body();location.href='mailto:'+encodeURIComponent(c.email).replace('%40','@')+'?subject='+encodeURIComponent(cur.s)+'&body='+encodeURIComponent(b);logIt('by email.')};
+  m.querySelector('#mtx').onclick=function(){var b=body().replace(/\n\nCade\nDevo Productions$/,'\n- Cade, Devo Productions');location.href='sms:'+c.phone.replace(/[^\d+]/g,'')+'?&body='+encodeURIComponent(b);logIt('by text.')};
+  m.querySelector('#mcp').onclick=function(){var b=body();(navigator.clipboard?navigator.clipboard.writeText(b):Promise.reject()).then(function(){toast('Copied')}).catch(function(){})};
+ }
+ if(pick){cur=T.filter(function(t){return t.k===pick})[0]||T[0]}
+ draw();
+}
+
+var GEAR={
+ wedding:['Main speakers','Subwoofer','Speaker stands','DJ controller and laptop','Backup laptop or phone playlist','Wireless mic for ceremony','Wireless mic for toasts','Lights and stands','Power strips and extension cords','Cables and adapters','Gaffer tape','DJ table and cloth','Cart or dolly','Business cards'],
+ event:['Main speakers','Subwoofer','Speaker stands','DJ controller and laptop','Backup laptop or phone playlist','Wireless mics','Lights and stands','Power strips and extension cords','Cables and adapters','Gaffer tape','DJ table','Cart or dolly'],
+ church:['Laptop and audio interface','XLR and instrument cables','Adapters and DI boxes','Measurement mic','Tools','Walkthrough notes','Proposal copy','Camera for room photos'],
+ training:['Laptop','Demo mics and cables','Handouts','Sign-in sheet','Phone charger and power strip'],
+ other:['Laptop','Cables and adapters','Power strips']
+};
+function lst(p,k){try{var a=JSON.parse(p[k]||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function songLine(p,k){return [p[k+'_t'],p[k+'_a']].filter(Boolean).join(' - ')}
+function partyLine(p,k){var n=p[k+'_n'],s=[p[k+'_t'],p[k+'_a']].filter(Boolean).join(' - ');return [n,s].filter(Boolean).join(' · ')}
+function personLine(p,k){return [p[k+'_n'],p[k+'_p']].filter(Boolean).join(' · ')}
+function sheetHTML(c){
+ var p=planOf(c.id),ven=[p.venue1||c.venue,p.venue2].filter(Boolean).join(' → ');
+ var TL=[['setup_time','DJ set-up',''],['cer_time','Ceremony',[songLine(p,'pro')&&'Processional: '+songLine(p,'pro'),songLine(p,'ent')&&'Bride entrance: '+songLine(p,'ent'),songLine(p,'rec')&&'Recessional: '+songLine(p,'rec')].filter(Boolean).join('\n')],
+  ['cocktail_time','Cocktail hour',[p.cocktail_len,p.cocktail_loc].filter(Boolean).join(' · ')],['intro_time','Grand entrance',p.welcome_by?'Welcome by '+p.welcome_by:''],
+  ['dinner_time','Dinner',[p.dinner_style,p.blessing&&'Blessing: '+p.blessing].filter(Boolean).join(' · ')],['cake_time','Cake cutting',songLine(p,'cake')],['so_time','Send-off',[p.so_style,p.so_loc,songLine(p,'so')].filter(Boolean).join(' · ')]]
+  .filter(function(r){return p[r[0]]}).sort(function(a,b){return p[a[0]]<p[b[0]]?-1:1});
+ function sec(t,rows){rows=rows.filter(function(r){return r[1]});return rows.length?'<div class="sh"><h3>'+esc(t)+'</h3>'+rows.map(function(r){return '<div class="sr"><span>'+esc(r[0])+'</span><div>'+esc(r[1])+'</div></div>'}).join('')+'</div>':''}
+ function songs(k){return lst(p,k).map(function(r,i){return (i+1)+'. '+[r.t,r.a].filter(Boolean).join(' - ')}).join('\n')}
+ var trads=[['bouquet','Bouquet toss'],['garter','Garter toss'],['dollar','Dollar dance'],['cultural','Cultural'],['games','Games'],['other','Other']].map(function(t){var on=p['t_'+t[0]+'_on'];return on||p['t_'+t[0]+'_d']?[t[1],[on==='yes'?'Yes':on==='no'?'No':'',p['t_'+t[0]+'_d']].filter(Boolean).join(' · ')]:['','']});
+ var gear=GEAR[skey(c.service)]||GEAR.other,done=lst(p,'gear_list');
+ var h='<div class="shi"><div class="shbar"><button class="ib" id="shx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>Event sheet</b></div><button class="btn ghost sm" id="shp">Print / PDF</button></div>'+
+ '<h1 class="h shn">'+esc(c.name)+'</h1><div class="shm">'+[c.event_date&&fmt(c.event_date,true),c.service,p.guests&&p.guests+' guests'].filter(Boolean).map(function(x){return '<i>'+esc(x)+'</i>'}).join('')+'</div>'+
+ sec('Where',[['Venue',ven],['Phone',c.phone],['Email',c.email]])+
+ (TL.length?'<div class="sh"><h3>Timeline</h3>'+TL.map(function(r){return '<div class="sr tl"><span>'+esc(fmtT(p[r[0]]))+'</span><div><b>'+esc(r[1])+'</b>'+(r[2]?'<div class="sd">'+esc(r[2])+'</div>':'')+'</div></div>'}).join('')+'</div>':'<div class="sh"><h3>Timeline</h3><div class="sr"><div style="color:var(--mu2)">No times filled in yet.</div></div></div>')+
+ sec('People',[['Couple',p.couple_phone],['Day-of contact',personLine(p,'dayof')],['Officiant',personLine(p,'officiant')],['Photo / video',personLine(p,'photovideo')]])+
+ sec('Ceremony',[['Prelude',p.prelude],['Music / readings',p.readings],['Mics and audio',p.cer_mics],['Weather plan',p.weather]])+
+ sec('Introductions',[['Parents / family',partyLine(p,'intro_parents')],['Ring bearer / flower girl',partyLine(p,'intro_ring')],['Wedding party',partyLine(p,'intro_party')],['Best man / MOH',partyLine(p,'intro_honor')],['Bride and groom',partyLine(p,'intro_bg')]])+
+ sec('Toasts and dinner',[['Best man',p.toast_bm],['Maid of honor',p.toast_moh],['More speakers',p.toast_more],['Thank-you',p.thanks],['Dismissal',p.dismissal],['Allergies',p.allergies],['Announcements',[p.cocktail_ann,p.dinner_ann].filter(Boolean).join('\n')]])+
+ sec('Dances',[['First dance',songLine(p,'dance_bg')],['Parent dance',partyLine(p,'dance_p1')],['Parent dance 2',partyLine(p,'dance_p2')],['Another dance',partyLine(p,'dance_x')],['Dessert',p.dessert]])+
+ sec('Traditions',trads)+
+ sec('Music',[['Crowd',p.genres],['Clean only?',p.clean],['Group dances',p.group_ok],['Vibe',p.vibe],['Last song',songLine(p,'last')],['Playlist',p.playlist_link],['Cocktail music',songs('cocktail_list')],['Dinner music',songs('dinner_list')],['Must play',songs('must_list')],['Do NOT play',songs('dont_list')]])+
+ sec('Notes',[['Notes',p.notes],['Their message',c.message]])+
+ '<div class="sh noprint"><h3>Gear and load-in</h3>'+gear.map(function(g,i){return '<label class="gr"><input type="checkbox" data-gear="'+esc(g)+'"'+(done.indexOf(g)>-1?' checked':'')+'><span>'+esc(g)+'</span></label>'}).join('')+'</div></div>';
+ return h;
+}
+function openSheet(id){
+ var c=byId(id);if(!c)return;
+ var s=document.getElementById('sheet');if(!s){s=document.createElement('div');s.id='sheet';document.body.appendChild(s)}
+ s.innerHTML=sheetHTML(c);s.classList.add('on');s.scrollTop=0;closeDrawerSoft();
+ s.querySelector('#shx').onclick=function(){s.classList.remove('on');openDrawer(id)};
+ s.querySelector('#shp').onclick=function(){window.print()};
+ s.querySelectorAll('[data-gear]').forEach(function(b){b.onchange=function(){var p=planOf(id),a=lst(p,'gear_list'),g=b.dataset.gear,i=a.indexOf(g);if(b.checked&&i<0)a.push(g);if(!b.checked&&i>-1)a.splice(i,1);var v=a.length?JSON.stringify(a):'';var row=planRow(id);if(!row){row={contact_id:id,data:'{}'};D.plans.push(row)}var o=planOf(id);if(v)o.gear_list=v;else delete o.gear_list;row.data=JSON.stringify(o);api('PATCH','contacts/'+id+'/plan',{data:{gear_list:v}}).catch(function(e){toast(e.message)})}});
+}
+function togglePhoto(id){var p=planOf(id),v=p.photo_ok==='yes'?'':'yes';var row=planRow(id);if(!row){row={contact_id:id,data:'{}'};D.plans.push(row)}var o=planOf(id);if(v)o.photo_ok=v;else delete o.photo_ok;row.data=JSON.stringify(o);drawerRefresh(true);api('PATCH','contacts/'+id+'/plan',{data:{photo_ok:v}}).catch(function(e){toast(e.message);load()})}
+
+var SRC=['website','instagram','facebook','referral','calendly','repeat client','other'];
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'Unknown'}
+function bookedAt(c){var t=null;D.notes.forEach(function(n){if(n.contact_id===c.id&&/→ booked$/.test(n.text||'')){var x=new Date(n.created_at).getTime();if(t===null||x<t)t=x}});return t}
+function vStats(){
+ var yr=Date.now()-365*864e5,rec=D.contacts.filter(function(c){return new Date(c.created_at).getTime()>=yr});
+ var won=rec.filter(function(c){return ['booked','planning','done'].indexOf(c.stage)>-1}),lost=rec.filter(function(c){return c.stage==='lost'}).length;
+ var gaps=[];won.forEach(function(c){var b=bookedAt(c);if(b){var d=(b-new Date(c.created_at).getTime())/864e5;if(d>=0)gaps.push(d)}});
+ var avg=gaps.length?Math.round(gaps.reduce(function(a,b){return a+b},0)/gaps.length):null;
+ var by={};rec.forEach(function(c){var s=c.source||'unknown';var o=by[s]=by[s]||{n:0,w:0};o.n++;if(['booked','planning','done'].indexOf(c.stage)>-1)o.w++});
+ var mo=[];for(var i=5;i>=0;i--){var d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);var k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');mo.push({k:k,l:d.toLocaleDateString('en-US',{month:'short'}),n:D.contacts.filter(function(c){return (c.created_at||'').slice(0,7)===k}).length})}
+ var mx=Math.max.apply(null,mo.map(function(x){return x.n}).concat([1]));
+ var nowD=new Date(),nm=(nowD.getMonth()+1)%12+1;
+ var ann=D.contacts.filter(function(c){if(!c.event_date||c.stage==='lost')return false;var y=+c.event_date.slice(0,4),m=+c.event_date.slice(5,7);return y<nowD.getFullYear()&&(m===nowD.getMonth()+1||m===nm)}).sort(function(a,b){return a.event_date.slice(5)<b.event_date.slice(5)?-1:1});
+ var past=D.contacts.filter(function(c){return c.stage==='done'}).length;
+ return head('Stats','Last 12 months',searchBox().replace(/.*/,'')+'<button class="btn ghost sm" id="bkp">Download backup</button>')+
+ '<div class="tiles">'+tile(rec.length,'Inquiries','all')+tile(won.length,'Booked','all')+tile(rec.length?Math.round(won.length/rec.length*100)+'%':'-','Booked rate','all')+tile(avg===null?'-':avg+'d','Avg days to book','all')+'</div>'+
+ '<div class="sec"><h2>Inquiries by month</h2><div class="bars">'+mo.map(function(x){return '<div class="bc"><div class="bv" style="height:'+Math.round(x.n/mx*100)+'%"><em>'+x.n+'</em></div><span>'+x.l+'</span></div>'}).join('')+'</div></div>'+
+ '<div class="sec"><h2>Where leads come from</h2><div class="list">'+(Object.keys(by).length?Object.keys(by).sort(function(a,b){return by[b].n-by[a].n}).map(function(s){return '<div class="row" style="cursor:default"><div class="grow"><b>'+esc(cap(s))+'</b><span>'+by[s].w+' booked</span></div><span class="chip">'+by[s].n+(by[s].n===1?' inquiry':' inquiries')+'</span></div>'}).join(''):'<div class="empty">No data yet</div>')+'</div></div>'+
+ '<div class="sec"><h2>Anniversaries this month and next</h2><div class="list">'+(ann.length?ann.map(function(c){return rowHtml(c,'<span style="color:var(--mu);font-size:13px">'+fmt(c.event_date.slice(0,4)===''?c.event_date:(nowD.getFullYear()+c.event_date.slice(4)))+' · '+(nowD.getFullYear()-(+c.event_date.slice(0,4)))+' yr</span>')}).join(''):'<div class="empty">None coming up</div>')+'</div></div>'+
+ '<div class="sec"><h2>Past clients</h2><div class="empty" style="border-style:solid">'+past+' completed events on file. Lost leads: '+lost+'.</div></div>';
+}
+function backup(){var o={exported:new Date().toISOString(),contacts:D.contacts,needs:D.needs,notes:D.notes,plans:D.plans.map(function(p){return {contact_id:p.contact_id,data:p.data,submitted_at:p.submitted_at,updated_at:p.updated_at}})};
+ var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:'application/json'}));a.download='devo-crm-backup-'+iso(new Date())+'.json';a.click();toast('Backup downloaded')}
+function todayExtras(){
+ var fu=D.contacts.filter(function(c){return ['new','contacted','quoted'].indexOf(c.stage)>-1&&quietDays(c)>=3}).sort(function(a,b){return lastTouch(a)-lastTouch(b)});
+ var rv=D.contacts.filter(function(c){var d=days(c.event_date);return d!==null&&d<0&&d>=-21&&c.stage!=='lost'&&['booked','planning','done'].indexOf(c.stage)>-1&&!D.notes.some(function(n){return n.contact_id===c.id&&/^Opened a review request/.test(n.text||'')})});
+ return (fu.length?'<div class="sec"><h2>Follow up</h2><div class="list">'+fu.map(function(c){return rowHtml(c,'<span style="color:var(--mu);font-size:13px">'+quietDays(c)+'d quiet</span>')}).join('')+'</div></div>':'')+
+  (rv.length?'<div class="sec"><h2>Ask for a review</h2><div class="list">'+rv.map(function(c){return rowHtml(c,'<span style="color:var(--mu);font-size:13px">'+fmt(c.event_date)+'</span>')}).join('')+'</div></div>':'');
+}
 
 /* ---------- keys & refresh ---------- */
 document.addEventListener('keydown',function(e){

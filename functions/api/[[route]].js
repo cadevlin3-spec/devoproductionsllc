@@ -7,7 +7,7 @@ const SESSION_DAYS = 30;
 const TEMPLATES = {
   wedding: ['Deposit', 'Wedding planning form', 'Ceremony and reception timeline', 'Must-play and do-not-play lists', 'Special dances and announcements', 'Venue contact and load-in details', 'Planning meeting 1', 'Planning meeting 2', 'Final headcount', 'Final payment'],
   event: ['Deposit', 'Event timeline', 'Music preferences', 'Venue contact and load-in details', 'Planning meeting', 'Final payment'],
-  church: ['Walkthrough scheduled', 'Room details and current equipment', 'Budget range', 'Key contact', 'Proposal sent'],
+  church: ['Walkthrough scheduled', 'Room details and current equipment', 'Budget range', 'Key contact', 'Proposal sent', 'Install date set', 'Training session scheduled'],
   training: ['Date and time', 'Who is attending', 'Board and equipment details', 'Topics wanted', 'Payment'],
   other: ['Follow up call', 'Details confirmed'],
 };
@@ -150,7 +150,7 @@ async function reconcileNeeds(db, contactId, plan) {
   return hit;
 }
 
-const CONTACT_FIELDS = { name: 120, email: 160, phone: 40, service: 60, event_date: 20, venue: 200, message: 4000 };
+const CONTACT_FIELDS = { name: 120, email: 160, phone: 40, service: 60, event_date: 20, venue: 200, message: 4000, source: 40 };
 
 export async function onRequest({ request, env, params }) {
   const db = env.DB;
