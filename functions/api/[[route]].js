@@ -5,8 +5,8 @@ const COOKIE = 'devo_crm';
 const SESSION_DAYS = 30;
 
 const TEMPLATES = {
-  wedding: ['Deposit', 'Signed agreement', 'Wedding planning form', 'Ceremony and reception timeline', 'Must-play and do-not-play lists', 'Special dances and announcements', 'Venue contact and load-in details', 'Planning meeting 1', 'Planning meeting 2', 'Final headcount', 'Final payment'],
-  event: ['Deposit', 'Signed agreement', 'Event timeline', 'Music preferences', 'Venue contact and load-in details', 'Planning meeting', 'Final payment'],
+  wedding: ['Deposit', 'Wedding planning form', 'Ceremony and reception timeline', 'Must-play and do-not-play lists', 'Special dances and announcements', 'Venue contact and load-in details', 'Planning meeting 1', 'Planning meeting 2', 'Final headcount', 'Final payment'],
+  event: ['Deposit', 'Event timeline', 'Music preferences', 'Venue contact and load-in details', 'Planning meeting', 'Final payment'],
   church: ['Walkthrough scheduled', 'Room details and current equipment', 'Budget range', 'Key contact', 'Proposal sent'],
   training: ['Date and time', 'Who is attending', 'Board and equipment details', 'Topics wanted', 'Payment'],
   other: ['Follow up call', 'Details confirmed'],
