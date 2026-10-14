@@ -273,7 +273,7 @@ var NAV=[['today','Today'],['pipe','Pipeline'],['wait','Waiting on'],['cal','Cal
 
 /* ---------- api ---------- */
 function api(method,path,body){
- return fetch('/api/'+path,{method:method,credentials:'same-origin',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined}).then(function(r){
+ return fetch('/api/'+path,{method:method,credentials:'same-origin',headers:method==='GET'?{}:{'Content-Type':'application/json'},body:method==='GET'?undefined:JSON.stringify(body||{})}).then(function(r){
   return r.json().catch(function(){return {}}).then(function(j){
    if(r.status===401&&path.indexOf('auth/')!==0){showAuth(false);throw new Error('auth')}
    if(!r.ok)throw new Error(j.error||'Something went wrong');return j;});
