@@ -1,259 +1,201 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Devo Productions | Mobile DJ, Weddings & Events, Church Sound</title>
-<meta name="description" content="Mobile DJ & MC for weddings and events, plus church sound consulting and volunteer training. Better sound without breaking the budget.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devo Productions | Mobile DJ, MC and Church Sound in Williamsport, PA</title>
+<meta name="description" content="Mobile DJ and MC for weddings and parties, plus church sound help and volunteer training. Based in Williamsport, PA.">
+<meta name="theme-color" content="#050505">
 <link rel="canonical" href="https://devoproductionsllc.com/">
-<meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link rel="icon" type="image/png" href="/favicon-512.png">
-<link rel="apple-touch-icon" href="/favicon-512.png">
-<meta property="og:site_name" content="Devo Productions">
-<meta property="og:title" content="Devo Productions | Mobile DJ, Weddings & Events, Church Sound">
-<meta property="og:description" content="Mobile DJ & MC for weddings and events, plus church sound consulting and volunteer training. Better sound without breaking the budget.">
-<meta property="og:image" content="https://devoproductionsllc.com/img/img_1791.jpg">
-<meta property="og:url" content="https://devoproductionsllc.com/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Devo Productions">
+<meta property="og:title" content="Devo Productions | Mobile DJ, MC and Church Sound in Williamsport, PA">
+<meta property="og:description" content="Mobile DJ and MC for weddings and parties, plus church sound help and volunteer training. Based in Williamsport, PA.">
+<meta property="og:url" content="https://devoproductionsllc.com/">
+<meta property="og:image" content="https://devoproductionsllc.com/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/site.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  .hero{position:relative;min-height:calc(100vh - var(--nav-h));min-height:calc(100svh - var(--nav-h));display:flex;align-items:flex-end;color:#fff;overflow:hidden;background:#000}
-  .hero .bg{position:absolute;inset:0;background:url('/img/img_1791.jpg') center 40%/cover no-repeat;filter:grayscale(100%) contrast(1.08);animation:slowzoom 18s var(--ease) forwards}
-  @keyframes slowzoom{from{transform:scale(1.12)}to{transform:scale(1)}}
-  .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.55) 45%,rgba(0,0,0,.92) 100%)}
-  .hero .wrap{position:relative;z-index:2;width:100%;padding-top:80px;padding-bottom:56px}
-  .hero .eyebrow{display:inline-flex;align-items:center;gap:12px;font-family:'Oswald',sans-serif;letter-spacing:6px;font-size:13px;text-transform:uppercase;color:#d6d6d6;margin-bottom:22px}
-  .hero .eyebrow::before{content:"";width:34px;height:2px;background:var(--accent)}
-  .hero h1{font-size:clamp(50px,9vw,120px);margin-bottom:22px;max-width:980px}
-  .hero h1 span{color:var(--accent)}
-  .hero .lead{font-size:clamp(17px,2.2vw,21px);font-weight:300;max-width:600px;color:#e6e6e6;margin-bottom:36px}
-  .hero-cta{display:flex;gap:14px;flex-wrap:wrap}
-  .pillars{display:grid;grid-template-columns:repeat(3,1fr);margin-top:64px;border-top:1px solid rgba(255,255,255,.18)}
-  .pillars a{padding:22px 22px 4px 0;display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:'Oswald',sans-serif;text-transform:uppercase;letter-spacing:2px;font-size:15px;color:#cfcfcf;transition:color .2s}
-  .pillars a+a{padding-left:22px;border-left:1px solid rgba(255,255,255,.18)}
-  .pillars a:hover{color:#fff}
-  .pillars a:hover .arr{color:var(--accent);transform:translateX(4px)}
-  .pillars .arr{transition:.2s}
-  .pillars small{display:block;font-family:'Inter';text-transform:none;letter-spacing:0;font-size:13px;color:#9a9a9a;margin-top:2px}
 
-  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-  .svc{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);background:#fff;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
-  .svc:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(0,0,0,.10)}
-  .svc .ph{aspect-ratio:4/3;overflow:hidden;background:#111}
-  .svc .ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:filter .5s,transform .6s var(--ease)}
-  .svc:hover .ph img{filter:grayscale(0);transform:scale(1.05)}
-  .svc .body{padding:30px 28px 32px;display:flex;flex-direction:column;flex:1}
-  .svc .num{font-family:'Oswald';color:var(--accent);letter-spacing:2px;font-size:14px;margin-bottom:10px}
-  .svc h3{font-size:25px;margin-bottom:12px}
-  .svc p{color:var(--gray);font-size:15.5px;flex:1}
-  .svc .text-link{margin-top:22px;align-self:flex-start}
+body{margin:0;background:#050505}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.75}
+h1,h2,h3{font-family:'Archivo','Inter',system-ui,sans-serif;font-stretch:112%;font-weight:800!important}
+[style*="font-family:'Archivo'"]{font-stretch:112%}
+@supports (animation-timeline: view()){.reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 45%}}
+@keyframes drift{from{transform:translateX(-140px)}to{transform:translateX(140px)}}
+@keyframes breathe{from{opacity:.55;transform:scale(1)}to{opacity:1;transform:scale(1.06)}}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important}}
+@keyframes kb{from{transform:scale(1.04) translate3d(-1.5%,0,0)}to{transform:scale(1.24) translate3d(1.8%,-2.5%,0)}}
+@keyframes sweep{from{transform:translateX(-60%)}to{transform:translateX(60%)}}
+@keyframes px{to{transform:translateY(140px)}}
+@supports (animation-timeline: scroll()){.px{animation:px linear both;animation-timeline:scroll(root);animation-range:0 900px}}
+@media (max-width:720px){
+h1{font-size:clamp(34px,11vw,56px)!important;line-height:1.05!important}
+[style*="clamp(40px,6.8vw,96px)"]{font-size:38px!important}
+[style*="clamp(32px,4.4vw,56px)"]{font-size:34px!important}
+[style*="clamp(30px,4vw,52px)"],[style*="clamp(30px,3.9vw,50px)"]{font-size:32px!important}
+[style*="min-height:940px"]{min-height:760px!important}
+[style*="min-height:720px"],[style*="min-height:620px"]{min-height:580px!important}
+[style*="padding:96px 24px 0"],[style*="padding:110px 24px 0"],[style*="padding:120px 24px 0"],[style*="padding:130px 24px 0"],[style*="padding:110px 24px 60px"]{padding-top:76px!important}
+[style*="padding:90px 24px 0"]{padding-top:56px!important}
+[style*="padding:130px 24px 150px"],[style*="padding:100px 24px 100px"]{padding:84px 24px 92px!important}
+[style*="padding:90px 24px 30px"]{padding:56px 24px 72px!important}
+[style*=";height:680px"],[style*=";height:640px"],[style*=";height:620px"]{height:440px!important}
+[style*=";height:520px"],[style*=";height:560px"]{height:360px!important}
+[style*=";height:230px"]{height:150px!important}
+[style*="gap:56px"],[style*="gap:64px"]{gap:28px!important}
+[style*="padding:40px;box-sizing"]{padding:26px!important}
+[style*="width:128px;height:128px"]{width:96px!important;height:96px!important;border-radius:28px!important}
+[style*="min-height:56px"]{padding:0 16px!important;gap:6px 14px!important}
+[style*="gap:6px 28px"]{gap:6px 16px!important;font-size:13px!important}
+[style*="columns:3 300px"]{columns:2 140px!important;column-gap:10px!important}
+}
+@media (max-width:460px){span[style*="color:#86868b;font-weight:600"]{display:none}}
+.rm-poster{display:none}
+@media (prefers-reduced-motion: reduce){.rm-poster{display:block}video[poster]{display:none}}
 
-  .about-teaser{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}
-  .about-teaser .img{position:relative}
-  .about-teaser .img img{width:100%;filter:grayscale(100%)}
-  .about-teaser .img::before{content:"";position:absolute;inset:18px -18px -18px 18px;border:2px solid var(--accent);z-index:-1}
-  .about-teaser h2{font-size:clamp(32px,4.6vw,50px);margin-bottom:22px}
-  .about-teaser p{color:#333;font-size:17px;margin-bottom:18px}
-  .about-teaser .sig{font-family:'Oswald';text-transform:uppercase;letter-spacing:2px;margin:6px 0 28px}
-
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line-dark)}
-  .step{padding:40px 34px 10px 0}
-  .step+.step{padding-left:34px;border-left:1px solid var(--line-dark)}
-  .step .n{font-family:'Oswald';font-size:64px;line-height:1;color:var(--accent);font-weight:700}
-  .step h3{font-size:22px;margin:18px 0 10px}
-  .step p{color:var(--gray-2);font-size:15.5px}
-
-  .strip{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:240px 240px;gap:12px}
-  .strip a{overflow:hidden;position:relative;background:#111}
-  .strip a:first-child{grid-row:span 2}
-  .strip img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%);transition:filter .5s,transform .6s var(--ease)}
-  .strip a:hover img{filter:grayscale(0);transform:scale(1.05)}
-  .strip-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:40px;flex-wrap:wrap}
-  .strip-head .sec-head{margin:0}
-
-  @media(max-width:960px){
-    .svc-grid{grid-template-columns:1fr;max-width:560px;margin:0 auto}
-    .about-teaser{grid-template-columns:1fr;gap:50px}
-    .about-teaser .img{max-width:440px}
-    .steps{grid-template-columns:1fr}
-    .step,.step+.step{padding:32px 0;border-left:0;border-bottom:1px solid var(--line-dark)}
-    .strip{grid-template-columns:1fr 1fr;grid-template-rows:200px 200px 200px}
-    .strip a:first-child{grid-column:span 2;grid-row:auto}
-  }
-  @media(max-width:600px){
-    .pillars{grid-template-columns:1fr;margin-top:44px}
-    .pillars a,.pillars a+a{padding:16px 0;border-left:0;border-bottom:1px solid rgba(255,255,255,.12)}
-    .hero-cta .btn{flex:1 1 100%;justify-content:center}
-  }
 </style>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"LocalBusiness","name":"Devo Productions LLC","url":"https://devoproductionsllc.com/","image":"https://devoproductionsllc.com/img/img_1791.jpg","logo":"https://devoproductionsllc.com/favicon-512.png","email":"cade@devoproductionsllc.com","description":"Mobile DJ for weddings & events, plus church sound consulting & training.","sameAs":["https://www.instagram.com/devoproductionsllc"]}
-</script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="wave" viewBox="0 0 140 80"><g fill="currentColor">
-    <rect x="2" y="30" width="9" height="20" rx="4.5"/><rect x="20" y="18" width="9" height="44" rx="4.5"/>
-    <rect x="38" y="6" width="9" height="68" rx="4.5"/><rect x="56" y="18" width="9" height="44" rx="4.5"/>
-    <rect x="74" y="30" width="9" height="20" rx="4.5"/><rect x="92" y="18" width="9" height="44" rx="4.5"/>
-    <rect x="110" y="6" width="9" height="68" rx="4.5"/><rect x="128" y="22" width="9" height="36" rx="4.5"/>
-  </g></symbol>
+
+<div style="font-family:'Inter',system-ui,sans-serif;width:100%;background:#050505;color:#f5f5f7;-webkit-font-smoothing:antialiased;overflow:hidden">
+
+<div style="position:sticky;top:0;z-index:20;background:rgba(5,5,5,.7);backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);border-bottom:1px solid #ffffff10">
+<div style="max-width:1080px;margin:0 auto;padding:0 24px;box-sizing:border-box;min-height:56px;display:flex;flex-wrap:wrap;gap:8px 32px;align-items:center;justify-content:space-between">
+<a href="/" style="display:flex;align-items:center;gap:10px;font-family:'Archivo','Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:.18em;text-transform:uppercase">
+<svg width="30" height="30" viewBox="0 0 400 400" aria-hidden="true"><circle cx="200" cy="200" r="190" fill="#000"></circle><circle cx="200" cy="200" r="176" fill="none" stroke="#fff" stroke-width="16"></circle><g fill="#fff" transform="translate(200 200) scale(1.7) translate(-190 -170)"><rect x="150" y="150" width="9" height="40" rx="4.5"></rect><rect x="168" y="132" width="9" height="76" rx="4.5"></rect><rect x="186" y="116" width="9" height="108" rx="4.5"></rect><rect x="204" y="132" width="9" height="76" rx="4.5"></rect><rect x="222" y="150" width="9" height="40" rx="4.5"></rect></g></svg>
+<span>Devo <span style="color:#86868b;font-weight:600">Productions</span></span>
+</a>
+<div style="display:flex;flex-wrap:wrap;gap:6px 28px;align-items:center;font-size:12px;color:#a1a1a6">
+<a href="/services/">Services</a><a href="/about/">About</a><a href="/gallery/">Gallery</a><a href="/book/" style="background:#f5f5f7;color:#0a0a0a;font-weight:600;padding:6px 14px;border-radius:999px">Book now</a>
+</div>
+</div>
+</div>
+
+<div style="position:relative;min-height:940px;display:flex;flex-direction:column;text-align:center;overflow:hidden">
+<div class="px" aria-hidden="true" style="position:absolute;inset:-150px 0 0 0;pointer-events:none;overflow:hidden"><img loading="lazy" decoding="async" class="rm-poster" src="/img/crowd-3.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(.95);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%)"><video autoplay muted loop playsinline preload="auto" poster="/img/crowd-3.jpg" src="/video/hero-dance.mp4" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 60%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(.95);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%)"></video><div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(5,5,5,0) 0%,rgba(5,5,5,.55) 100%),linear-gradient(90deg,rgba(5,5,5,.55),rgba(5,5,5,0) 30%,rgba(5,5,5,0) 70%,rgba(5,5,5,.55))"></div></div><div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"><div style="position:absolute;top:0;bottom:0;left:-20%;width:140%;background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,.08) 50%,transparent 58%);animation:sweep 9s ease-in-out infinite alternate"></div></div>
+
+<div style="position:relative;padding:96px 24px 0;max-width:1080px;margin:0 auto;width:100%;box-sizing:border-box;animation:rise 1.2s cubic-bezier(.22,.61,.36,1) both">
+<svg width="68" height="68" viewBox="0 0 400 400" role="img" aria-label="Devo Productions logo" style="display:block;margin:0 auto 36px;filter:drop-shadow(0 0 28px #ffffff55)"><circle cx="200" cy="200" r="190" fill="#000"></circle><circle cx="200" cy="200" r="176" fill="none" stroke="#fff" stroke-width="10"></circle><g fill="#fff" transform="translate(200 200) scale(1.7) translate(-190 -170)"><rect x="150" y="150" width="9" height="40" rx="4.5"></rect><rect x="168" y="132" width="9" height="76" rx="4.5"></rect><rect x="186" y="116" width="9" height="108" rx="4.5"></rect><rect x="204" y="132" width="9" height="76" rx="4.5"></rect><rect x="222" y="150" width="9" height="40" rx="4.5"></rect></g></svg>
+<h1 style="margin:0;font-weight:700;font-size:clamp(44px,8.6vw,118px);line-height:1;letter-spacing:-.03em;background:linear-gradient(180deg,#ffffff 30%,#8e8e93 100%);-webkit-background-clip:text;background-clip:text;color:transparent">Devo Productions</h1>
+<p style="margin:32px auto 0;max-width:540px;font-size:clamp(19px,2vw,24px);line-height:1.4;letter-spacing:-.01em;color:#a1a1a6;font-weight:500">DJ and MC for weddings and parties, and sound help for churches.</p>
+<div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:16px 28px;justify-content:center;align-items:center">
+<a href="/book/" style="background:#f5f5f7;color:#0a0a0a;font-weight:600;font-size:17px;padding:14px 28px;border-radius:999px">Check your date</a>
+<a href="https://calendly.com/devoproductionsllc/30min" style="border:1px solid #ffffff40;color:#f5f5f7;font-weight:600;font-size:17px;padding:13px 28px;border-radius:999px;background:rgba(255,255,255,.06)">Book a free call</a>
+</div>
+<div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center">
+<a href="/services/" style="background:rgba(255,255,255,.07);border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;color:#d2d2d7">Weddings &amp; events ›</a>
+<a href="/services/" style="background:rgba(255,255,255,.07);border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;color:#d2d2d7">Church sound ›</a>
+<a href="/services/" style="background:rgba(255,255,255,.07);border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;color:#d2d2d7">Sound training ›</a>
+<a href="/gallery/" style="background:rgba(255,255,255,.07);border:1px solid #ffffff1f;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;color:#d2d2d7">See the work ›</a>
+</div>
+</div>
+
+<div style="position:relative;margin-top:auto;margin-bottom:70px;height:230px;pointer-events:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 25%,#000 75%,transparent);mask-image:linear-gradient(to right,transparent,#000 25%,#000 75%,transparent)">
+<svg viewBox="0 0 1440 230" preserveAspectRatio="none" width="100%" height="230" aria-hidden="true" style="display:block;overflow:visible">
+<defs>
+<linearGradient id="wg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1440" y2="0">
+<stop offset="0" stop-color="#ffffff" stop-opacity="0"></stop>
+<stop offset="0.5" stop-color="#ffffff" stop-opacity="1"></stop>
+<stop offset="1" stop-color="#ffffff" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<g fill="none" stroke="url(#wg)" stroke-linecap="round" style="filter:drop-shadow(0 0 5px #ffffffaa)">
+<path d="M-120,113.9 L-112,113.7 L-104,113.5 L-96,113.3 L-88,113.1 L-80,112.9 L-72,112.7 L-64,112.6 L-56,112.6 L-48,112.6 L-40,112.7 L-32,113.0 L-24,113.3 L-16,113.7 L-8,114.3 L0,115.0 L8,115.8 L16,116.7 L24,117.6 L32,118.6 L40,119.7 L48,120.7 L56,121.6 L64,122.5 L72,123.3 L80,123.9 L88,124.4 L96,124.8 L104,125.0 L112,125.0 L120,124.9 L128,124.6 L136,124.3 L144,124.0 L152,123.6 L160,123.3 L168,123.1 L176,122.9 L184,122.9 L192,123.0 L200,123.1 L208,123.4 L216,123.6 L224,123.8 L232,123.8 L240,123.5 L248,122.9 L256,121.8 L264,120.2 L272,117.8 L280,114.8 L288,111.0 L296,106.4 L304,101.1 L312,95.2 L320,88.8 L328,82.0 L336,75.2 L344,68.4 L352,62.0 L360,56.3 L368,51.4 L376,47.6 L384,45.2 L392,44.3 L400,44.9 L408,47.3 L416,51.2 L424,56.6 L432,63.5 L440,71.5 L448,80.4 L456,89.9 L464,99.7 L472,109.4 L480,118.7 L488,127.4 L496,135.3 L504,142.1 L512,147.8 L520,152.3 L528,155.7 L536,158.1 L544,159.8 L552,160.9 L560,161.8 L568,162.7 L576,163.9 L584,165.6 L592,168.1 L600,171.4 L608,175.7 L616,180.8 L624,186.6 L632,192.9 L640,199.5 L648,205.8 L656,211.7 L664,216.5 L672,219.9 L680,221.5 L688,220.9 L696,217.9 L704,212.4 L712,204.3 L720,193.6 L728,180.6 L736,165.5 L744,148.7 L752,130.8 L760,112.3 L768,93.7 L776,75.7 L784,58.8 L792,43.5 L800,30.2 L808,19.4 L816,11.1 L824,5.6 L832,2.8 L840,2.6 L848,4.9 L856,9.2 L864,15.2 L872,22.5 L880,30.7 L888,39.4 L896,48.1 L904,56.4 L912,64.2 L920,71.1 L928,77.1 L936,82.1 L944,86.1 L952,89.3 L960,91.7 L968,93.6 L976,95.2 L984,96.7 L992,98.4 L1000,100.4 L1008,102.9 L1016,106.0 L1024,109.7 L1032,114.0 L1040,118.9 L1048,124.3 L1056,129.9 L1064,135.7 L1072,141.3 L1080,146.7 L1088,151.6 L1096,155.7 L1104,159.1 L1112,161.5 L1120,162.8 L1128,163.1 L1136,162.3 L1144,160.6 L1152,157.9 L1160,154.5 L1168,150.5 L1176,146.0 L1184,141.3 L1192,136.4 L1200,131.7 L1208,127.1 L1216,122.9 L1224,119.1 L1232,115.8 L1240,113.0 L1248,110.7 L1256,109.0 L1264,107.8 L1272,107.1 L1280,106.7 L1288,106.6 L1296,106.8 L1304,107.1 L1312,107.6 L1320,108.1 L1328,108.6 L1336,109.0 L1344,109.4 L1352,109.8 L1360,110.0 L1368,110.2 L1376,110.3 L1384,110.4 L1392,110.4 L1400,110.4 L1408,110.5 L1416,110.6 L1424,110.7 L1432,110.9 L1440,111.1 L1448,111.4 L1456,111.8 L1464,112.2 L1472,112.6 L1480,113.0 L1488,113.5 L1496,113.9 L1504,114.4 L1512,114.7 L1520,115.1 L1528,115.4 L1536,115.7 L1544,115.9 L1552,116.0 L1560,116.1 " stroke-width="1.6" style="animation:drift 6s ease-in-out infinite alternate"></path>
+<path d="M-120,114.1 L-112,114.1 L-104,114.1 L-96,114.2 L-88,114.4 L-80,114.6 L-72,114.9 L-64,115.3 L-56,115.8 L-48,116.3 L-40,116.8 L-32,117.4 L-24,117.9 L-16,118.4 L-8,118.7 L0,119.0 L8,119.1 L16,119.1 L24,119.0 L32,118.7 L40,118.3 L48,117.9 L56,117.4 L64,117.0 L72,116.6 L80,116.2 L88,116.0 L96,115.8 L104,115.6 L112,115.4 L120,115.2 L128,114.8 L136,114.2 L144,113.3 L152,112.0 L160,110.4 L168,108.4 L176,106.0 L184,103.4 L192,100.7 L200,98.0 L208,95.6 L216,93.5 L224,92.2 L232,91.6 L240,92.0 L248,93.4 L256,95.8 L264,99.3 L272,103.6 L280,108.6 L288,114.0 L296,119.5 L304,124.9 L312,129.9 L320,134.1 L328,137.6 L336,140.1 L344,141.7 L352,142.5 L360,142.7 L368,142.5 L376,142.2 L384,142.1 L392,142.3 L400,143.2 L408,144.6 L416,146.7 L424,149.2 L432,151.9 L440,154.3 L448,155.9 L456,156.5 L464,155.3 L472,152.1 L480,146.7 L488,138.8 L496,128.6 L504,116.4 L512,102.7 L520,88.0 L528,73.1 L536,58.9 L544,46.2 L552,35.7 L560,27.9 L568,23.4 L576,22.2 L584,24.5 L592,29.8 L600,37.6 L608,47.4 L616,58.4 L624,69.8 L632,80.8 L640,90.9 L648,99.5 L656,106.5 L664,111.9 L672,115.7 L680,118.5 L688,120.7 L696,122.9 L704,125.6 L712,129.5 L720,134.9 L728,141.9 L736,150.6 L744,160.6 L752,171.4 L760,182.5 L768,193.0 L776,202.1 L784,209.1 L792,213.2 L800,213.9 L808,210.9 L816,204.3 L824,194.2 L832,181.2 L840,165.9 L848,149.2 L856,132.0 L864,115.1 L872,99.6 L880,86.0 L888,74.9 L896,66.6 L904,61.2 L912,58.6 L920,58.3 L928,60.0 L936,63.0 L944,66.8 L952,70.8 L960,74.5 L968,77.7 L976,80.0 L984,81.5 L992,82.3 L1000,82.5 L1008,82.5 L1016,82.7 L1024,83.3 L1032,84.8 L1040,87.3 L1048,91.0 L1056,95.9 L1064,101.8 L1072,108.5 L1080,115.7 L1088,123.1 L1096,130.1 L1104,136.6 L1112,142.0 L1120,146.2 L1128,149.0 L1136,150.3 L1144,150.2 L1152,148.7 L1160,146.1 L1168,142.7 L1176,138.7 L1184,134.4 L1192,130.1 L1200,126.1 L1208,122.5 L1216,119.5 L1224,117.1 L1232,115.3 L1240,114.0 L1248,113.2 L1256,112.7 L1264,112.5 L1272,112.3 L1280,112.2 L1288,112.0 L1296,111.7 L1304,111.2 L1312,110.7 L1320,110.0 L1328,109.4 L1336,108.8 L1344,108.3 L1352,108.0 L1360,107.9 L1368,108.0 L1376,108.3 L1384,108.9 L1392,109.6 L1400,110.5 L1408,111.4 L1416,112.4 L1424,113.4 L1432,114.3 L1440,115.1 L1448,115.8 L1456,116.3 L1464,116.7 L1472,116.9 L1480,117.0 L1488,117.0 L1496,116.9 L1504,116.7 L1512,116.5 L1520,116.3 L1528,116.1 L1536,116.0 L1544,115.8 L1552,115.7 L1560,115.6 " stroke-width="1.3" opacity="0.7" style="animation:drift 8s ease-in-out -4s infinite alternate"></path>
+<path d="M-120,116.0 L-112,116.0 L-104,116.1 L-96,116.2 L-88,116.2 L-80,116.2 L-72,116.2 L-64,116.2 L-56,116.2 L-48,116.1 L-40,116.1 L-32,116.0 L-24,115.9 L-16,115.7 L-8,115.6 L0,115.4 L8,115.3 L16,115.1 L24,114.9 L32,114.7 L40,114.6 L48,114.4 L56,114.2 L64,114.1 L72,113.9 L80,113.8 L88,113.7 L96,113.5 L104,113.4 L112,113.2 L120,113.0 L128,112.7 L136,112.4 L144,112.0 L152,111.5 L160,110.9 L168,110.3 L176,109.5 L184,108.6 L192,107.6 L200,106.5 L208,105.3 L216,104.0 L224,102.6 L232,101.2 L240,99.8 L248,98.4 L256,97.1 L264,95.9 L272,94.9 L280,94.1 L288,93.5 L296,93.3 L304,93.4 L312,93.8 L320,94.7 L328,96.0 L336,97.7 L344,99.9 L352,102.5 L360,105.5 L368,108.8 L376,112.5 L384,116.5 L392,120.6 L400,124.9 L408,129.2 L416,133.5 L424,137.7 L432,141.6 L440,145.3 L448,148.7 L456,151.6 L464,154.1 L472,156.2 L480,157.7 L488,158.7 L496,159.2 L504,159.3 L512,159.0 L520,158.2 L528,157.2 L536,155.9 L544,154.5 L552,153.0 L560,151.5 L568,150.0 L576,148.7 L584,147.5 L592,146.6 L600,145.9 L608,145.4 L616,145.2 L624,145.1 L632,145.2 L640,145.4 L648,145.6 L656,145.7 L664,145.7 L672,145.4 L680,144.8 L688,143.8 L696,142.3 L704,140.3 L712,137.6 L720,134.3 L728,130.4 L736,125.9 L744,120.8 L752,115.2 L760,109.2 L768,102.9 L776,96.3 L784,89.6 L792,83.0 L800,76.5 L808,70.3 L816,64.6 L824,59.5 L832,55.0 L840,51.3 L848,48.4 L856,46.5 L864,45.4 L872,45.3 L880,46.1 L888,47.7 L896,50.2 L904,53.4 L912,57.3 L920,61.6 L928,66.4 L936,71.5 L944,76.8 L952,82.2 L960,87.5 L968,92.6 L976,97.5 L984,102.1 L992,106.3 L1000,110.1 L1008,113.5 L1016,116.4 L1024,118.8 L1032,120.7 L1040,122.3 L1048,123.4 L1056,124.2 L1064,124.8 L1072,125.0 L1080,125.1 L1088,125.0 L1096,124.9 L1104,124.7 L1112,124.5 L1120,124.3 L1128,124.2 L1136,124.1 L1144,124.1 L1152,124.2 L1160,124.3 L1168,124.5 L1176,124.8 L1184,125.0 L1192,125.3 L1200,125.6 L1208,125.8 L1216,126.0 L1224,126.1 L1232,126.2 L1240,126.1 L1248,126.0 L1256,125.7 L1264,125.3 L1272,124.9 L1280,124.3 L1288,123.7 L1296,122.9 L1304,122.2 L1312,121.4 L1320,120.5 L1328,119.7 L1336,118.9 L1344,118.0 L1352,117.3 L1360,116.5 L1368,115.9 L1376,115.2 L1384,114.7 L1392,114.2 L1400,113.9 L1408,113.5 L1416,113.3 L1424,113.1 L1432,113.0 L1440,112.9 L1448,112.9 L1456,112.9 L1464,113.0 L1472,113.1 L1480,113.2 L1488,113.3 L1496,113.5 L1504,113.6 L1512,113.8 L1520,113.9 L1528,114.0 L1536,114.2 L1544,114.3 L1552,114.4 L1560,114.5 " stroke-width="1.1" opacity="0.5" style="animation:drift 10s ease-in-out -9s infinite alternate"></path>
+<path d="M-120,115.6 L-112,115.7 L-104,115.8 L-96,115.8 L-88,115.8 L-80,115.7 L-72,115.6 L-64,115.4 L-56,115.2 L-48,115.0 L-40,114.7 L-32,114.5 L-24,114.4 L-16,114.3 L-8,114.2 L0,114.1 L8,114.0 L16,114.0 L24,113.8 L32,113.6 L40,113.3 L48,113.0 L56,112.7 L64,112.4 L72,112.1 L80,112.1 L88,112.3 L96,112.8 L104,113.5 L112,114.6 L120,115.8 L128,117.2 L136,118.6 L144,119.9 L152,121.0 L160,121.7 L168,122.1 L176,122.0 L184,121.6 L192,120.9 L200,120.1 L208,119.2 L216,118.4 L224,117.9 L232,117.5 L240,117.2 L248,117.1 L256,116.8 L264,116.2 L272,115.1 L280,113.5 L288,111.2 L296,108.3 L304,105.0 L312,101.6 L320,98.3 L328,95.6 L336,93.9 L344,93.4 L352,94.4 L360,96.8 L368,100.4 L376,105.1 L384,110.3 L392,115.7 L400,120.7 L408,124.9 L416,128.1 L424,130.1 L432,131.2 L440,131.5 L448,131.4 L456,131.4 L464,131.7 L472,132.7 L480,134.3 L488,136.6 L496,139.0 L504,141.1 L512,142.3 L520,142.0 L528,139.8 L536,135.3 L544,128.6 L552,119.9 L560,109.9 L568,99.5 L576,89.4 L584,80.6 L592,74.0 L600,69.9 L608,68.8 L616,70.5 L624,74.5 L632,80.2 L640,86.7 L648,93.3 L656,99.2 L664,104.0 L672,107.5 L680,109.8 L688,111.4 L696,112.7 L704,114.5 L712,117.3 L720,121.5 L728,127.2 L736,134.2 L744,142.1 L752,150.0 L760,157.1 L768,162.5 L776,165.4 L784,165.3 L792,162.0 L800,155.7 L808,146.9 L816,136.5 L824,125.4 L832,114.6 L840,105.1 L848,97.4 L856,92.0 L864,88.9 L872,87.9 L880,88.5 L888,90.0 L896,91.8 L904,93.4 L912,94.3 L920,94.5 L928,94.0 L936,93.2 L944,92.4 L952,92.3 L960,93.2 L968,95.4 L976,99.2 L984,104.4 L992,110.7 L1000,117.6 L1008,124.5 L1016,130.8 L1024,136.0 L1032,139.6 L1040,141.4 L1048,141.4 L1056,139.8 L1064,136.9 L1072,133.2 L1080,129.2 L1088,125.2 L1096,121.7 L1104,118.9 L1112,116.9 L1120,115.5 L1128,114.7 L1136,114.2 L1144,113.8 L1152,113.2 L1160,112.4 L1168,111.3 L1176,109.9 L1184,108.4 L1192,106.9 L1200,105.6 L1208,104.8 L1216,104.4 L1224,104.7 L1232,105.6 L1240,107.1 L1248,108.9 L1256,110.9 L1264,112.9 L1272,114.8 L1280,116.5 L1288,117.7 L1296,118.5 L1304,118.9 L1312,118.9 L1320,118.7 L1328,118.4 L1336,117.9 L1344,117.5 L1352,117.2 L1360,117.0 L1368,116.8 L1376,116.8 L1384,116.7 L1392,116.6 L1400,116.5 L1408,116.3 L1416,116.1 L1424,115.7 L1432,115.3 L1440,114.9 L1448,114.5 L1456,114.1 L1464,113.9 L1472,113.7 L1480,113.6 L1488,113.7 L1496,113.8 L1504,114.0 L1512,114.2 L1520,114.4 L1528,114.6 L1536,114.7 L1544,114.9 L1552,115.0 L1560,115.0 " stroke-width="1" opacity="0.38" style="animation:drift 7s ease-in-out -2s infinite alternate"></path>
+<path d="M-120,114.8 L-112,114.7 L-104,114.7 L-96,114.7 L-88,114.7 L-80,114.6 L-72,114.6 L-64,114.6 L-56,114.6 L-48,114.6 L-40,114.6 L-32,114.5 L-24,114.5 L-16,114.5 L-8,114.4 L0,114.4 L8,114.3 L16,114.2 L24,114.1 L32,114.1 L40,114.0 L48,114.0 L56,114.0 L64,114.1 L72,114.2 L80,114.4 L88,114.6 L96,114.9 L104,115.3 L112,115.8 L120,116.3 L128,116.8 L136,117.4 L144,118.0 L152,118.6 L160,119.1 L168,119.6 L176,119.9 L184,120.2 L192,120.4 L200,120.4 L208,120.3 L216,120.0 L224,119.7 L232,119.2 L240,118.6 L248,118.0 L256,117.4 L264,116.8 L272,116.2 L280,115.7 L288,115.2 L296,114.8 L304,114.4 L312,114.2 L320,113.9 L328,113.7 L336,113.4 L344,113.1 L352,112.7 L360,112.1 L368,111.3 L376,110.4 L384,109.2 L392,107.8 L400,106.3 L408,104.6 L416,102.8 L424,101.1 L432,99.4 L440,97.9 L448,96.7 L456,95.9 L464,95.5 L472,95.6 L480,96.3 L488,97.5 L496,99.3 L504,101.7 L512,104.5 L520,107.7 L528,111.2 L536,114.8 L544,118.5 L552,122.0 L560,125.3 L568,128.3 L576,130.8 L584,132.8 L592,134.3 L600,135.2 L608,135.6 L616,135.6 L624,135.2 L632,134.5 L640,133.6 L648,132.7 L656,131.7 L664,130.9 L672,130.2 L680,129.8 L688,129.6 L696,129.6 L704,129.7 L712,129.9 L720,130.2 L728,130.3 L736,130.3 L744,129.9 L752,129.1 L760,127.9 L768,126.2 L776,124.0 L784,121.3 L792,118.1 L800,114.6 L808,110.8 L816,106.9 L824,103.1 L832,99.4 L840,96.0 L848,93.1 L856,90.8 L864,89.1 L872,88.1 L880,87.8 L888,88.2 L896,89.3 L904,90.9 L912,93.0 L920,95.5 L928,98.2 L936,101.1 L944,103.9 L952,106.6 L960,109.1 L968,111.3 L976,113.3 L984,114.8 L992,116.1 L1000,117.0 L1008,117.6 L1016,118.1 L1024,118.3 L1032,118.4 L1040,118.5 L1048,118.7 L1056,118.8 L1064,119.1 L1072,119.4 L1080,119.8 L1088,120.3 L1096,120.9 L1104,121.5 L1112,122.1 L1120,122.7 L1128,123.1 L1136,123.5 L1144,123.6 L1152,123.6 L1160,123.4 L1168,123.0 L1176,122.4 L1184,121.7 L1192,120.8 L1200,119.9 L1208,118.8 L1216,117.8 L1224,116.8 L1232,115.8 L1240,114.9 L1248,114.1 L1256,113.4 L1264,112.9 L1272,112.5 L1280,112.2 L1288,112.1 L1296,112.1 L1304,112.1 L1312,112.3 L1320,112.5 L1328,112.7 L1336,112.9 L1344,113.2 L1352,113.4 L1360,113.6 L1368,113.8 L1376,114.0 L1384,114.1 L1392,114.2 L1400,114.3 L1408,114.3 L1416,114.4 L1424,114.4 L1432,114.5 L1440,114.5 L1448,114.6 L1456,114.6 L1464,114.7 L1472,114.7 L1480,114.8 L1488,114.9 L1496,115.0 L1504,115.0 L1512,115.1 L1520,115.2 L1528,115.2 L1536,115.3 L1544,115.3 L1552,115.3 L1560,115.3 " stroke-width="1" opacity="0.26" style="animation:drift 9s ease-in-out -7s infinite alternate"></path>
+</g>
 </svg>
-<header class="site">
-  <div class="wrap">
-    <nav aria-label="Main">
-      <a class="brand" href="/" aria-label="Devo Productions home">
-        <svg viewBox="0 0 140 80" aria-hidden="true"><use href="#wave"/></svg>
-        <span class="name">Devo<small>Productions</small></span>
-      </a>
-      <div class="navlinks" id="nav">
-        <a href="/services">Services</a>
-        <a href="/about">About</a>
-        <a href="/gallery">Gallery</a>
-        <a class="btn btn-solid" href="/book">Book Now</a>
-      </div>
-      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-controls="nav" aria-expanded="false"><span></span><span></span><span></span></button>
-    </nav>
-  </div>
-</header>
-<main id="main">
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:260px;pointer-events:none;background:linear-gradient(to bottom,rgba(5,5,5,0) 0%,rgba(5,5,5,.55) 50%,#050505 100%)"></div>
+</div>
 
-<section class="hero" style="padding:0" aria-label="Introduction">
-  <div class="bg" role="img" aria-label="Wedding reception dance floor"></div>
-  <div class="wrap">
-    <p class="eyebrow">Devo Productions LLC</p>
-    <h1>Better Sound.<br><span>Better Events.</span></h1>
-    <p class="lead">Mobile DJ &amp; MC for weddings and events, plus church sound consulting and training, delivered with the care that comes from putting people first.</p>
-    <div class="hero-cta on-dark">
-      <a class="btn btn-accent" href="/book">Check Your Date <span class="arr">→</span></a>
-      <a class="btn btn-ghost" href="/services">Explore Services</a>
-    </div>
-    <div class="pillars">
-      <a href="/services#dj"><span>Weddings &amp; Events<small>DJ, MC, sound &amp; lighting</small></span><span class="arr">→</span></a>
-      <a href="/services#church"><span>Church Sound<small>Consulting that fits your budget</small></span><span class="arr">→</span></a>
-      <a href="/services#training"><span>Sound Training<small>Confident volunteer teams</small></span><span class="arr">→</span></a>
-    </div>
-  </div>
-</section>
+<div id="services" style="padding:90px 24px 30px">
+<div style="max-width:1080px;margin:0 auto">
+<h2 class="reveal" style="margin:0 0 64px;font-weight:700;font-size:clamp(40px,6vw,80px);line-height:1.04;letter-spacing:-.03em;text-align:center">What I do</h2>
 
-<section aria-labelledby="svc-h">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="kicker">What I Do</p>
-      <h2 id="svc-h">From the dance floor<br>to the sanctuary.</h2>
-      <p>Clear, dependable sound and a host who reads the room, without breaking the budget.</p>
-    </div>
-    <div class="svc-grid">
-      <a class="svc reveal" href="/services#dj">
-        <div class="ph"><img src="/img/img_1793.jpg" alt="Packed dance floor at a wedding reception" loading="lazy"></div>
-        <div class="body"><div class="num">01</div><h3>Mobile DJ &amp; MC</h3><p>Weddings, birthdays, corporate and holiday parties. Full-service DJ &amp; MC that keeps the energy right and the night flowing.</p><span class="text-link">Learn more <span>→</span></span></div>
-      </a>
-      <a class="svc reveal" href="/services#church">
-        <div class="ph"><img src="/img/christmas.jpg" alt="Speaker and sound setup for a holiday event" loading="lazy"></div>
-        <div class="body"><div class="num">02</div><h3>Church Sound Consulting</h3><p>Honest guidance to fix what's not working and get your room sounding its best, with budget-first recommendations.</p><span class="text-link">Learn more <span>→</span></span></div>
-      </a>
-      <a class="svc reveal" href="/services#training">
-        <div class="ph"><img src="/img/work_lights.jpg" alt="Outdoor event setup with speakers and LED light towers" loading="lazy"></div>
-        <div class="body"><div class="num">03</div><h3>Sound Training</h3><p>Hands-on training that gives your volunteers simple, repeatable workflows to run sound with confidence every week.</p><span class="text-link">Learn more <span>→</span></span></div>
-      </a>
-    </div>
-  </div>
-</section>
+<div class="reveal" style="display:flex;flex-wrap:wrap;gap:20px">
 
-<section class="paper" aria-labelledby="about-h">
-  <div class="wrap about-teaser">
-    <div class="img reveal"><img src="/img/cade.jpg" alt="Cade, owner and DJ of Devo Productions, behind the mixing console" loading="lazy"></div>
-    <div class="reveal">
-      <p class="kicker">The Person Behind the Sound</p>
-      <h2 id="about-h">Serving people,<br>not just events.</h2>
-      <p>Whether it's the most important day of your life or a Sunday morning service, the goal is the same: show up prepared, listen well, and deliver sound that just works.</p>
-      <p>No jargon, no pressure. Just honest work and a steady hand on the board.</p>
-      <p class="sig">— Cade, Devo Productions LLC</p>
-      <a class="btn btn-ghost" href="/about">More About Me <span class="arr">→</span></a>
-    </div>
-  </div>
-</section>
+<a href="/services/" style="flex:1 1 300px;min-width:0;border-radius:32px;background:linear-gradient(180deg,#121212,#0a0a0a);border:1px solid #ffffff14;overflow:hidden;display:flex;flex-direction:column">
+<div style="position:relative;overflow:hidden;height:320px;background:#0b0b0c;display:flex;align-items:center;justify-content:center"><div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"><img loading="lazy" decoding="async" src="/img/dance-floor.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(.62);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%)"><div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 45%,rgba(5,5,5,0) 0%,rgba(5,5,5,.6) 100%)"></div></div><div style="position:relative;width:128px;height:128px;border-radius:36px;background:rgba(255,255,255,.07);border:1px solid #ffffff2e;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;box-shadow:0 0 80px #ffffff1f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#f5f5f7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15v-3a8 8 0 0 1 16 0v3"></path><rect x="3" y="14" width="4.5" height="7" rx="1.8"></rect><rect x="16.5" y="14" width="4.5" height="7" rx="1.8"></rect></svg></div></div>
+<div style="padding:14px 36px 40px">
+<h3 style="margin:0 0 12px;font-size:28px;letter-spacing:-.03em;font-weight:700">DJ &amp; MC</h3>
+<p style="margin:0 0 22px;font-size:17px;line-height:1.5;color:#a1a1a6">Weddings, birthdays and parties. I'll play the music you want and keep the night moving.</p>
+<div style="color:#f5f5f7;font-size:17px">Learn more ›</div>
+</div>
+</a>
 
-<section class="dark" aria-labelledby="how-h">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="kicker">How It Works</p>
-      <h2 id="how-h">Simple from<br>first call to last song.</h2>
-    </div>
-    <div class="steps">
-      <div class="step reveal"><div class="n">01</div><h3>Reach Out</h3><p>Send an inquiry or book a free 30-minute call. Tell me the date, the venue, and what you're picturing.</p></div>
-      <div class="step reveal"><div class="n">02</div><h3>Plan Together</h3><p>We dial in the music, the moments, and the setup, or for churches, what your room actually needs.</p></div>
-      <div class="step reveal"><div class="n">03</div><h3>It Just Works</h3><p>I show up early and prepared, and I run it so you can be present for the moments that matter.</p></div>
-    </div>
-  </div>
-</section>
+<a href="/services/" style="flex:1 1 300px;min-width:0;border-radius:32px;background:linear-gradient(180deg,#121212,#0a0a0a);border:1px solid #ffffff14;overflow:hidden;display:flex;flex-direction:column">
+<div style="position:relative;overflow:hidden;height:320px;background:#0b0b0c;display:flex;align-items:center;justify-content:center"><div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"><img loading="lazy" decoding="async" src="/img/control-booth.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 50%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(1.05);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%)"><div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 45%,rgba(5,5,5,0) 0%,rgba(5,5,5,.6) 100%)"></div></div><div style="position:relative;width:128px;height:128px;border-radius:36px;background:rgba(255,255,255,.07);border:1px solid #ffffff2e;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;box-shadow:0 0 80px #ffffff1f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#f5f5f7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16M12 4v16M18 4v16"></path><rect x="3.8" y="8" width="4.4" height="3.6" rx="1.2" fill="#050505"></rect><rect x="9.8" y="13.5" width="4.4" height="3.6" rx="1.2" fill="#050505"></rect><rect x="15.8" y="6" width="4.4" height="3.6" rx="1.2" fill="#050505"></rect></svg></div></div>
+<div style="padding:14px 36px 40px">
+<h3 style="margin:0 0 12px;font-size:28px;letter-spacing:-.03em;font-weight:700">Church sound</h3>
+<p style="margin:0 0 22px;font-size:17px;line-height:1.5;color:#a1a1a6">Help getting your room to sound better, with suggestions that fit your budget.</p>
+<div style="color:#f5f5f7;font-size:17px">Learn more ›</div>
+</div>
+</a>
 
-<section aria-labelledby="work-h">
-  <div class="wrap">
-    <div class="strip-head">
-      <div class="sec-head reveal">
-        <p class="kicker">In The Room</p>
-        <h2 id="work-h">The Work</h2>
-      </div>
-      <a class="text-link reveal" href="/gallery">See the full gallery <span>→</span></a>
-    </div>
-    <div class="strip reveal">
-      <a href="/gallery"><img src="/img/work_crowd3.jpg" alt="Outdoor dance floor packed with guests at night" loading="lazy"></a>
-      <a href="/gallery"><img src="/img/img_1792.jpg" alt="Bride and groom dancing" loading="lazy"></a>
-      <a href="/gallery"><img src="/img/birthday.jpg" alt="Sweet 16 birthday party stage and DJ setup" loading="lazy"></a>
-      <a href="/gallery"><img src="/img/work_crowd1.jpg" alt="Packed outdoor dance floor under string lights" loading="lazy"></a>
-      <a href="/gallery"><img src="/img/img_1795.jpg" alt="Guests dancing and laughing" loading="lazy"></a>
-    </div>
-  </div>
-</section>
+<a href="/services/" style="flex:1 1 300px;min-width:0;border-radius:32px;background:linear-gradient(180deg,#121212,#0a0a0a);border:1px solid #ffffff14;overflow:hidden;display:flex;flex-direction:column">
+<div style="position:relative;overflow:hidden;height:320px;background:#0b0b0c;display:flex;align-items:center;justify-content:center"><div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"><img loading="lazy" decoding="async" src="/img/birthday-stage.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(.62);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 55%,transparent 100%)"><div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 45%,rgba(5,5,5,0) 0%,rgba(5,5,5,.6) 100%)"></div></div><div style="position:relative;width:128px;height:128px;border-radius:36px;background:rgba(255,255,255,.07);border:1px solid #ffffff2e;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;box-shadow:0 0 80px #ffffff1f"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#f5f5f7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></div></div>
+<div style="padding:14px 36px 40px">
+<h3 style="margin:0 0 12px;font-size:28px;letter-spacing:-.03em;font-weight:700">Sound training</h3>
+<p style="margin:0 0 22px;font-size:17px;line-height:1.5;color:#a1a1a6">Teaching your volunteers to run sound, one step at a time.</p>
+<div style="color:#f5f5f7;font-size:17px">Learn more ›</div>
+</div>
+</a>
 
-<section class="cta-band" aria-labelledby="cta-h">
-  <svg class="wave-deco" viewBox="0 0 140 80" aria-hidden="true"><use href="#wave"/></svg>
-  <div class="wrap inner">
-    <div>
-      <h2 id="cta-h">Got a date? <em>Let's make it sound right.</em></h2>
-      <p>Tell me about your event or your room. I'll get back to you fast.</p>
-    </div>
-    <div class="actions on-dark">
-      <a class="btn btn-accent" href="/book">Check Availability <span class="arr">→</span></a>
-      <a class="btn btn-ghost" href="https://calendly.com/devoproductionsllc/30min" target="_blank" rel="noopener">Book a Call</a>
-    </div>
-  </div>
-</section>
+</div>
+</div>
+</div>
 
-</main>
-<footer class="site">
-  <div class="wrap">
-    <div class="cols">
-      <div>
-        <a href="/" aria-label="Devo Productions home"><img class="badge" src="/favicon.svg" alt="Devo Productions badge logo"></a>
-        <p>Mobile DJ &amp; MC for weddings and events, plus church sound consulting &amp; training. Better sound without breaking the budget.</p>
-      </div>
-      <div>
-        <h4>Explore</h4>
-        <ul><li><a href="/">Home</a></li><li><a href="/services">Services</a></li><li><a href="/about">About</a></li><li><a href="/gallery">Gallery</a></li><li><a href="/links">All Links</a></li></ul>
-      </div>
-      <div>
-        <h4>Services</h4>
-        <ul><li><a href="/services#dj">Mobile DJ &amp; MC</a></li><li><a href="/services#church">Church Sound Consulting</a></li><li><a href="/services#training">Sound Training</a></li></ul>
-      </div>
-      <div>
-        <h4>Get in Touch</h4>
-        <ul><li><a href="/book">Book your date</a></li><li><a href="mailto:cade@devoproductionsllc.com">cade@devoproductionsllc.com</a></li><li><a href="https://www.instagram.com/devoproductionsllc" target="_blank" rel="noopener">Instagram ↗</a></li></ul>
-      </div>
-    </div>
-    <div class="legal">
-      <span>© <span id="yr">2026</span> Devo Productions LLC. All rights reserved.</span>
-      <span>Serving people, not just events.</span>
-    </div>
-  </div>
-</footer>
-<script src="/js/site.js" defer></script>
+<div style="position:relative;height:560px;overflow:hidden;background:#050505"><div class="px" style="position:absolute;inset:-70px 0 0 0"><img loading="lazy" decoding="async" src="/img/crowd-2.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%;filter:grayscale(1) contrast(1.12) brightness(.75);display:block"></div><div style="position:absolute;inset:0;background:linear-gradient(to bottom,#050505 0%,rgba(5,5,5,0) 14%,rgba(5,5,5,0) 86%,#050505 100%)"></div><div style="position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:70px"><a href="/gallery/" style="background:rgba(255,255,255,.1);border:1px solid #ffffff40;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:12px 24px;border-radius:999px;font-size:15px;font-weight:600;color:#f5f5f7">See the gallery ›</a></div></div>
+
+<div id="about" style="position:relative;padding:100px 24px 100px;text-align:center;overflow:hidden">
+<div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"><img loading="lazy" decoding="async" src="/img/fireplace-guests.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(.62);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 30%,#000 70%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 30%,#000 70%,transparent 100%)"><div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(5,5,5,0) 0%,rgba(5,5,5,.55) 100%),linear-gradient(90deg,rgba(5,5,5,.55),rgba(5,5,5,0) 30%,rgba(5,5,5,0) 70%,rgba(5,5,5,.55))"></div></div>
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:1100px;height:700px;background:radial-gradient(closest-side,#ffffff12,transparent);pointer-events:none"></div>
+<div class="reveal" style="position:relative;max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:56px;align-items:center;text-align:left"><div style="flex:1 1 380px;min-width:0;height:640px;border-radius:32px;position:relative;overflow:hidden;background:#0b0b0c;border:1px solid #ffffff1f;box-shadow:0 30px 120px rgba(0,0,0,.6)"><img loading="lazy" decoding="async" src="/img/cade-portrait.jpg" alt="Cade, owner and DJ of Devo Productions, behind the mixing console" style="filter:grayscale(1) contrast(1.1);position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(5,5,5,.5),transparent 35%)"></div></div><div style="flex:1 1 420px;min-width:0"><h2 style="margin:0;font-weight:700;font-size:clamp(46px,7vw,96px);line-height:1;letter-spacing:-.03em;background:linear-gradient(180deg,#ffffff 20%,#8e8e93 100%);-webkit-background-clip:text;background-clip:text;color:transparent">Hi, I'm Cade</h2><p style="margin:32px 0 0;max-width:520px;font-size:clamp(19px,2vw,24px);line-height:1.5;color:#a1a1a6;font-weight:500">Whether it's a wedding or a Sunday service, my goal is to make it sound good and go as smoothly as possible for you.</p><a href="/about/" style="display:inline-block;margin-top:28px;color:#f5f5f7;font-size:17px">More about me ›</a></div></div>
+</div>
+
+<div style="position:relative;padding:130px 24px 150px;text-align:center;overflow:hidden">
+<div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;overflow:hidden"><img loading="lazy" decoding="async" src="/img/wedding-reception.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;opacity:.9;filter:grayscale(1) contrast(1.15) brightness(.62);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 40%,#000 65%,transparent 100%);mask-image:linear-gradient(to bottom,transparent 0%,#000 40%,#000 65%,transparent 100%)"><div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 40%,rgba(5,5,5,0) 0%,rgba(5,5,5,.55) 100%),linear-gradient(90deg,rgba(5,5,5,.55),rgba(5,5,5,0) 30%,rgba(5,5,5,0) 70%,rgba(5,5,5,.55))"></div></div>
+<div class="reveal" style="position:relative;max-width:900px;margin:0 auto">
+<h2 style="margin:0;font-weight:700;font-size:clamp(40px,6.8vw,96px);line-height:1;letter-spacing:-.03em;background:linear-gradient(180deg,#ffffff 40%,#b4b4b9 100%);-webkit-background-clip:text;background-clip:text;color:transparent">Have a date in mind?</h2>
+<div style="margin-top:48px;display:flex;flex-wrap:wrap;gap:16px 28px;justify-content:center;align-items:center">
+<a href="/book/" style="background:#f5f5f7;color:#0a0a0a;font-weight:600;font-size:17px;padding:16px 32px;border-radius:999px">Check availability</a>
+<a href="https://calendly.com/devoproductionsllc/30min" style="color:#f5f5f7;font-size:17px">Book a free call ›</a>
+</div>
+</div>
+</div>
+
+<div style="border-top:1px solid #ffffff14;padding:28px 24px 40px;font-size:12px;color:#6e6e73">
+<div style="max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px 32px;justify-content:space-between;align-items:center">
+<div style="display:flex;align-items:center;gap:18px">
+<svg width="84" height="84" viewBox="0 0 400 400" role="img" aria-label="Devo Productions logo" style="flex:0 0 84px"><circle cx="200" cy="200" r="180" fill="#000"></circle><circle cx="200" cy="200" r="162" fill="none" stroke="#fff" stroke-width="3"></circle><g fill="#fff"><rect x="150" y="150" width="9" height="40" rx="4.5"></rect><rect x="168" y="132" width="9" height="76" rx="4.5"></rect><rect x="186" y="116" width="9" height="108" rx="4.5"></rect><rect x="204" y="132" width="9" height="76" rx="4.5"></rect><rect x="222" y="150" width="9" height="40" rx="4.5"></rect></g><text x="200" y="262" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="58" font-weight="800" letter-spacing="3" fill="#fff">DEVO</text><text x="200" y="292" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" letter-spacing="9" fill="#fff">PRODUCTIONS</text></svg>
+<div style="line-height:1.7">&copy; 2026 Devo Productions LLC.<br>Based in Williamsport, PA &middot; <a href="mailto:cade@devoproductionsllc.com">cade@devoproductionsllc.com</a></div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px 24px"><a href="/services/">Services</a><a href="/about/">About</a><a href="/gallery/">Gallery</a><a href="/links/">All Links</a><a href="https://www.instagram.com/devoproductionsllc">Instagram ↗</a></div>
+</div>
+</div>
+
+</div>
+
+<script>
+(function(){
+var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+var vs=[].slice.call(document.querySelectorAll('video[data-src]'));
+if(rm||!('IntersectionObserver' in window)){ if(!rm) vs.forEach(function(v){v.src=v.getAttribute('data-src');}); return; }
+var io=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;
+ if(e.isIntersecting){ if(!v.src) v.src=v.getAttribute('data-src'); var p=v.play&&v.play(); if(p&&p.catch)p.catch(function(){}); }
+ else if(v.src){ v.pause(); } });},{rootMargin:'300px 0px'});
+vs.forEach(function(v){io.observe(v);});
+})();
+
+</script>
 </body>
 </html>

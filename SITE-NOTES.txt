@@ -1,0 +1,6 @@
+Devo Productions website (static files)
+
+Upload everything in this folder to the root of devoproductionsllc.com.
+Pages: / , /services/ , /about/ , /gallery/ , /book/ , /links/
+The Book form sends through Web3Forms using the same access key as the current site.
+Before going live: submit a test inquiry on /book/ and confirm it reaches your inbox.

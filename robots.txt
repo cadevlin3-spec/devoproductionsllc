@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://devoproductionsllc.com/sitemap.xml
