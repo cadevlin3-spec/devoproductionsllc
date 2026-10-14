@@ -95,16 +95,45 @@ async function ensurePlans(db) {
   if (planReady) return;
   await db.prepare('CREATE TABLE IF NOT EXISTS plans (contact_id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)').run();
   try { await db.prepare('ALTER TABLE contacts ADD COLUMN paid INTEGER DEFAULT 0').run(); } catch (e) { /* column already exists */ }
+  for (const col of ['token TEXT', 'submitted_at TEXT']) {
+    try { await db.prepare('ALTER TABLE plans ADD COLUMN ' + col).run(); } catch (e) { /* column already exists */ }
+  }
+  try { await db.prepare('CREATE INDEX IF NOT EXISTS idx_plans_token ON plans(token)').run(); } catch (e) { /* ignore */ }
   planReady = true;
 }
+const has = (v) => v !== undefined && String(v).trim() !== '' && String(v).trim() !== '[]';
 const PLAN_RULES = {
-  'Ceremony and reception timeline': (p) => p.cer_start && p.cocktail_start && p.dinner_time,
-  'Must-play and do-not-play lists': (p) => p.must_play || p.dont_play,
-  'Special dances and announcements': (p) => p.first_dance,
-  'Venue contact and load-in details': (p, c) => c.venue && p.dayof && p.setup_time,
+  'Ceremony and reception timeline': (p) => (p.cer_time || p.cer_start) && (p.cocktail_time || p.cocktail_start) && p.dinner_time,
+  'Must-play and do-not-play lists': (p) => has(p.must_list) || has(p.dont_list) || p.must_play || p.dont_play,
+  'Special dances and announcements': (p) => p.dance_bg_t || p.dance_bg_a || p.first_dance,
+  'Venue contact and load-in details': (p, c) => c.venue && (p.dayof_n || p.dayof_p || p.dayof) && p.setup_time,
   'Final headcount': (p) => p.guests,
-  'Wedding planning form': (p) => Object.values(p).filter((v) => String(v).trim()).length >= 40,
+  'Wedding planning form': (p) => Object.values(p).filter((v) => has(v)).length >= 35,
 };
+
+async function savePlan(db, contactId, inc, who) {
+  const cur = await db.prepare('SELECT data FROM plans WHERE contact_id=?').bind(contactId).first();
+  const plan = cur ? JSON.parse(cur.data || '{}') : {};
+  const prev = { ...plan };
+  for (const [k, v] of Object.entries(inc || {})) {
+    if (!/^[a-z0-9_]{1,48}$/.test(k)) continue;
+    const val = clip(v, /_list$/.test(k) ? 12000 : 2000);
+    if (val) plan[k] = val; else delete plan[k];
+  }
+  const json = JSON.stringify(plan);
+  if (json.length > 90000 || Object.keys(plan).length > 260) throw new Error('too big');
+  if (cur) await db.prepare('UPDATE plans SET data=?, updated_at=? WHERE contact_id=?').bind(json, now(), contactId).run();
+  else await db.prepare('INSERT INTO plans (contact_id,data,updated_at) VALUES (?,?,?)').bind(contactId, json, now()).run();
+  // push useful answers back onto the customer record
+  const c = await db.prepare('SELECT venue,phone FROM contacts WHERE id=?').bind(contactId).first();
+  if (c) {
+    if (plan.venue1 && plan.venue1 !== prev.venue1 && (!c.venue || c.venue === prev.venue1)) await db.prepare('UPDATE contacts SET venue=?, updated_at=? WHERE id=?').bind(clip(plan.venue1, 200), now(), contactId).run();
+    if (plan.couple_phone && !c.phone) await db.prepare('UPDATE contacts SET phone=?, updated_at=? WHERE id=?').bind(clip(plan.couple_phone, 40), now(), contactId).run();
+  }
+  return reconcileNeeds(db, contactId, plan);
+}
+const newToken = () => b64(crypto.getRandomValues(new Uint8Array(18))).replace(/\+/g, '-').replace(/\//g, '_');
+
 async function reconcileNeeds(db, contactId, plan) {
   const c = await db.prepare('SELECT venue FROM contacts WHERE id=?').bind(contactId).first();
   if (!c) return [];
@@ -147,6 +176,30 @@ export async function onRequest({ request, env, params }) {
       await seedNeeds(db, id, service);
       await addNote(db, id, 'Inquiry received from the website form.', 'system');
       return J({ ok: true });
+    }
+
+    // ----- public: couple's planning form (private link) -----
+    if (a === 'plan' && b) {
+      if (!/^[A-Za-z0-9_-]{20,64}$/.test(b)) return J({ error: 'This link is not valid.' }, 404);
+      if (await tooManyAttempts(db, 'plantoken', 60, 3600e3)) return J({ error: 'Too many requests.' }, 429);
+      await ensurePlans(db);
+      const row = await db.prepare('SELECT p.contact_id, p.data, p.submitted_at, c.name, c.event_date, c.venue FROM plans p JOIN contacts c ON c.id=p.contact_id WHERE p.token=?').bind(b).first();
+      if (!row) { await logAttempt(db, 'plantoken'); return J({ error: 'This link is not valid.' }, 404); }
+      if (method === 'GET') {
+        return J({ name: row.name, event_date: row.event_date, venue: row.venue, submitted_at: row.submitted_at, data: JSON.parse(row.data || '{}') });
+      }
+      if (!(request.headers.get('Content-Type') || '').includes('application/json')) return J({ error: 'Bad request.' }, 400);
+      const pb = await request.json().catch(() => ({}));
+      if (method === 'PATCH' && !c) {
+        try { await savePlan(db, row.contact_id, pb.data && typeof pb.data === 'object' ? pb.data : {}, 'couple'); } catch (e) { return J({ error: 'Too much data.' }, 400); }
+        return J({ ok: true });
+      }
+      if (method === 'POST' && c === 'submit') {
+        await db.prepare('UPDATE plans SET submitted_at=? WHERE contact_id=?').bind(now(), row.contact_id).run();
+        await addNote(db, row.contact_id, 'The couple sent in their planning form.', 'system');
+        return J({ ok: true });
+      }
+      return J({ error: 'Not found.' }, 404);
     }
 
     // ----- auth -----
@@ -251,19 +304,23 @@ export async function onRequest({ request, env, params }) {
         return J({ id }, 201);
       }
       if (b && c === 'plan' && method === 'PATCH') {
-        await ensurePlans(db);
-        const cur = await db.prepare('SELECT data FROM plans WHERE contact_id=?').bind(b).first();
-        const plan = cur ? JSON.parse(cur.data || '{}') : {};
         const inc = body.data && typeof body.data === 'object' ? body.data : {};
-        for (const [k, v] of Object.entries(inc)) {
-          if (!/^[a-z0-9_]{1,40}$/.test(k)) continue;
-          const val = clip(v, 2000);
-          if (val) plan[k] = val; else delete plan[k];
-        }
-        if (Object.keys(plan).length > 150) return J({ error: 'Too many fields.' }, 400);
-        await db.prepare('INSERT INTO plans (contact_id,data,updated_at) VALUES (?,?,?) ON CONFLICT(contact_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at').bind(b, JSON.stringify(plan), now()).run();
-        const auto = await reconcileNeeds(db, b, plan);
+        let auto;
+        try { auto = await savePlan(db, b, inc, 'cade'); } catch (e) { return J({ error: 'Too much data.' }, 400); }
         return J({ ok: true, auto });
+      }
+      if (b && c === 'plan-link' && method === 'POST') {
+        const row = await db.prepare('SELECT token FROM plans WHERE contact_id=?').bind(b).first();
+        if (body.revoke) {
+          if (row) await db.prepare('UPDATE plans SET token=NULL WHERE contact_id=?').bind(b).run();
+          return J({ token: null });
+        }
+        if (row && row.token) return J({ token: row.token });
+        const t = newToken();
+        if (row) await db.prepare('UPDATE plans SET token=? WHERE contact_id=?').bind(t, b).run();
+        else await db.prepare("INSERT INTO plans (contact_id,data,updated_at,token) VALUES (?,?,?,?)").bind(b, '{}', now(), t).run();
+        await addNote(db, b, 'Created a private planning form link for the couple.', 'system');
+        return J({ token: t });
       }
       if (b && c === 'notes' && method === 'POST') {
         const text = clip(body.text, 4000);
