@@ -5,7 +5,7 @@ const COOKIE = 'devo_crm';
 const SESSION_DAYS = 30;
 
 const TEMPLATES = {
-  wedding: ['Deposit', 'Signed agreement', 'Ceremony and reception timeline', 'Must-play and do-not-play lists', 'Special dances and announcements', 'Venue contact and load-in details', 'Planning meeting 1', 'Planning meeting 2', 'Final headcount', 'Final payment'],
+  wedding: ['Deposit', 'Signed agreement', 'Wedding planning form', 'Ceremony and reception timeline', 'Must-play and do-not-play lists', 'Special dances and announcements', 'Venue contact and load-in details', 'Planning meeting 1', 'Planning meeting 2', 'Final headcount', 'Final payment'],
   event: ['Deposit', 'Signed agreement', 'Event timeline', 'Music preferences', 'Venue contact and load-in details', 'Planning meeting', 'Final payment'],
   church: ['Walkthrough scheduled', 'Room details and current equipment', 'Budget range', 'Key contact', 'Proposal sent'],
   training: ['Date and time', 'Who is attending', 'Board and equipment details', 'Topics wanted', 'Payment'],
@@ -88,6 +88,39 @@ async function seedNeeds(db, contactId, service) {
 const addNote = (db, contactId, text, kind = 'note') =>
   db.prepare('INSERT INTO notes (id,contact_id,text,kind,created_at) VALUES (?,?,?,?,?)').bind(uid(), contactId, text, kind, now()).run();
 
+
+// ---------- planning form ----------
+let planReady = false;
+async function ensurePlans(db) {
+  if (planReady) return;
+  await db.prepare('CREATE TABLE IF NOT EXISTS plans (contact_id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)').run();
+  try { await db.prepare('ALTER TABLE contacts ADD COLUMN paid INTEGER DEFAULT 0').run(); } catch (e) { /* column already exists */ }
+  planReady = true;
+}
+const PLAN_RULES = {
+  'Ceremony and reception timeline': (p) => p.cer_start && p.cocktail_start && p.dinner_time,
+  'Must-play and do-not-play lists': (p) => p.must_play || p.dont_play,
+  'Special dances and announcements': (p) => p.first_dance,
+  'Venue contact and load-in details': (p, c) => c.venue && p.dayof && p.setup_time,
+  'Final headcount': (p) => p.guests,
+  'Wedding planning form': (p) => Object.values(p).filter((v) => String(v).trim()).length >= 40,
+};
+async function reconcileNeeds(db, contactId, plan) {
+  const c = await db.prepare('SELECT venue FROM contacts WHERE id=?').bind(contactId).first();
+  if (!c) return [];
+  const needs = (await db.prepare('SELECT id,label,done FROM needs WHERE contact_id=?').bind(contactId).all()).results;
+  const hit = [];
+  for (const n of needs) {
+    const rule = PLAN_RULES[n.label];
+    if (!n.done && rule && rule(plan, c)) {
+      await db.prepare('UPDATE needs SET done=1, done_at=? WHERE id=?').bind(now(), n.id).run();
+      hit.push(n.label);
+    }
+  }
+  if (hit.length) await addNote(db, contactId, 'Checked off from the planning form: ' + hit.join(', '), 'system');
+  return hit;
+}
+
 const CONTACT_FIELDS = { name: 120, email: 160, phone: 40, service: 60, event_date: 20, venue: 200, message: 4000 };
 
 export async function onRequest({ request, env, params }) {
@@ -148,6 +181,7 @@ export async function onRequest({ request, env, params }) {
     // ----- everything below needs login -----
     if (!(await isAuthed(request, db))) return J({ error: 'Not signed in.' }, 401);
     if (method !== 'GET' && !(request.headers.get('Content-Type') || '').includes('application/json')) return J({ error: 'Bad request.' }, 400);
+    await ensurePlans(db);
     const body = method === 'GET' || method === 'DELETE' ? {} : await request.json().catch(() => ({}));
 
     if (a === 'auth' && b === 'change' && method === 'POST') {
@@ -162,12 +196,14 @@ export async function onRequest({ request, env, params }) {
     }
 
     if (a === 'data' && method === 'GET') {
-      const [contacts, needs, notes] = await Promise.all([
+      await ensurePlans(db);
+      const [contacts, needs, notes, plans] = await Promise.all([
         db.prepare('SELECT * FROM contacts ORDER BY created_at DESC').all(),
         db.prepare('SELECT * FROM needs ORDER BY sort ASC, created_at ASC').all(),
         db.prepare('SELECT * FROM notes ORDER BY created_at DESC').all(),
+        db.prepare('SELECT * FROM plans').all(),
       ]);
-      return J({ contacts: contacts.results, needs: needs.results, notes: notes.results, stages: STAGES });
+      return J({ contacts: contacts.results, needs: needs.results, notes: notes.results, plans: plans.results, stages: STAGES });
     }
 
     if (a === 'contacts') {
@@ -175,8 +211,8 @@ export async function onRequest({ request, env, params }) {
         const name = clip(body.name, 120);
         if (!name) return J({ error: 'Name required.' }, 400);
         const id = uid(), t = now();
-        await db.prepare('INSERT INTO contacts (id,name,email,phone,service,event_date,venue,message,stage,source,created_at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)')
-          .bind(id, name, clip(body.email, 160), clip(body.phone, 40), clip(body.service, 60), clip(body.event_date, 20), clip(body.venue, 200), clip(body.message, 4000), STAGES.includes(body.stage) ? body.stage : 'new', 'manual', t, t).run();
+        await db.prepare('INSERT INTO contacts (id,name,email,phone,service,event_date,venue,message,stage,source,created_at,updated_at,paid) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)')
+          .bind(id, name, clip(body.email, 160), clip(body.phone, 40), clip(body.service, 60), clip(body.event_date, 20), clip(body.venue, 200), clip(body.message, 4000), STAGES.includes(body.stage) ? body.stage : 'new', 'manual', t, t, body.paid ? 1 : 0).run();
         await seedNeeds(db, id, body.service);
         await addNote(db, id, 'Added manually.', 'system');
         return J({ id }, 201);
@@ -184,6 +220,7 @@ export async function onRequest({ request, env, params }) {
       if (b && !c && method === 'PATCH') {
         const sets = [], vals = [];
         for (const [k, n] of Object.entries(CONTACT_FIELDS)) if (body[k] !== undefined) { sets.push(k + '=?'); vals.push(clip(body[k], n)); }
+        if (body.paid !== undefined) { sets.push('paid=?'); vals.push(body.paid ? 1 : 0); }
         if (body.value !== undefined) { sets.push('value=?'); vals.push(body.value === null || body.value === '' ? null : Number(body.value) || 0); }
         if (body.stage !== undefined) {
           if (!STAGES.includes(body.stage)) return J({ error: 'Bad stage.' }, 400);
@@ -200,6 +237,7 @@ export async function onRequest({ request, env, params }) {
         await db.batch([
           db.prepare('DELETE FROM needs WHERE contact_id=?').bind(b),
           db.prepare('DELETE FROM notes WHERE contact_id=?').bind(b),
+          db.prepare('DELETE FROM plans WHERE contact_id=?').bind(b),
           db.prepare('DELETE FROM contacts WHERE id=?').bind(b),
         ]);
         return J({ ok: true });
@@ -211,6 +249,21 @@ export async function onRequest({ request, env, params }) {
         const id = uid();
         await db.prepare('INSERT INTO needs (id,contact_id,label,done,due,sort,created_at) VALUES (?,?,?,?,?,?,?)').bind(id, b, label, 0, clip(body.due, 20) || null, mx.n, now()).run();
         return J({ id }, 201);
+      }
+      if (b && c === 'plan' && method === 'PATCH') {
+        await ensurePlans(db);
+        const cur = await db.prepare('SELECT data FROM plans WHERE contact_id=?').bind(b).first();
+        const plan = cur ? JSON.parse(cur.data || '{}') : {};
+        const inc = body.data && typeof body.data === 'object' ? body.data : {};
+        for (const [k, v] of Object.entries(inc)) {
+          if (!/^[a-z0-9_]{1,40}$/.test(k)) continue;
+          const val = clip(v, 2000);
+          if (val) plan[k] = val; else delete plan[k];
+        }
+        if (Object.keys(plan).length > 150) return J({ error: 'Too many fields.' }, 400);
+        await db.prepare('INSERT INTO plans (contact_id,data,updated_at) VALUES (?,?,?) ON CONFLICT(contact_id) DO UPDATE SET data=excluded.data, updated_at=excluded.updated_at').bind(b, JSON.stringify(plan), now()).run();
+        const auto = await reconcileNeeds(db, b, plan);
+        return J({ ok: true, auto });
       }
       if (b && c === 'notes' && method === 'POST') {
         const text = clip(body.text, 4000);

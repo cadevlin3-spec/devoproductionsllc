@@ -164,6 +164,52 @@ textarea.in{resize:vertical;min-height:80px}
  .search{width:100%}
  .tbl .hm{display:none}
 }
+
+/* planner */
+#planner{position:fixed;inset:0;background:var(--bg);z-index:70;overflow-y:auto;transform:translateY(102%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+#planner.on{transform:none}
+.pl{max-width:860px;margin:0 auto;padding:22px 22px 120px}
+.plbar{position:sticky;top:0;z-index:2;background:#000e;backdrop-filter:blur(14px);border-bottom:1px solid var(--line);margin:0 -22px 26px;padding:14px 22px;display:flex;align-items:center;gap:14px}
+.plbar .grow b{font-size:17px}
+.plsave{font-size:12px;color:var(--mu2);min-width:56px;text-align:right}
+.pltitle{margin:6px 0 8px;font-size:clamp(34px,6vw,58px)}
+.plsec{background:var(--p1);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.plsec>button{width:100%;display:flex;align-items:center;gap:14px;padding:18px 20px;text-align:left}
+.plsec .num{font-family:Archivo,sans-serif;font-weight:800;font-stretch:112%;color:var(--mu2);font-size:15px;width:28px}
+.plsec .tt{font-weight:600;font-size:16px;flex:1;letter-spacing:.02em;text-transform:uppercase}
+.plsec .cnt{font-size:12px;color:var(--mu)}
+.plsec .chev{transition:transform .2s;color:var(--mu2)}
+.plsec.open .chev{transform:rotate(90deg)}
+.plbody{display:none;padding:2px 20px 22px;grid-template-columns:1fr 1fr;gap:14px}
+.plsec.open .plbody{display:grid}
+.plf label{display:block;font-size:12px;color:var(--mu);margin-bottom:5px}
+.plf label i{font-style:normal;color:var(--mu2)}
+.plf.w{grid-column:1/-1}
+.plf .in{padding:11px 13px;font-size:14px}
+.plf textarea.in{min-height:70px}
+.plh{grid-column:1/-1;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu2);font-weight:600;margin-top:6px}
+.tr{grid-column:1/-1;display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.yn{display:inline-flex;gap:6px;margin-top:4px}
+.yn button{border:1px solid var(--line2);color:var(--mu);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:600}
+.yn button.on{background:var(--tx);color:#000;border-color:var(--tx)}
+.trn{font-weight:500}
+.planlink{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--p2);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:26px;transition:border-color .2s}
+.planlink:hover{border-color:var(--line2)}
+.mnew{display:none}
+@media(max-width:900px){.mnew{display:inline-flex}.plbody{grid-template-columns:1fr}.tr{grid-template-columns:1fr}.pl{padding:16px 16px 120px}.plbar{margin:0 -16px 20px;padding:12px 16px}}
+@media print{
+ body>*:not(#planner){display:none!important}
+ html,body{background:#fff!important;color:#000!important}
+ #planner{position:static!important;transform:none!important;overflow:visible!important;background:#fff!important;color:#000!important}
+ .plbar,.plsave{display:none!important}
+ .pl{max-width:none;padding:0}
+ .plsec{border:1px solid #bbb!important;background:#fff!important;break-inside:avoid;margin-bottom:10px}
+ .plbody{display:grid!important}.plsec>button .chev{display:none}
+ .plsec *{color:#000!important}
+ .plf .in{background:#fff!important;border:0!important;border-bottom:1px solid #888!important;border-radius:0!important;padding:4px 0!important}
+ .yn button:not(.on){display:none}.yn button.on{background:none!important;border:1px solid #000!important}
+ .pltitle{color:#000!important;background:none!important}
+}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -195,6 +241,7 @@ textarea.in{resize:vertical;min-height:80px}
 </div>
 <nav class="tabbar hide" id="tabbar"></nav>
 
+<div id="planner" aria-hidden="true"></div>
 <div id="scrim"></div>
 <div id="drawer" aria-hidden="true"></div>
 <div id="toast"></div>
@@ -206,7 +253,7 @@ var ST=['new','contacted','quoted','booked','planning','done','lost'];
 var STL={new:'New',contacted:'Contacted',quoted:'Quoted',booked:'Booked',planning:'Planning',done:'Done',lost:'Lost'};
 var ACTIVE=['contacted','quoted','booked','planning'];
 var SERV=['Wedding','Party / Event DJ','Church Sound Consulting','Sound Training','Something else'];
-var D={contacts:[],needs:[],notes:[]};
+var D={contacts:[],needs:[],notes:[],plans:[]};
 var view='today',openId=null,calM=new Date(),filt='all',q='',showLost=false;
 var $=function(s,r){return (r||document).querySelector(s)};
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
@@ -290,7 +337,7 @@ function render(){
  bind();
 }
 function head(title,sub,extra){
- return '<div class="top"><div><h1 class="h">'+title+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div>'+(extra||'')+'</div>';
+ return '<div class="top"><div><h1 class="h">'+title+'</h1>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">'+(extra||'')+'<button class="btn sm mnew" data-new="1">+ New customer</button></div></div>';
 }
 function searchBox(){return '<div class="search">'+ICO.s+'<input class="in" id="q" placeholder="Search customers" value="'+esc(q)+'"></div>'}
 function rowHtml(c,extra){
@@ -326,7 +373,7 @@ function vPipe(){
   var cs=D.contacts.filter(function(c){return c.stage===s&&match(c)});
   html+='<div class="col" data-stage="'+s+'"><h3><span>'+STL[s]+'</span><span>'+cs.length+'</span></h3>'+cs.map(function(c){
    var p=prog(c.id);
-   return '<div class="card" draggable="true" data-open="'+c.id+'" data-id="'+c.id+'"><b>'+esc(c.name)+'</b><div class="m">'+esc([c.service,c.event_date?fmt(c.event_date):''].filter(Boolean).join(' · '))+'</div><div class="f">'+(p.t?'<div class="bar" style="flex:1"><i style="width:'+p.p+'%"></i></div><span>'+p.d+'/'+p.t+'</span>':'<span>No checklist</span>')+'</div></div>';
+   return '<div class="card" draggable="true" data-open="'+c.id+'" data-id="'+c.id+'"><b>'+esc(c.name)+(c.paid?' <span class="chip w" style="margin-left:6px">Paid</span>':'')+'</b><div class="m">'+esc([c.service,c.event_date?fmt(c.event_date):''].filter(Boolean).join(' · '))+'</div><div class="f">'+(p.t?'<div class="bar" style="flex:1"><i style="width:'+p.p+'%"></i></div><span>'+p.d+'/'+p.t+'</span>':'<span>No checklist</span>')+'</div></div>';
   }).join('')+'</div>';
  });
  return html+'</div>';
@@ -361,7 +408,7 @@ function vAll(){
  var list=D.contacts.filter(function(c){return (filt==='all'||c.stage===filt)&&match(c)});
  return head('Customers',D.contacts.length+' total',searchBox()+'<button class="btn ghost sm" id="csv">Export CSV</button>')+
  '<div class="filters">'+['all'].concat(ST).map(function(s){return '<button class="pill'+(filt===s?' on':'')+'" data-f="'+s+'">'+(s==='all'?'All':STL[s])+'</button>'}).join('')+'</div>'+
- (list.length?'<div class="tw"><table class="tbl"><thead><tr><th>Name</th><th>Service</th><th>Event</th><th class="hm">Checklist</th><th>Stage</th></tr></thead><tbody>'+list.map(function(c){var p=prog(c.id);return '<tr class="r" data-open="'+c.id+'"><td><b>'+esc(c.name)+'</b><div style="color:var(--mu);font-size:13px">'+esc(c.email||'')+'</div></td><td>'+esc(c.service||'')+'</td><td>'+(c.event_date?fmt(c.event_date):'')+'</td><td class="hm">'+(p.t?p.d+'/'+p.t:'')+'</td><td><span class="chip">'+STL[c.stage]+'</span></td></tr>'}).join('')+'</tbody></table></div>':'<div class="empty">No customers match</div>');
+ (list.length?'<div class="tw"><table class="tbl"><thead><tr><th>Name</th><th>Service</th><th>Event</th><th>Paid</th><th class="hm">Checklist</th><th>Stage</th></tr></thead><tbody>'+list.map(function(c){var p=prog(c.id);return '<tr class="r" data-open="'+c.id+'"><td><b>'+esc(c.name)+'</b><div style="color:var(--mu);font-size:13px">'+esc(c.email||'')+'</div></td><td>'+esc(c.service||'')+'</td><td>'+(c.event_date?fmt(c.event_date):'')+'</td><td>'+(c.paid?'<span class="chip w">Paid</span>':'')+'</td><td class="hm">'+(p.t?p.d+'/'+p.t:'')+'</td><td><span class="chip">'+STL[c.stage]+'</span></td></tr>'}).join('')+'</tbody></table></div>':'<div class="empty">No customers match</div>');
 }
 
 /* ---------- bind view events ---------- */
@@ -387,12 +434,16 @@ document.addEventListener('click',function(e){
  if(t){e.stopPropagation();toggleNeed(t.dataset.tog);return}
  var n=e.target.closest('[data-nudge]');
  if(n){e.stopPropagation();nudge(n.dataset.nudge);return}
+ var pd_=e.target.closest('[data-paid]');if(pd_){togglePaid(pd_.dataset.paid);return}
+ var pb=e.target.closest('[data-plan]');if(pb){openPlan(pb.dataset.plan);return}
+ if(e.target.closest('[data-new]')){newCustomer();return}
  var o=e.target.closest('[data-open]');
  if(o&&!e.target.closest('#drawer'))openDrawer(o.dataset.open);
 });
 
 /* ---------- mutations ---------- */
 function setStage(id,s){var c=byId(id);if(!c||c.stage===s)return;c.stage=s;render();if(openId===id)drawerRefresh();api('PATCH','contacts/'+id,{stage:s}).then(load).catch(function(e){toast(e.message);load()})}
+function togglePaid(id){var c=byId(id);if(!c)return;c.paid=c.paid?0:1;render();if(openId)drawerRefresh(true);api('PATCH','contacts/'+id,{paid:!!c.paid}).catch(function(e){toast(e.message);load()})}
 function toggleNeed(id){var n=D.needs.filter(function(x){return x.id===id})[0];if(!n)return;n.done=n.done?0:1;render();if(openId)drawerRefresh();api('PATCH','needs/'+id,{done:!!n.done}).then(load).catch(function(e){toast(e.message);load()})}
 function newCustomer(){
  openId='new';var d=$('#drawer');
@@ -420,12 +471,13 @@ function drawerRefresh(force){
  d.innerHTML=
  '<div class="dh"><input class="nm h" id="f_name" value="'+esc(c.name)+'" aria-label="Name"><button class="ib" id="dx" aria-label="Close">'+ICO.x+'</button></div>'+
  '<div class="stages">'+ST.map(function(s){return '<button class="pill'+(c.stage===s?' on':'')+'" data-st="'+s+'">'+STL[s]+'</button>'}).join('')+'</div>'+
- '<div class="acts">'+(c.email?'<a class="btn ghost sm" href="mailto:'+esc(c.email)+'">Email</a>':'')+(c.phone?'<a class="btn ghost sm" href="tel:'+esc(c.phone.replace(/[^\d+]/g,''))+'">Call</a>':'')+(c.email&&p.t-p.d?'<button class="btn ghost sm" data-nudge="'+c.id+'">Email what I still need</button>':'')+'</div>'+
+ '<div class="acts"><button class="pill'+(c.paid?' on':'')+'" data-paid="'+c.id+'">'+(c.paid?'Paid \u2713':'Not paid')+'</button>'+(c.email?'<a class="btn ghost sm" href="mailto:'+esc(c.email)+'">Email</a>':'')+(c.phone?'<a class="btn ghost sm" href="tel:'+esc(c.phone.replace(/[^\d+]/g,''))+'">Call</a>':'')+(c.email&&p.t-p.d?'<button class="btn ghost sm" data-nudge="'+c.id+'">Email what I still need</button>':'')+'</div>'+
  '<div class="fields">'+
   df('Email','email',c.email,'email')+df('Phone','phone',c.phone,'tel')+
   '<div><label>Service</label><select class="in" id="f_service"><option value="">None</option>'+SERV.concat(c.service&&SERV.indexOf(c.service)<0?[c.service]:[]).map(function(s){return '<option'+(s===c.service?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></div>'+df('Event date','event_date',c.event_date,'date')+
-  df('Venue','venue',c.venue,'text',1)+
+  df('Venue','venue',c.venue,'text')+
   '<div class="full"><label>What they sent</label><textarea class="in" id="f_message">'+esc(c.message)+'</textarea></div></div>'+
+ (/wedding|event/i.test(c.service||'')?'<button class="planlink" data-plan="'+c.id+'"><div class="grow"><b>'+(/wedding/i.test(c.service)?'Wedding planning form':'Event planning form')+'</b><span>'+planPct(c)+'% filled out</span></div><div style="width:80px"><div class="bar"><i style="width:'+planPct(c)+'%"></i></div></div><span class="chip w">Open</span></button>':'')+
  '<div class="dsec"><h3><span>Still need from them</span><span>'+p.d+' of '+p.t+'</span></h3>'+(p.t?'<div class="bar" style="margin-bottom:8px"><i style="width:'+p.p+'%"></i></div>':'')+
   needs.map(function(n){return '<div class="chk'+(n.done?' dn':'')+'"><button class="box'+(n.done?' on':'')+'" data-tog="'+n.id+'" aria-label="Toggle">'+ICO.chk+'</button><span class="t">'+esc(n.label)+'</span><input type="date" value="'+esc(n.due||'')+'" data-due="'+n.id+'" aria-label="Due date"><button class="x" data-del="'+n.id+'" aria-label="Remove">'+ICO.x+'</button></div>'}).join('')+
   '<div class="addrow"><input class="in" id="nl" placeholder="Add something you need"><input class="in" id="ndue" type="date" style="width:150px"><button class="btn sm" id="nadd">Add</button></div></div>'+
@@ -456,15 +508,112 @@ function nudge(id){
  api('POST','contacts/'+id+'/notes',{text:'Opened a reminder email for: '+o.map(function(n){return n.label}).join(', ')}).then(load);
 }
 function exportCsv(){
- var rows=[['Name','Email','Phone','Service','Event date','Venue','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
+ var rows=[['Name','Email','Phone','Service','Event date','Venue','Paid','Stage','Open items','Created']].concat(D.contacts.map(function(c){return [c.name,c.email,c.phone,c.service,c.event_date,c.venue,c.paid?'Yes':'No',STL[c.stage],openNeeds(c.id).map(function(n){return n.label}).join('; '),c.created_at]}));
  var t=rows.map(function(r){return r.map(function(v){v=String(v==null?'':v);if(/^[=+\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'}).join(',')}).join('\n');
  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/csv'}));a.download='devo-customers.csv';a.click();
+}
+
+
+/* ---------- planning form ---------- */
+var FORM=[
+ {t:'Event overview',f:[
+  ['@name','Couple’s names','','w'],['@event_date','Wedding date','date'],['guests','Guest count'],
+  ['@venue','Ceremony venue'],['venue2','Reception venue','','','if different'],
+  ['setup_time','DJ set-up time'],['dayof','Day-of contact','','','name and phone'],
+  ['officiant','Officiant','','','name and phone'],['photovideo','Photo / video','','','name and phone']]},
+ {t:'Ceremony',f:[
+  ['cer_start','Start time'],['prelude','Prelude music'],['processional','Processional song(s)'],['entrance','Entrance song'],
+  ['readings','Special music / readings','area'],['recessional','Recessional song'],['weather','Weather backup plan','','','if outdoors'],
+  ['cer_mics','Microphone / audio needs','area','','mic count, live music, readers']]},
+ {t:'Cocktail hour and grand entrance',f:[
+  ['cocktail_start','Cocktail start / duration'],['cocktail_loc','Cocktail location'],['cocktail_playlist','Cocktail playlist','','','song list or link'],
+  ['intro_time','Introduction time'],['welcome_by','Welcome / remarks by'],['cocktail_ann','Cocktail announcements','area'],
+  ['#Introductions'],
+  ['intro_parents','Parents / family','intro'],['intro_ring','Ring bearer / flower girl','intro'],['intro_party','Wedding party','intro'],['intro_honor','Best man / maid of honor','intro'],['intro_bg','Bride and groom','intro']]},
+ {t:'Dinner and toasts',f:[
+  ['dinner_time','Dinner time'],['dinner_music','Background music','','','song list or link'],['blessing','Blessing by'],['food_style','Food service style','','','buffet, plated'],
+  ['allergies','Allergy / dietary notes','area'],['dismissal','Table dismissal order','area'],
+  ['toast_bm','Best man'],['toast_moh','Maid / matron of honor'],['toast_more','Additional speakers','','','name and relationship'],['thanks','Couple’s thank-you'],
+  ['dinner_ann','Other announcements','area','w','bar, beverage station, guest book']]},
+ {t:'First dances and cake',f:[
+  ['first_dance','Bride and groom dance','','','include cue timing'],['parent1','Parent dance','','','e.g. father / daughter'],['parent2','Parent dance','','','e.g. mother / son'],['extra_dance','Additional dance','','','anniversary, solo, etc.'],
+  ['cake_time','Cake time'],['cake_song','Cake song / announcement'],['dessert','Dessert options','','w']]},
+ {t:'Special traditions and activities',f:[
+  ['@trad','bouquet','Bouquet toss'],['@trad','garter','Garter toss'],['@trad','dollar','Dollar dance'],['@trad','cultural','Cultural tradition(s)'],['@trad','games','Games / activities'],['@trad','other','Other']]},
+ {t:'Open dancing',f:[
+  ['vibe','Vibe / notes','area','w','genres, energy, keep it clean'],['group_ok','Group dances OK?','','','Cupid Shuffle, etc.'],['last_song','Last song of the night'],
+  ['must_play','Must-play songs','area','w','link to a playlist is fine'],['dont_play','Do NOT play','area','w','songs, artists or genres to avoid']]},
+ {t:'Send-off and additional notes',f:[
+  ['so_time','Send-off time'],['so_style','Send-off style','','','sparklers, bubbles, exit line'],['so_loc','Send-off location'],['so_song','Send-off song'],
+  ['notes','Additional notes','area','w']]}
+];
+function planOf(id){var r=D.plans.filter(function(p){return p.contact_id===id})[0];try{return r?JSON.parse(r.data||'{}'):{}}catch(e){return {}}}
+function planKeys(){var k=[];FORM.forEach(function(s){s.f.forEach(function(f){
+ if(f[0].charAt(0)==='#')return;
+ if(f[0]==='@trad'){k.push('t_'+f[1]+'_d');return}
+ if(f[0]==='intro'||f[2]==='intro'){k.push(f[0]+'_n');k.push(f[0]+'_s');return}
+ k.push(f[0]);})});return k}
+function planVal(c,p,k){if(k==='@name')return c.name||'';if(k==='@event_date')return c.event_date||'';if(k==='@venue')return c.venue||'';return p[k]||''}
+function planPct(c){var p=planOf(c.id),keys=planKeys(),n=0;keys.forEach(function(k){var v=k.charAt(0)==='@'?planVal(c,p,k):(p[k]||'');if(String(v).trim())n++});
+ ['@name','@event_date','@venue'].forEach(function(k){if(planVal(c,p,k))n++});return Math.min(100,Math.round(n/(keys.length+3)*100))}
+function secCount(c,p,s){var t=0,n=0;s.f.forEach(function(f){var ks=[];
+ if(f[0].charAt(0)==='#')return;
+ if(f[0]==='@trad')ks=['t_'+f[1]+'_d'];else if(f[2]==='intro')ks=[f[0]+'_n',f[0]+'_s'];else ks=[f[0]];
+ ks.forEach(function(k){t++;if(String(k.charAt(0)==='@'?planVal(c,p,k):(p[k]||'')).trim())n++})});return n+' of '+t}
+var planId=null,pend={},ptimer=null;
+function inp(k,v,type,cls){var h=type==='area'?'<textarea class="in" data-pk="'+k+'">'+esc(v)+'</textarea>':'<input class="in" data-pk="'+k+'" type="'+(type==='date'?'date':'text')+'" value="'+esc(v)+'">';return h}
+function renderPlan(open){
+ var c=byId(planId);if(!c)return;var p=planOf(c.id);
+ var h='<div class="pl"><div class="plbar"><button class="ib" id="plx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>'+esc(c.name)+'</b><span id="plpct">'+planPct(c)+'% filled out</span></div><span class="plsave" id="plsave"></span><button class="btn ghost sm" id="plprint">Print / PDF</button></div>'+
+ '<h1 class="h pltitle">Planning form</h1><div style="color:var(--mu);margin-bottom:22px">Fill in what you know. Everything saves automatically and updates the customer record and checklist.</div>';
+ FORM.forEach(function(s,i){
+  h+='<div class="plsec'+(open===i||(open===undefined&&i===0)?' open':'')+'"><button data-sec="'+i+'"><span class="num">'+String(i+1).padStart(2,'0')+'</span><span class="tt">'+esc(s.t)+'</span><span class="cnt" data-cnt="'+i+'">'+secCount(c,p,s)+'</span><span class="chev">'+ICO.r+'</span></button><div class="plbody">';
+  s.f.forEach(function(f){
+   var k=f[0];
+   if(k.charAt(0)==='#'){h+='<div class="plh">'+esc(k.slice(1))+'</div>';return}
+   if(k==='@trad'){var id=f[1],yn=p['t_'+id+'_on']||'';h+='<div class="tr"><div><div class="trn">'+esc(f[2])+'</div><div class="yn" data-yn="'+id+'"><button class="'+(yn==='yes'?'on':'')+'" data-v="yes">Yes</button><button class="'+(yn==='no'?'on':'')+'" data-v="no">No</button></div></div><div>'+inp('t_'+id+'_d',p['t_'+id+'_d']||'','text')+'</div></div>';return}
+   if(f[2]==='intro'){h+='<div class="plf w"><label>'+esc(f[1])+'</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+inp(k+'_n',p[k+'_n']||'','text').replace('<input','<input placeholder="Name(s)"')+inp(k+'_s',p[k+'_s']||'','text').replace('<input','<input placeholder="Song"')+'</div></div>';return}
+   var lab=esc(f[1])+(f[4]?' <i>'+esc(f[4])+'</i>':'');
+   h+='<div class="plf'+(f[3]==='w'?' w':'')+'"><label>'+lab+'</label>'+inp(k,planVal(c,p,k),f[2]).replace('data-pk="'+k+'"','data-pk="'+k+'"'+(f[2]==='area'?' rows="3"':''))+'</div>';
+  });
+  h+='</div></div>';
+ });
+ $('#planner').innerHTML=h+'</div>';
+ var pl=$('#planner');
+ $('#plx').onclick=closePlan;$('#plprint').onclick=function(){document.querySelectorAll('.plsec').forEach(function(x){x.classList.add('open')});window.print()};
+ pl.querySelectorAll('[data-sec]').forEach(function(b){b.onclick=function(){b.parentNode.classList.toggle('open')}});
+ pl.querySelectorAll('[data-pk]').forEach(function(i){i.addEventListener('input',function(){queue(i.dataset.pk,i.value)});i.addEventListener('change',function(){flushPlan()})});
+ pl.querySelectorAll('[data-yn]').forEach(function(g){g.querySelectorAll('button').forEach(function(b){b.onclick=function(){var cur=planOf(planId)['t_'+g.dataset.yn+'_on'];var v=cur===b.dataset.v?'':b.dataset.v;g.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x.dataset.v===v)});queue('t_'+g.dataset.yn+'_on',v);flushPlan()}})});
+}
+function openPlan(id){planId=id;pend={};renderPlan();$('#planner').classList.add('on');$('#planner').setAttribute('aria-hidden','false');$('#planner').scrollTop=0;closeDrawerSoft()}
+function closePlan(){var id=planId;flushPlan().then(function(){planId=null;$('#planner').classList.remove('on');$('#planner').setAttribute('aria-hidden','true');return load()}).then(function(){if(id)openDrawer(id)})}
+function closeDrawerSoft(){$('#drawer').classList.remove('on');$('#scrim').classList.remove('on')}
+function setSave(t){var e=$('#plsave');if(e)e.textContent=t}
+function queue(k,v){
+ var c=byId(planId);if(!c)return;pend[k]=v;setSave('Saving...');
+ // keep local copy current so counts are right
+ if(k==='@name'||k==='@event_date'||k==='@venue'){c[k.slice(1)]=v}else{var row=D.plans.filter(function(p){return p.contact_id===c.id})[0];if(!row){row={contact_id:c.id,data:'{}'};D.plans.push(row)}var o={};try{o=JSON.parse(row.data||'{}')}catch(e){}if(v)o[k]=v;else delete o[k];row.data=JSON.stringify(o)}
+ var pc=$('#plpct');if(pc)pc.textContent=planPct(c)+'% filled out';
+ FORM.forEach(function(s,i){var e=document.querySelector('[data-cnt="'+i+'"]');if(e)e.textContent=secCount(c,planOf(c.id),s)});
+ clearTimeout(ptimer);ptimer=setTimeout(flushPlan,700);
+}
+var chain=Promise.resolve();
+function flushPlan(){
+ clearTimeout(ptimer);var id=planId;if(!id||!Object.keys(pend).length)return chain;var batch=pend;pend={};
+ var cf={},df={};Object.keys(batch).forEach(function(k){if(k.charAt(0)==='@'){cf[k.slice(1)]=batch[k]}else df[k]=batch[k]});
+ chain=chain.then(function(){
+  var jobs=[];
+  if(Object.keys(cf).length)jobs.push(api('PATCH','contacts/'+id,cf));
+  if(Object.keys(df).length)jobs.push(api('PATCH','contacts/'+id+'/plan',{data:df}));
+  return Promise.all(jobs).then(function(r){setSave('Saved');var auto=[];r.forEach(function(x){if(x&&x.auto)auto=auto.concat(x.auto)});if(auto.length)toast('Checked off: '+auto.join(', '))});
+ }).catch(function(e){setSave('Not saved');toast(e.message);Object.keys(batch).forEach(function(k){if(pend[k]===undefined)pend[k]=batch[k]})});
+ return chain;
 }
 
 /* ---------- keys & refresh ---------- */
 document.addEventListener('keydown',function(e){
  var tg=e.target.tagName;if(/INPUT|TEXTAREA|SELECT/.test(tg)){if(e.key==='Escape')e.target.blur();return}
- if(e.key==='Escape')closeDrawer();
+ if(e.key==='Escape'){if(planId)closePlan();else closeDrawer()}
  else if(e.key==='/'){var s=$('#q');if(s){e.preventDefault();s.focus()}}
  else if(e.key==='n'&&!e.metaKey&&!e.ctrlKey){e.preventDefault();newCustomer()}
 });
