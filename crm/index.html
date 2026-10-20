@@ -579,9 +579,9 @@ function planSet(k,v){
 function openPlan(id){
  planId=id;pend={};var c=byId(id);if(!c)return;
  var pl=$('#planner');
- pl.innerHTML='<div class="pl"><div class="plbar"><button class="ib" id="plx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>'+esc(c.name)+'</b><span id="plpct" style="color:var(--mu);font-size:13px">'+planPct(c)+'% filled out</span><span class="live" id="pllive"><i></i><em>Live</em></span></div><span class="plsave" id="plsave"></span><button class="btn ghost sm" id="plprint">Print / PDF</button></div><div id="plform"></div></div>';
+ pl.innerHTML='<div class="pl"><div class="plbar"><button class="ib" id="plx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>'+esc(c.name)+'</b><span id="plpct" style="color:var(--mu);font-size:13px">'+planPct(c)+'% filled out</span><span class="live" id="pllive"><i></i><em>Live</em></span></div><span class="plsave" id="plsave"></span><button class="btn sm" id="plprint">Word doc</button></div><div id="plform"></div></div>';
  $('#plx').onclick=closePlan;
- $('#plprint').onclick=function(){flushPlan().then(function(){openSheet(id);document.body.classList.add('printsheet');setTimeout(function(){window.print()},350)})};
+ $('#plprint').onclick=function(){exportDocx(id)};
  pform=PlanForm.mount($('#plform'),{mode:'crm',topOffset:'68px',scroller:pl,scrollPad:68,scrollTo:true,
   get:function(k){var p=planOf(id);return k==='venue1'&&!p.venue1?(c.venue||''):p[k]},set:planSet});
  pl.classList.add('on');pl.setAttribute('aria-hidden','false');pl.scrollTop=0;closeDrawerSoft();
@@ -683,6 +683,55 @@ function lst(p,k){try{var a=JSON.parse(p[k]||'[]');return Array.isArray(a)?a:[]}
 function songLine(p,k){return [p[k+'_t'],p[k+'_a']].filter(Boolean).join(' - ')}
 function partyLine(p,k){var n=p[k+'_n'],s=[p[k+'_t'],p[k+'_a']].filter(Boolean).join(' - ');return [n,s].filter(Boolean).join(' · ')}
 function personLine(p,k){return [p[k+'_n'],p[k+'_p']].filter(Boolean).join(' · ')}
+/* ---------- Word doc (day-of plan) ---------- */
+function dayModel(c){
+ var p=planOf(c.id),offs=(p.sec_off||'').split(','),on=function(id){return offs.indexOf(id)<0};
+ function songs(k){var a=lst(p,k).map(function(r,i){return (i+1)+'. '+[r.t,r.a].filter(Boolean).join(' - ')});return a.join('   ')}
+ function people(k){return lst(p,k).map(function(r){return [r.t,r.a&&'('+r.a+')'].filter(Boolean).join(' ')}).join(', ')}
+ var ven=[p.venue1||c.venue,p.venue2].filter(Boolean).join(' → ');
+ var head=[['Couple',c.name],['Date',c.event_date&&fmt(c.event_date,true)],['Venue',ven],['Guests',p.guests],['Couple phone',p.couple_phone||c.phone],['Email',c.email],['DJ set-up',p.setup_time&&fmtT(p.setup_time)],['Day-of contact',personLine(p,'dayof')],['Officiant',personLine(p,'officiant')],['Photo / video',personLine(p,'photovideo')]];
+ var trads=[['bouquet','Bouquet toss'],['garter','Garter toss'],['dollar','Dollar dance'],['cultural','Cultural'],['games','Games'],['other','Other']].map(function(t){var o=p['t_'+t[0]+'_on'],d=p['t_'+t[0]+'_d'];return o||d?[t[1],[o==='yes'?'Yes':o==='no'?'No':'',d].filter(Boolean).join(' · ')]:['','']});
+ var S=[];
+ function add(id,t,time,rows){rows=rows.filter(function(r){return r[1]});if(rows.length||time)S.push({t:t,time:time?fmtT(time):'',rows:rows})}
+ if(p.setup_time)add('setup','DJ set-up',p.setup_time,[]);
+ if(on('ceremony'))add('ceremony','Ceremony',p.cer_time,[['Prelude',p.prelude],['Processional',songLine(p,'pro')],['Bride entrance',songLine(p,'ent')],['Music / readings',p.readings],['Recessional',songLine(p,'rec')],['Mics and audio',p.cer_mics],['Weather plan',p.weather]]);
+ if(on('cocktail')){
+  add('cocktail','Cocktail hour',p.cocktail_time,[['Length',p.cocktail_len],['Location',p.cocktail_loc],['Music',songs('cocktail_list')],['Announcements',p.cocktail_ann]]);
+  add('intros','Grand entrance and introductions',p.intro_time,[['Welcome by',p.welcome_by],['Parents / family',partyLine(p,'intro_parents')],['Ring bearer / flower girl',partyLine(p,'intro_ring')],['Wedding party',people('wp_list')],['Party entrance song',partyLine(p,'intro_party')],['Best man / MOH',partyLine(p,'intro_honor')],['Bride and groom',partyLine(p,'intro_bg')]])}
+ if(on('dances'))add('dances','Special dances',null,[['First dance',songLine(p,'dance_bg')],['Parent dance',partyLine(p,'dance_p1')],['Parent dance 2',partyLine(p,'dance_p2')],['Another dance',partyLine(p,'dance_x')]]);
+ if(on('dinner'))add('dinner','Dinner and toasts',p.dinner_time,[['Service',p.dinner_style],['Blessing',p.blessing],['Background music',songs('dinner_list')],['Best man toast',p.toast_bm],['Maid of honor toast',p.toast_moh],['More speakers',p.toast_more],['Thank-you',p.thanks],['Dismissal',p.dismissal],['Allergies',p.allergies],['Announcements',p.dinner_ann]]);
+ if(on('dances'))add('cake','Cake and dessert',p.cake_time,[['Cake song',songLine(p,'cake')],['Dessert',p.dessert]]);
+ if(on('traditions'))add('trads','Traditions',null,trads);
+ if(on('dancing'))add('dancing','Open dancing',null,[['Crowd',p.genres],['Clean only?',p.clean],['Group dances',p.group_ok],['Vibe',p.vibe],['Must play',songs('must_list')],['Do NOT play',songs('dont_list')],['Playlist',p.playlist_link],['Last song',songLine(p,'last')]]);
+ if(on('sendoff'))add('sendoff','Send-off',p.so_time,[['Style',p.so_style],['Location',p.so_loc],['Song',songLine(p,'so')]]);
+ add('notes','Notes',null,[['Notes',p.notes],['Their message',c.message]]);
+ return {head:head.filter(function(r){return r[1]}),secs:S.filter(function(s){return s.rows.length||s.time})}
+}
+function loadDocxLib(){return new Promise(function(res,rej){if(window.docx)return res(window.docx);var sc=document.createElement('script');sc.src='/crm/docx.js';sc.onload=function(){window.docx?res(window.docx):rej(new Error('Word library missing'))};sc.onerror=function(){rej(new Error('Could not load the Word library'))};document.head.appendChild(sc)})}
+function exportDocx(id){
+ var c=byId(id);if(!c)return Promise.resolve();
+ toast('Building Word doc...');
+ return Promise.resolve(flushPlan?flushPlan():0).then(loadDocxLib).then(function(X){
+  var m=dayModel(c),W=10512,L=2200,FONT='Calibri';
+  function runs(t,o){o=o||{};var parts=String(t).split('\n'),out=[];parts.forEach(function(x,i){out.push(new X.TextRun(Object.assign({text:x,font:FONT,size:o.size||19,break:i?1:0},o.r||{})))});return out}
+  var none={style:X.BorderStyle.NONE,size:0,color:'FFFFFF'},line={style:X.BorderStyle.SINGLE,size:4,color:'D9D9D9'};
+  function cell(w,children,extra){return new X.TableCell(Object.assign({width:{size:w,type:X.WidthType.DXA},borders:{top:none,left:none,right:none,bottom:line},margins:{top:40,bottom:40,left:60,right:60},children:children},extra||{}))}
+  function rowsTable(rows){return new X.Table({width:{size:W,type:X.WidthType.DXA},columnWidths:[L,W-L],borders:{top:none,bottom:none,left:none,right:none,insideHorizontal:none,insideVertical:none},rows:rows.map(function(r){return new X.TableRow({cantSplit:false,children:[cell(L,[new X.Paragraph({children:runs(r[0],{size:17,r:{bold:true,color:'555555'}})})]),cell(W-L,[new X.Paragraph({children:runs(r[1])})])]})})})}
+  function band(t,time){return new X.Paragraph({keepNext:true,spacing:{before:200,after:40},shading:{type:X.ShadingType.CLEAR,fill:'111111',color:'auto'},tabStops:[{type:X.TabStopType.RIGHT,position:W-100}],indent:{left:60,right:60},children:[new X.TextRun({text:t.toUpperCase(),bold:true,color:'FFFFFF',font:FONT,size:19}),new X.TextRun({text:time?'\t'+time:'',bold:true,color:'FFFFFF',font:FONT,size:19})]})}
+  var kids=[
+   new X.Paragraph({spacing:{after:0},children:[new X.TextRun({text:'DEVO PRODUCTIONS',bold:true,font:FONT,size:30}),new X.TextRun({text:'   DJ  •  SOUND  •  WEDDING DAY PLAN',font:FONT,size:16,color:'777777'})]}),
+   new X.Paragraph({spacing:{before:60,after:120},children:[new X.TextRun({text:c.name,bold:true,font:FONT,size:44}),new X.TextRun({text:c.event_date?'    '+fmt(c.event_date,true):'',font:FONT,size:22,color:'555555'})]}),
+   band('Event overview'),rowsTable(m.head.filter(function(r){return r[0]!=='Couple'&&r[0]!=='Date'}))
+  ];
+  m.secs.forEach(function(s){kids.push(band(s.t,s.time));if(s.rows.length)kids.push(rowsTable(s.rows))});
+  kids.push(new X.Paragraph({spacing:{before:200},alignment:X.AlignmentType.CENTER,children:[new X.TextRun({text:'Thank you for trusting us with your celebration.',italics:true,font:FONT,size:17,color:'777777'})]}));
+  var doc=new X.Document({creator:'Devo Productions',title:c.name+' - Wedding Day Plan',styles:{default:{document:{run:{font:FONT,size:19}}}},sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:720,bottom:720,left:864,right:864}}},children:kids}]});
+  return X.Packer.toBlob(doc).then(function(b){
+   var a=document.createElement('a'),nm=(c.name||'Event').replace(/[\\/:*?"<>|]+/g,'').trim()+' - Wedding Day Plan.docx';
+   a.href=URL.createObjectURL(b);a.download=nm;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},2000);toast('Word doc downloaded')})
+ }).catch(function(e){toast(e.message||'Could not build the doc')})
+}
+
 function sheetHTML(c){
  var p=planOf(c.id),ven=[p.venue1||c.venue,p.venue2].filter(Boolean).join(' → '),offs=(p.sec_off||'').split(',');function off(id){return offs.indexOf(id)>-1}
  var TL=[['setup_time','DJ set-up',''],['cer_time','Ceremony',[songLine(p,'pro')&&'Processional: '+songLine(p,'pro'),songLine(p,'ent')&&'Bride entrance: '+songLine(p,'ent'),songLine(p,'rec')&&'Recessional: '+songLine(p,'rec')].filter(Boolean).join('\n')],
@@ -693,7 +742,7 @@ function sheetHTML(c){
  function songs(k){var a=lst(p,k).map(function(r,i){return (i+1)+'. '+[r.t,r.a].filter(Boolean).join(' - ')});return a.length?a:''}
  var trads=[['bouquet','Bouquet toss'],['garter','Garter toss'],['dollar','Dollar dance'],['cultural','Cultural'],['games','Games'],['other','Other']].map(function(t){var on=p['t_'+t[0]+'_on'];return on||p['t_'+t[0]+'_d']?[t[1],[on==='yes'?'Yes':on==='no'?'No':'',p['t_'+t[0]+'_d']].filter(Boolean).join(' · ')]:['','']});
  var gear=GEAR[skey(c.service)]||GEAR.other,done=lst(p,'gear_list');
- var h='<div class="shi"><div class="shbar"><button class="ib" id="shx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>Event sheet</b></div><button class="btn ghost sm" id="shp">Print / PDF</button></div>'+
+ var h='<div class="shi"><div class="shbar"><button class="ib" id="shx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>Event sheet</b></div><button class="btn sm" id="shw">Word doc</button><button class="btn ghost sm" id="shp">Print / PDF</button></div>'+
  '<h1 class="h shn">'+esc(c.name)+'</h1><div class="shm">'+[c.event_date&&fmt(c.event_date,true),c.service,p.guests&&p.guests+' guests'].filter(Boolean).map(function(x){return '<i>'+esc(x)+'</i>'}).join('')+'</div>'+
  sec('Where',[['Venue',ven],['Phone',c.phone],['Email',c.email]])+
  (TL.length?'<div class="sh tlbox"><h3>Timeline</h3>'+TL.map(function(r){return '<div class="sr tl"><span>'+esc(fmtT(p[r[0]]))+'</span><div><b>'+esc(r[1])+'</b>'+(r[2]?'<div class="sd">'+esc(r[2])+'</div>':'')+'</div></div>'}).join('')+'</div>':'<div class="sh"><h3>Timeline</h3><div class="sr"><div style="color:var(--mu2)">No times filled in yet.</div></div></div>')+
@@ -717,7 +766,7 @@ function openSheet(id){
  var s=document.getElementById('sheet');if(!s){s=document.createElement('div');s.id='sheet';document.body.appendChild(s)}
  s.innerHTML=sheetHTML(c);s.classList.add('on');s.scrollTop=0;closeDrawerSoft();
  s.querySelector('#shx').onclick=function(){s.classList.remove('on');document.body.classList.remove('printsheet');if(!planId)openDrawer(id)};
- s.querySelector('#shp').onclick=function(){window.print()};
+ s.querySelector('#shp').onclick=function(){window.print()};s.querySelector('#shw').onclick=function(){exportDocx(id)};
  s.querySelectorAll('[data-gear]').forEach(function(b){b.onchange=function(){var p=planOf(id),a=lst(p,'gear_list'),g=b.dataset.gear,i=a.indexOf(g);if(b.checked&&i<0)a.push(g);if(!b.checked&&i>-1)a.splice(i,1);var v=a.length?JSON.stringify(a):'';var row=planRow(id);if(!row){row={contact_id:id,data:'{}'};D.plans.push(row)}var o=planOf(id);if(v)o.gear_list=v;else delete o.gear_list;row.data=JSON.stringify(o);api('PATCH','contacts/'+id+'/plan',{data:{gear_list:v}}).catch(function(e){toast(e.message)})}});
 }
 function togglePhoto(id){var p=planOf(id),v=p.photo_ok==='yes'?'':'yes';var row=planRow(id);if(!row){row={contact_id:id,data:'{}'};D.plans.push(row)}var o=planOf(id);if(v)o.photo_ok=v;else delete o.photo_ok;row.data=JSON.stringify(o);drawerRefresh(true);api('PATCH','contacts/'+id+'/plan',{data:{photo_ok:v}}).catch(function(e){toast(e.message);load()})}
