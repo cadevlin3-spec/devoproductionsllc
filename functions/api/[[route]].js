@@ -133,6 +133,13 @@ async function savePlan(db, contactId, inc, who) {
   }
   return reconcileNeeds(db, contactId, plan);
 }
+const nameToken = (name) => {
+  let slug = String(name || '').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30).replace(/-+$/g, '');
+  if (slug.length < 3) slug = 'planning-form';
+  const a = crypto.getRandomValues(new Uint8Array(16));
+  let r = ''; for (const x of a) r += '0123456789abcdefghijklmnopqrstuvwxyz'[x % 36];
+  return slug + '-' + r;
+};
 const newToken = () => b64(crypto.getRandomValues(new Uint8Array(18))).replace(/\+/g, '-').replace(/\//g, '_');
 
 async function reconcileNeeds(db, contactId, plan) {
@@ -324,8 +331,9 @@ export async function onRequest({ request, env, params }) {
           if (row) await db.prepare('UPDATE plans SET token=NULL WHERE contact_id=?').bind(b).run();
           return J({ token: null });
         }
-        if (row && row.token) return J({ token: row.token });
-        const t = newToken();
+        if (row && row.token && !body.renew) return J({ token: row.token });
+        const cn = await db.prepare('SELECT name FROM contacts WHERE id=?').bind(b).first();
+        const t = nameToken(cn && cn.name);
         if (row) await db.prepare('UPDATE plans SET token=? WHERE contact_id=?').bind(t, b).run();
         else await db.prepare("INSERT INTO plans (contact_id,data,updated_at,token) VALUES (?,?,?,?)").bind(b, '{}', now(), t).run();
         await addNote(db, b, 'Created a private planning form link for the couple.', 'system');

@@ -482,6 +482,7 @@ document.addEventListener('click',function(e){
  var ml=e.target.closest('[data-mklink]');if(ml){mkLink(ml.dataset.mklink);return}
  var cl=e.target.closest('[data-copylink]');if(cl){copyLink(cl.dataset.copylink);return}
  var ma=e.target.closest('[data-maillink]');if(ma){mailLink(ma.dataset.maillink);return}
+ var rn=e.target.closest('[data-renew]');if(rn){renewLink(rn.dataset.renew);return}
  var ol=e.target.closest('[data-offlink]');if(ol){offLink(ol.dataset.offlink);return}
  if(e.target.closest('[data-new]')){newCustomer();return}
  var o=e.target.closest('[data-open]');
@@ -617,7 +618,7 @@ function linkBlock(c){
  var r=planRow(c.id),tok=r&&r.token;
  if(!tok)return '<div class="clink"><div class="t"><b>Let the couple fill it out</b></div><small>Makes a private link they can open on their phone. Their answers land here and check things off for you.</small><div class="a"><button class="btn sm" data-mklink="'+c.id+'">Create link for the couple</button></div></div>';
  var st=r.submitted_at?'<span class="chip w">Sent to you '+ago(r.submitted_at)+'</span>':'<span class="chip">Not sent in yet</span>';
- return '<div class="clink"><div class="t"><b>Couple link</b>'+st+'</div><small>'+(r.updated_by==='couple'&&r.updated_at?'Couple last edited '+ago(r.updated_at)+'<br>':'')+esc(planUrl(tok).replace(/^https?:\/\//,''))+'</small><div class="a"><button class="btn ghost sm" data-copylink="'+c.id+'">Copy link</button>'+(c.email?'<button class="btn ghost sm" data-maillink="'+c.id+'">Email it</button>':'')+'<button class="btn ghost sm" data-offlink="'+c.id+'" style="color:#ff9a9a">Turn off</button></div></div>';
+ return '<div class="clink"><div class="t"><b>Couple link</b>'+st+'</div><small>'+(r.updated_by==='couple'&&r.updated_at?'Couple last edited '+ago(r.updated_at)+'<br>':'')+esc(planUrl(tok).replace(/^https?:\/\//,''))+'</small><div class="a"><button class="btn ghost sm" data-copylink="'+c.id+'">Copy link</button>'+(c.email?'<button class="btn ghost sm" data-maillink="'+c.id+'">Email it</button>':'')+''+(/^[a-z0-9-]+$/.test(tok)?'':'<button class="btn ghost sm" data-renew="'+c.id+'">Use their names</button>')+'<button class="btn ghost sm" data-offlink="'+c.id+'" style="color:#ff9a9a">Turn off</button></div></div>';
 }
 function mkLink(id){api('POST','contacts/'+id+'/plan-link',{}).then(function(){return load()}).then(function(){toast('Link created');drawerRefresh(true)}).catch(function(e){toast(e.message)})}
 function copyLink(id){var r=planRow(id);if(!r||!r.token)return;var u=planUrl(r.token);
@@ -626,6 +627,7 @@ function mailLink(id){var c=byId(id),r=planRow(id);if(!c||!r||!r.token)return;va
  var body='Hi '+first+',\n\nHere is your private planning form for your '+(c.event_date?'event on '+fmt(c.event_date,true):'event')+'. It works great on a phone. Fill out what you know, skip what you do not, and come back anytime. It saves as you go.\n\n'+planUrl(r.token)+'\n\nCade\nDevo Productions';
  location.href='mailto:'+encodeURIComponent(c.email).replace('%40','@')+'?subject='+encodeURIComponent('Your Devo Productions planning form')+'&body='+encodeURIComponent(body);
  api('POST','contacts/'+id+'/notes',{text:'Opened an email with the planning form link.'}).then(load)}
+function renewLink(id){if(!confirm('Switch to a link with their names in it? The old link will stop working, so send them the new one.'))return;api('POST','contacts/'+id+'/plan-link',{renew:true}).then(load).then(function(){toast('New link ready');drawerRefresh(true)}).catch(function(e){toast(e.message)})}
 function offLink(id){if(!confirm('Turn off the couple link? The old link will stop working.'))return;api('POST','contacts/'+id+'/plan-link',{revoke:true}).then(load).then(function(){toast('Link turned off');drawerRefresh(true)}).catch(function(e){toast(e.message)})}
 
 /* ---------- extras: messages, sheet, stats, backup ---------- */
