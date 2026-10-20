@@ -40,7 +40,8 @@
       { t: 'head', l: 'Introductions' },
       { k: 'intro_parents', l: 'Parents / family', t: 'party' },
       { k: 'intro_ring', l: 'Ring bearer / flower girl', t: 'party' },
-      { k: 'intro_party', l: 'Wedding party', t: 'party' },
+      { k: 'wp_list', l: 'Wedding party names', t: 'people', w: 1, h: 'Add everyone being introduced' },
+      { k: 'intro_party', l: 'Wedding party entrance song', t: 'party' },
       { k: 'intro_honor', l: 'Best man / maid of honor', t: 'party' },
       { k: 'intro_bg', l: 'Bride and groom', t: 'party' }
     ] },
@@ -101,7 +102,7 @@
   }
   function filled(f, get) {
     if (f.t === 'trad') return !!(get('t_' + f.k + '_on') || String(get('t_' + f.k + '_d') || '').trim());
-    if (f.t === 'songs') return parseList(get(f.k)).length > 0;
+    if (f.t === 'songs' || f.t === 'people') return parseList(get(f.k)).length > 0;
     return keysOf(f).some(function (k) { return String(get(k) || '').trim() !== ''; });
   }
   function offList(get) { return String(get('sec_off') || '').split(',').filter(Boolean); }
@@ -208,15 +209,17 @@
         return '<button type="button" class="pf-chip' + (sel.indexOf(o) > -1 ? ' on' : '') + '" data-v="' + esc(o) + '">' + esc(o) + '</button>';
       }).join('') + '</div>';
     }
-    function songRow(i, r) {
-      return '<div class="pf-srow"><span class="pf-num">' + (i + 1) + '</span><input class="pf-in pf-st" placeholder="Song title" value="' + esc(r.t) + '" autocomplete="off"><input class="pf-in pf-sa" placeholder="Artist" value="' + esc(r.a) + '" autocomplete="off"><button type="button" class="pf-x" data-del="' + i + '" aria-label="Remove">&times;</button></div>';
+    function isPeople(k) { return k === 'wp_list'; }
+    function songRow(i, r, k) {
+      var pp = isPeople(k);
+      return '<div class="pf-srow"><span class="pf-num">' + (i + 1) + '</span><input class="pf-in pf-st" placeholder="' + (pp ? 'Name' : 'Song title') + '" value="' + esc(r.t) + '" autocomplete="off"><input class="pf-in pf-sa" placeholder="' + (pp ? 'Role (bridesmaid, groomsman...)' : 'Artist') + '" value="' + esc(r.a) + '" autocomplete="off"><button type="button" class="pf-x" data-del="' + i + '" aria-label="Remove">&times;</button></div>';
     }
     function songsHTML(k) {
       var list = parseList(get(k));
       if (!list.length) list = [{ t: '', a: '' }];
-      return '<div class="pf-songs" data-list="' + k + '"><div class="pf-rows">' + list.map(function (r, i) { return songRow(i, r); }).join('') + '</div>' +
-        '<div class="pf-sbar"><button type="button" class="pf-link" data-add="' + k + '">+ Add a song</button><button type="button" class="pf-link" data-paste="' + k + '">Paste a list</button></div>' +
-        '<div class="pf-paste" data-pastebox="' + k + '"><p>One song per line. “Title - Artist” works best.</p><textarea class="pf-in" rows="5" placeholder="Shut Up and Dance - Walk the Moon&#10;Dancing Queen - ABBA"></textarea><div class="pf-sbar"><button type="button" class="pf-btn" style="min-height:44px;padding:9px 20px" data-addlist="' + k + '">Add these</button></div></div></div>';
+      return '<div class="pf-songs" data-list="' + k + '"><div class="pf-rows">' + list.map(function (r, i) { return songRow(i, r, k); }).join('') + '</div>' +
+        '<div class="pf-sbar"><button type="button" class="pf-link" data-add="' + k + '">+ Add ' + (isPeople(k) ? 'a person' : 'a song') + '</button><button type="button" class="pf-link" data-paste="' + k + '">Paste a list</button></div>' +
+        '<div class="pf-paste" data-pastebox="' + k + '"><p>' + (isPeople(k) ? 'One person per line. “Name - Role” works best.' : 'One song per line. “Title - Artist” works best.') + '</p><textarea class="pf-in" rows="5" placeholder="Shut Up and Dance - Walk the Moon&#10;Dancing Queen - ABBA"></textarea><div class="pf-sbar"><button type="button" class="pf-btn" style="min-height:44px;padding:9px 20px" data-addlist="' + k + '">Add these</button></div></div></div>';
     }
     function fieldHTML(f) {
       var lab = '<label>' + esc(f.l) + (f.h && f.t !== 'songs' && f.t !== 'area' && f.t !== 'text' && f.t !== 'chips' ? '' : '') + '</label>';
@@ -227,13 +230,13 @@
         case 'contact': body = L(f.l) + '<div class="pf-row">' + inp(f.k + '_n', 'text', 'Name') + inp(f.k + '_p', 'tel', 'Phone') + '</div>'; break;
         case 'song': body = L(f.l) + '<div class="pf-row">' + inp(f.k + '_t', 'text', 'Song title') + inp(f.k + '_a', 'text', 'Artist') + '</div>'; break;
         case 'party': body = L(f.l) + '<div class="pf-row3"><div class="pf-first">' + inp(f.k + '_n', 'text', 'Names') + '</div>' + inp(f.k + '_t', 'text', 'Song') + inp(f.k + '_a', 'text', 'Artist') + '</div>'; break;
-        case 'songs': body = L(f.l) + songsHTML(f.k); break;
+        case 'people': case 'songs': body = L(f.l) + songsHTML(f.k); break;
         case 'choice': body = L(f.l) + chips(f.k, f.o, false); break;
         case 'chips': body = L(f.l) + chips(f.k, f.o, true); break;
         case 'area': body = L(f.l) + inp(f.k, 'area'); break;
         default: body = L(f.l) + inp(f.k, f.t);
       }
-      var wide = f.w || f.t === 'contact' || f.t === 'song' || f.t === 'party' || f.t === 'songs' || f.t === 'chips';
+      var wide = f.w || f.t === 'contact' || f.t === 'song' || f.t === 'party' || f.t === 'songs' || f.t === 'people' || f.t === 'chips';
       return '<div class="pf-f' + (wide ? ' w' : '') + '">' + body + '</div>';
     }
     function tradHTML(f) {
@@ -286,7 +289,7 @@
           if (f.t === 'contact') v = [get(f.k + '_n'), get(f.k + '_p')].filter(Boolean).join(' · ');
           else if (f.t === 'song') v = [get(f.k + '_t'), get(f.k + '_a')].filter(Boolean).join(' - ');
           else if (f.t === 'party') v = [get(f.k + '_n'), [get(f.k + '_t'), get(f.k + '_a')].filter(Boolean).join(' - ')].filter(Boolean).join(' · ');
-          else if (f.t === 'songs') v = parseList(get(f.k)).map(function (r, j) { return (j + 1) + '. ' + [r.t, r.a].filter(Boolean).join(' - '); }).join('\n');
+          else if (f.t === 'songs' || f.t === 'people') v = parseList(get(f.k)).map(function (r, j) { return (j + 1) + '. ' + [r.t, r.a].filter(Boolean).join(' - '); }).join('\n');
           else if (f.t === 'trad') v = [get('t_' + f.k + '_on') === 'yes' ? 'Yes' : get('t_' + f.k + '_on') === 'no' ? 'No' : '', get('t_' + f.k + '_d')].filter(Boolean).join(' · ');
           else v = get(f.k);
           rows += '<dt>' + esc(f.l) + '</dt><dd>' + esc(v) + '</dd>';
@@ -326,7 +329,7 @@
     function renumber(box) { box.querySelectorAll('.pf-srow').forEach(function (r, i) { r.querySelector('.pf-num').textContent = i + 1; r.querySelector('.pf-x').dataset.del = i; }); }
     function addRow(box, focus) {
       var rows = box.querySelector('.pf-rows');
-      var d = document.createElement('div'); d.innerHTML = songRow(rows.children.length, { t: '', a: '' });
+      var d = document.createElement('div'); d.innerHTML = songRow(rows.children.length, { t: '', a: '' }, box.dataset.list);
       rows.appendChild(d.firstChild);
       if (focus) rows.lastChild.querySelector('.pf-st').focus();
     }
@@ -390,7 +393,7 @@
         if (!add.length) return;
         var all = readList(bx).concat(add);
         set(bx.dataset.list, JSON.stringify(all));
-        var rowsEl = bx.querySelector('.pf-rows'); rowsEl.innerHTML = all.map(function (r, i) { return songRow(i, r); }).join('');
+        var rowsEl = bx.querySelector('.pf-rows'); rowsEl.innerHTML = all.map(function (r, i) { return songRow(i, r, bx.dataset.list); }).join('');
         ta.value = ''; bx.querySelector('.pf-paste').classList.remove('on'); refreshTabs(); return;
       }
       if (b.id === 'pf-sendbtn' && opt.onSubmit) {
@@ -424,7 +427,7 @@
         var want = parseList(get(box.dataset.list)), have = readList(box);
         if (JSON.stringify(want) !== JSON.stringify(have)) {
           if (!want.length) want = [{ t: '', a: '' }];
-          box.querySelector('.pf-rows').innerHTML = want.map(function (r, i) { return songRow(i, r); }).join('');
+          box.querySelector('.pf-rows').innerHTML = want.map(function (r, i) { return songRow(i, r, box.dataset.list); }).join('');
           flash(box); n++;
         }
       });
