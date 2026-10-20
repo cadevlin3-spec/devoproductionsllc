@@ -657,11 +657,11 @@ function songLine(p,k){return [p[k+'_t'],p[k+'_a']].filter(Boolean).join(' - ')}
 function partyLine(p,k){var n=p[k+'_n'],s=[p[k+'_t'],p[k+'_a']].filter(Boolean).join(' - ');return [n,s].filter(Boolean).join(' · ')}
 function personLine(p,k){return [p[k+'_n'],p[k+'_p']].filter(Boolean).join(' · ')}
 function sheetHTML(c){
- var p=planOf(c.id),ven=[p.venue1||c.venue,p.venue2].filter(Boolean).join(' → ');
+ var p=planOf(c.id),ven=[p.venue1||c.venue,p.venue2].filter(Boolean).join(' → '),offs=(p.sec_off||'').split(',');function off(id){return offs.indexOf(id)>-1}
  var TL=[['setup_time','DJ set-up',''],['cer_time','Ceremony',[songLine(p,'pro')&&'Processional: '+songLine(p,'pro'),songLine(p,'ent')&&'Bride entrance: '+songLine(p,'ent'),songLine(p,'rec')&&'Recessional: '+songLine(p,'rec')].filter(Boolean).join('\n')],
   ['cocktail_time','Cocktail hour',[p.cocktail_len,p.cocktail_loc].filter(Boolean).join(' · ')],['intro_time','Grand entrance',p.welcome_by?'Welcome by '+p.welcome_by:''],
   ['dinner_time','Dinner',[p.dinner_style,p.blessing&&'Blessing: '+p.blessing].filter(Boolean).join(' · ')],['cake_time','Cake cutting',songLine(p,'cake')],['so_time','Send-off',[p.so_style,p.so_loc,songLine(p,'so')].filter(Boolean).join(' · ')]]
-  .filter(function(r){return p[r[0]]}).sort(function(a,b){return p[a[0]]<p[b[0]]?-1:1});
+  .filter(function(r){var sec={cer_time:'ceremony',cocktail_time:'cocktail',intro_time:'cocktail',dinner_time:'dinner',cake_time:'dances',so_time:'sendoff'}[r[0]];return p[r[0]]&&!(sec&&off(sec))}).sort(function(a,b){return p[a[0]]<p[b[0]]?-1:1});
  function sec(t,rows){rows=rows.filter(function(r){return r[1]});return rows.length?'<div class="sh"><h3>'+esc(t)+'</h3>'+rows.map(function(r){return '<div class="sr"><span>'+esc(r[0])+'</span><div>'+esc(r[1])+'</div></div>'}).join('')+'</div>':''}
  function songs(k){return lst(p,k).map(function(r,i){return (i+1)+'. '+[r.t,r.a].filter(Boolean).join(' - ')}).join('\n')}
  var trads=[['bouquet','Bouquet toss'],['garter','Garter toss'],['dollar','Dollar dance'],['cultural','Cultural'],['games','Games'],['other','Other']].map(function(t){var on=p['t_'+t[0]+'_on'];return on||p['t_'+t[0]+'_d']?[t[1],[on==='yes'?'Yes':on==='no'?'No':'',p['t_'+t[0]+'_d']].filter(Boolean).join(' · ')]:['','']});
@@ -671,12 +671,12 @@ function sheetHTML(c){
  sec('Where',[['Venue',ven],['Phone',c.phone],['Email',c.email]])+
  (TL.length?'<div class="sh"><h3>Timeline</h3>'+TL.map(function(r){return '<div class="sr tl"><span>'+esc(fmtT(p[r[0]]))+'</span><div><b>'+esc(r[1])+'</b>'+(r[2]?'<div class="sd">'+esc(r[2])+'</div>':'')+'</div></div>'}).join('')+'</div>':'<div class="sh"><h3>Timeline</h3><div class="sr"><div style="color:var(--mu2)">No times filled in yet.</div></div></div>')+
  sec('People',[['Couple',p.couple_phone],['Day-of contact',personLine(p,'dayof')],['Officiant',personLine(p,'officiant')],['Photo / video',personLine(p,'photovideo')]])+
- sec('Ceremony',[['Prelude',p.prelude],['Music / readings',p.readings],['Mics and audio',p.cer_mics],['Weather plan',p.weather]])+
- sec('Introductions',[['Parents / family',partyLine(p,'intro_parents')],['Ring bearer / flower girl',partyLine(p,'intro_ring')],['Wedding party',partyLine(p,'intro_party')],['Best man / MOH',partyLine(p,'intro_honor')],['Bride and groom',partyLine(p,'intro_bg')]])+
- sec('Toasts and dinner',[['Best man',p.toast_bm],['Maid of honor',p.toast_moh],['More speakers',p.toast_more],['Thank-you',p.thanks],['Dismissal',p.dismissal],['Allergies',p.allergies],['Announcements',[p.cocktail_ann,p.dinner_ann].filter(Boolean).join('\n')]])+
- sec('Dances',[['First dance',songLine(p,'dance_bg')],['Parent dance',partyLine(p,'dance_p1')],['Parent dance 2',partyLine(p,'dance_p2')],['Another dance',partyLine(p,'dance_x')],['Dessert',p.dessert]])+
- sec('Traditions',trads)+
- sec('Music',[['Crowd',p.genres],['Clean only?',p.clean],['Group dances',p.group_ok],['Vibe',p.vibe],['Last song',songLine(p,'last')],['Playlist',p.playlist_link],['Cocktail music',songs('cocktail_list')],['Dinner music',songs('dinner_list')],['Must play',songs('must_list')],['Do NOT play',songs('dont_list')]])+
+ (off('ceremony')?'':sec('Ceremony',[['Prelude',p.prelude],['Music / readings',p.readings],['Mics and audio',p.cer_mics],['Weather plan',p.weather]]))+
+ (off('cocktail')?'':sec('Introductions',[['Parents / family',partyLine(p,'intro_parents')],['Ring bearer / flower girl',partyLine(p,'intro_ring')],['Wedding party',partyLine(p,'intro_party')],['Best man / MOH',partyLine(p,'intro_honor')],['Bride and groom',partyLine(p,'intro_bg')]]))+
+ (off('dinner')?'':sec('Toasts and dinner',[['Best man',p.toast_bm],['Maid of honor',p.toast_moh],['More speakers',p.toast_more],['Thank-you',p.thanks],['Dismissal',p.dismissal],['Allergies',p.allergies],['Announcements',[p.cocktail_ann,p.dinner_ann].filter(Boolean).join('\n')]]))+
+ (off('dances')?'':sec('Dances',[['First dance',songLine(p,'dance_bg')],['Parent dance',partyLine(p,'dance_p1')],['Parent dance 2',partyLine(p,'dance_p2')],['Another dance',partyLine(p,'dance_x')],['Dessert',p.dessert]]))+
+ (off('traditions')?'':sec('Traditions',trads))+
+ (off('dancing')?'':sec('Music',[['Crowd',p.genres],['Clean only?',p.clean],['Group dances',p.group_ok],['Vibe',p.vibe],['Last song',songLine(p,'last')],['Playlist',p.playlist_link],['Cocktail music',songs('cocktail_list')],['Dinner music',songs('dinner_list')],['Must play',songs('must_list')],['Do NOT play',songs('dont_list')]]))+
  sec('Notes',[['Notes',p.notes],['Their message',c.message]])+
  '<div class="sh noprint"><h3>Gear and load-in</h3>'+gear.map(function(g,i){return '<label class="gr"><input type="checkbox" data-gear="'+esc(g)+'"'+(done.indexOf(g)>-1?' checked':'')+'><span>'+esc(g)+'</span></label>'}).join('')+'</div></div>';
  return h;

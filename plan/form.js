@@ -9,7 +9,7 @@
 
   // f: k key, l label, t type, h hint, o options, w wide
   var S = [
-    { t: 'Event overview', s: 'The basics for the day.', f: [
+    { id: 'overview', t: 'Event overview', s: 'The basics for the day.', f: [
       { k: 'venue1', l: 'Ceremony venue', t: 'text', h: 'Name and town' },
       { k: 'venue2', l: 'Reception venue', t: 'text', h: 'Only if different' },
       { k: 'guests', l: 'Guest count', t: 'num', h: 'Rough number is fine' },
@@ -19,7 +19,7 @@
       { k: 'officiant', l: 'Officiant', t: 'contact' },
       { k: 'photovideo', l: 'Photographer / videographer', t: 'contact' }
     ] },
-    { t: 'Ceremony', s: 'Music and microphones for the ceremony.', f: [
+    { id: 'ceremony', t: 'Ceremony', s: 'Music and microphones for the ceremony.', f: [
       { k: 'cer_time', l: 'Ceremony start time', t: 'time' },
       { k: 'prelude', l: 'Prelude music', t: 'text', h: 'Songs, a playlist link, or "your pick"' },
       { k: 'pro', l: 'Processional song', t: 'song', h: 'Wedding party walks in' },
@@ -29,7 +29,7 @@
       { k: 'weather', l: 'Weather backup plan', t: 'text', h: 'If outdoors' },
       { k: 'cer_mics', l: 'Microphones and audio needs', t: 'area', w: 1, h: 'Mic count, who speaks, live music' }
     ] },
-    { t: 'Cocktail hour and entrance', s: 'Background music and how everyone gets introduced.', f: [
+    { id: 'cocktail', t: 'Cocktail hour and entrance', s: 'Background music and how everyone gets introduced.', f: [
       { k: 'cocktail_time', l: 'Cocktail hour starts', t: 'time' },
       { k: 'cocktail_len', l: 'How long', t: 'choice', o: ['30 min', '45 min', '60 min', '90 min'] },
       { k: 'cocktail_loc', l: 'Cocktail location', t: 'text' },
@@ -44,7 +44,7 @@
       { k: 'intro_honor', l: 'Best man / maid of honor', t: 'party' },
       { k: 'intro_bg', l: 'Bride and groom', t: 'party' }
     ] },
-    { t: 'Dinner and toasts', s: 'Meal timing, speakers and announcements.', f: [
+    { id: 'dinner', t: 'Dinner and toasts', s: 'Meal timing, speakers and announcements.', f: [
       { k: 'dinner_time', l: 'Dinner time', t: 'time' },
       { k: 'dinner_style', l: 'Food service', t: 'choice', o: ['Buffet', 'Plated', 'Family style', 'Stations', 'Food truck'] },
       { k: 'dinner_list', l: 'Dinner background music', t: 'songs', w: 1 },
@@ -57,7 +57,7 @@
       { k: 'allergies', l: 'Allergy or dietary notes', t: 'area', w: 1 },
       { k: 'dinner_ann', l: 'Other announcements', t: 'area', w: 1, h: 'Bar, beverage station, guest book' }
     ] },
-    { t: 'Dances and cake', s: 'The special dances and cake cutting.', f: [
+    { id: 'dances', t: 'Dances and cake', s: 'The special dances and cake cutting.', f: [
       { k: 'dance_bg', l: 'Bride and groom first dance', t: 'song' },
       { k: 'dance_p1', l: 'Parent dance', t: 'party', h: 'Who is dancing' },
       { k: 'dance_p2', l: 'Second parent dance', t: 'party', h: 'Who is dancing' },
@@ -66,8 +66,8 @@
       { k: 'cake', l: 'Cake song', t: 'song' },
       { k: 'dessert', l: 'Dessert options', t: 'text', w: 1 }
     ] },
-    { t: 'Traditions', s: 'Tap yes or no. Add a note if you like.', f: [{ t: 'trads' }] },
-    { t: 'Open dancing', s: 'Help me read the room before it starts.', f: [
+    { id: 'traditions', t: 'Traditions', s: 'Tap yes or no. Add a note if you like.', f: [{ t: 'trads' }] },
+    { id: 'dancing', t: 'Open dancing', s: 'Help me read the room before it starts.', f: [
       { k: 'genres', l: 'What sounds like your crowd?', t: 'chips', o: GENRES, w: 1, h: 'Pick as many as you like' },
       { k: 'clean', l: 'Clean versions only?', t: 'choice', o: ['Clean only', 'Either is fine'] },
       { k: 'group_ok', l: 'Group dances (Cupid Shuffle, etc.)', t: 'choice', o: ['Yes please', 'A couple', 'No thanks'] },
@@ -77,7 +77,7 @@
       { k: 'playlist_link', l: 'Playlist link', t: 'link', w: 1, h: 'Apple Music, Spotify, YouTube' },
       { k: 'last', l: 'Last song of the night', t: 'song' }
     ] },
-    { t: 'Send-off and notes', s: 'How the night ends, and anything I missed.', f: [
+    { id: 'sendoff', t: 'Send-off and notes', s: 'How the night ends, and anything I missed.', f: [
       { k: 'so_time', l: 'Send-off time', t: 'time' },
       { k: 'so_style', l: 'Send-off style', t: 'chips', o: ['Sparklers', 'Bubbles', 'Exit line', 'Streamers', 'Glow sticks', 'Just walk out'], w: 1 },
       { k: 'so_loc', l: 'Send-off location', t: 'text' },
@@ -104,8 +104,11 @@
     if (f.t === 'songs') return parseList(get(f.k)).length > 0;
     return keysOf(f).some(function (k) { return String(get(k) || '').trim() !== ''; });
   }
+  function offList(get) { return String(get('sec_off') || '').split(',').filter(Boolean); }
   function counts(get) {
+    var offs = offList(get);
     return S.map(function (s, i) {
+      if (offs.indexOf(s.id) > -1) return { n: 0, t: 0, off: true };
       var fs = fieldsOf(s, i), n = 0;
       fs.forEach(function (f) { if (filled(f, get)) n++; });
       return { n: n, t: fs.length };
@@ -126,6 +129,15 @@
     '.pf-tab em{font-style:normal;font-size:11.5px;opacity:.7;font-weight:500}' +
     '.pf-tab.done{color:var(--tx,#f5f5f7)}.pf-tab.done em:before{content:"\\2713  "}' +
     '.pf-tab.on{background:var(--tx,#f5f5f7);color:var(--on,#000);border-color:var(--tx,#f5f5f7)}.pf-tab.on b,.pf-tab.on em{opacity:.65}' +
+    '.pf-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}.pf-top>div{min-width:0}' +
+    '.pf-sw{flex:none;display:inline-flex;align-items:center;gap:10px;margin-top:6px;font-size:13.5px;font-weight:600;cursor:pointer;user-select:none}' +
+    '.pf-sw input{position:absolute;opacity:0;pointer-events:none}' +
+    '.pf-sw i{width:46px;height:28px;border-radius:99px;background:var(--line2,#ffffff26);position:relative;transition:background .2s}' +
+    '.pf-sw i:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:var(--bg,#000);transition:transform .2s}' +
+    '.pf-sw input:checked+i{background:var(--tx,#f5f5f7)}.pf-sw input:checked+i:after{transform:translateX(18px)}.pf-sw input:focus-visible+i{outline:2px solid var(--tx,#f5f5f7);outline-offset:2px}' +
+    '.pf-offmsg{display:none;padding:26px;border:1px dashed var(--line2,#ffffff26);border-radius:18px;color:var(--mu,#a1a1a6);text-align:center}' +
+    '.pf-sec.off .pf-g{display:none}.pf-sec.off .pf-offmsg{display:block}.pf-sec.off .pf-h,.pf-sec.off .pf-s{opacity:.5}' +
+    '.pf-tab.off{opacity:.55}.pf-tab.off em{text-transform:uppercase;letter-spacing:.05em}' +
     '.pf-sec{display:none}.pf-sec.on{display:block;animation:pfin .25s ease}' +
     '@keyframes pfin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}' +
     '.pf-h{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;letter-spacing:-.02em;line-height:1.02;font-size:clamp(28px,6vw,42px);margin-bottom:8px}' +
@@ -168,7 +180,7 @@
     '.pf-send{background:var(--p2,#131315);border:1px solid var(--line2,#ffffff26);border-radius:18px;padding:22px;margin-top:20px;text-align:center}' +
     '.pf-send p{color:var(--mu,#a1a1a6);margin-bottom:16px}' +
     '@media(max-width:700px){.pf-g{grid-template-columns:1fr}.pf-trad{grid-template-columns:1fr auto}.pf-trad .pf-in{grid-column:1/-1}.pf-srow{grid-template-columns:22px 1fr 36px}.pf-srow .pf-sa{grid-column:2/3}.pf-srow .pf-x{grid-row:1;grid-column:3}.pf-row3{grid-template-columns:1fr 1fr}.pf-row3 .pf-first{grid-column:1/-1}.pf-rv dl{grid-template-columns:1fr}.pf-rv dt{margin-top:6px}}' +
-    '@media print{.pf-tabs,.pf-nav,.pf-sbar,.pf-paste,.pf-x,.pf-send{display:none!important}.pf-sec{display:block!important;animation:none;break-inside:avoid;margin-bottom:22px}.pf-sec.pf-review{display:none!important}.pf,.pf *{color:#000!important}.pf-in{background:#fff!important;border:0!important;border-bottom:1px solid #888!important;border-radius:0!important;min-height:0!important;padding:3px 0!important}.pf-chip:not(.on){display:none}.pf-chip.on{background:none!important;border:1px solid #000!important}.pf-songs{border:0;background:none;padding:0}.pf-h{font-size:22px}}';
+    '@media print{.pf-sec.off{display:none!important}.pf-sw{display:none}.pf-tabs,.pf-nav,.pf-sbar,.pf-paste,.pf-x,.pf-send{display:none!important}.pf-sec{display:block!important;animation:none;break-inside:avoid;margin-bottom:22px}.pf-sec.pf-review{display:none!important}.pf,.pf *{color:#000!important}.pf-in{background:#fff!important;border:0!important;border-bottom:1px solid #888!important;border-radius:0!important;min-height:0!important;padding:3px 0!important}.pf-chip:not(.on){display:none}.pf-chip.on{background:none!important;border:1px solid #000!important}.pf-songs{border:0;background:none;padding:0}.pf-h{font-size:22px}}';
 
   function injectCss() {
     if (document.getElementById('pf-css')) return;
@@ -231,7 +243,7 @@
     function build() {
       var c = counts(get);
       var tabs = '<div class="pf-tabs" role="tablist">' + S.map(function (s, i) {
-        return '<button type="button" class="pf-tab' + (i === cur ? ' on' : '') + (c[i].n === c[i].t ? ' done' : '') + '" data-tab="' + i + '" role="tab"><b>' + String(i + 1).padStart(2, '0') + '</b>' + esc(s.t) + '<em>' + c[i].n + '/' + c[i].t + '</em></button>';
+        return '<button type="button" class="pf-tab' + (i === cur ? ' on' : '') + (c[i].off ? ' off' : c[i].n === c[i].t ? ' done' : '') + '" data-tab="' + i + '" role="tab"><b>' + String(i + 1).padStart(2, '0') + '</b>' + esc(s.t) + '<em>' + (c[i].off ? 'Off' : c[i].n + '/' + c[i].t) + '</em></button>';
       }).join('') + '<button type="button" class="pf-tab' + (cur === reviewIdx ? ' on' : '') + '" data-tab="' + reviewIdx + '" role="tab"><b>' + String(S.length + 1).padStart(2, '0') + '</b>Review</button></div>';
       var secs = S.map(function (s, i) {
         var g = s.f.map(function (f) {
@@ -240,7 +252,9 @@
           return fieldHTML(f);
         }).join('');
         var nav = '<div class="pf-nav">' + (i > 0 ? '<button type="button" class="pf-btn ghost" data-go="' + (i - 1) + '">Back</button>' : '<span></span>') + '<button type="button" class="pf-btn" data-go="' + (i + 1) + '">' + (i === S.length - 1 ? 'Review' : 'Next') + '</button></div>';
-        return '<section class="pf-sec' + (i === cur ? ' on' : '') + '" data-sec="' + i + '"><h2 class="pf-h">' + esc(s.t) + '</h2><p class="pf-s">' + esc(s.s) + '</p><div class="pf-g">' + g + '</div>' + nav + '</section>';
+        var isOff = c[i].off;
+        var sw = s.id === 'overview' ? '' : '<label class="pf-sw"><input type="checkbox" data-sw="' + s.id + '"' + (isOff ? '' : ' checked') + '><i></i><span>Include</span></label>';
+        return '<section class="pf-sec' + (i === cur ? ' on' : '') + (isOff ? ' off' : '') + '" data-sec="' + i + '" data-id="' + s.id + '"><div class="pf-top"><div><h2 class="pf-h">' + esc(s.t) + '</h2><p class="pf-s">' + esc(s.s) + '</p></div>' + sw + '</div><div class="pf-offmsg">Not part of this event. Turn it back on with the switch above.</div><div class="pf-g">' + g + '</div>' + nav + '</section>';
       }).join('');
       var rv = '<section class="pf-sec pf-review' + (cur === reviewIdx ? ' on' : '') + '" data-sec="' + reviewIdx + '"><h2 class="pf-h">Review</h2><p class="pf-s">' + (couple ? 'Here is everything so far. Tap Edit on any part to change it.' : 'Everything filled in so far.') + '</p><div id="pf-rv"></div>' +
         (couple ? '<div class="pf-send"><p id="pf-sendmsg"></p><button type="button" class="pf-btn" id="pf-sendbtn">Send to Cade</button></div>' : '') +
@@ -255,13 +269,16 @@
       el.querySelectorAll('.pf-tab[data-tab]').forEach(function (b) {
         var i = +b.dataset.tab;
         if (i >= S.length) return;
-        b.classList.toggle('done', c[i].n === c[i].t);
-        b.querySelector('em').textContent = c[i].n + '/' + c[i].t;
+        b.classList.toggle('off', !!c[i].off);
+        b.classList.toggle('done', !c[i].off && c[i].n === c[i].t);
+        b.querySelector('em').textContent = c[i].off ? 'Off' : c[i].n + '/' + c[i].t;
       });
     }
     function summary() {
       var h = '';
+      var offs = offList(get);
       S.forEach(function (s, i) {
+        if (offs.indexOf(s.id) > -1) { h += '<div class="pf-rv"><h4>' + esc(s.t) + '<button type="button" data-go="' + i + '">Edit</button></h4><div class="none">Not part of this event.</div></div>'; return; }
         var rows = '';
         fieldsOf(s, i).forEach(function (f) {
           if (!filled(f, get)) return;
@@ -320,6 +337,16 @@
       var box = t.closest && t.closest('[data-list]');
       if (box && t.classList.contains('pf-in') && t.closest('.pf-srow')) { saveList(box); refreshTabs(); }
     });
+    el.addEventListener('change', function (e) {
+      var t = e.target;
+      if (!t.dataset || !t.dataset.sw) return;
+      var offs = offList(get), id = t.dataset.sw, ix = offs.indexOf(id);
+      if (t.checked && ix > -1) offs.splice(ix, 1);
+      if (!t.checked && ix < 0) offs.push(id);
+      set('sec_off', offs.join(','));
+      t.closest('.pf-sec').classList.toggle('off', !t.checked);
+      refreshTabs();
+    });
     el.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' && e.target.classList.contains('pf-sa')) {
         e.preventDefault();
@@ -374,6 +401,11 @@
     function flash(i) { i.classList.add('pf-flash'); setTimeout(function () { i.classList.remove('pf-flash'); }, 1900); }
     function sync() {
       var n = 0, ae = document.activeElement;
+      var offs = offList(get);
+      el.querySelectorAll('[data-sw]').forEach(function (sw) {
+        var on = offs.indexOf(sw.dataset.sw) < 0;
+        if (sw.checked !== on) { sw.checked = on; sw.closest('.pf-sec').classList.toggle('off', !on); n++; }
+      });
       el.querySelectorAll('[data-k]').forEach(function (i) {
         if (i === ae) return;
         var v = get(i.dataset.k);

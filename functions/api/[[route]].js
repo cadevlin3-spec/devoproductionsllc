@@ -108,7 +108,7 @@ const PLAN_RULES = {
   'Special dances and announcements': (p) => p.dance_bg_t || p.dance_bg_a || p.first_dance,
   'Venue contact and load-in details': (p, c) => c.venue && (p.dayof_n || p.dayof_p || p.dayof) && p.setup_time,
   'Final headcount': (p) => p.guests,
-  'Wedding planning form': (p) => Object.values(p).filter((v) => has(v)).length >= 35,
+  'Wedding planning form': (p) => Object.values(p).filter((v) => has(v)).length >= (has(p.sec_off) ? 20 : 35),
 };
 
 async function savePlan(db, contactId, inc, who) {
