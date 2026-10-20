@@ -34,8 +34,15 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
 .prog .b{flex:1;height:6px;background:var(--p3);border-radius:6px;overflow:hidden}.prog .b i{display:block;height:100%;background:var(--tx);width:0;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
 .prog b{color:var(--tx);min-width:38px;text-align:right}
 #form{padding:6px 0 80px}
-.qcard{margin:26px 0 8px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--cards);padding:28px;overflow:hidden}
-.qcard .qh{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.qcard{margin:18px 0 8px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--cards);padding:0;overflow:hidden}
+.qcard .qt{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer;min-height:52px}
+.qcard .qt:focus-visible{outline:2px solid var(--tx);outline-offset:-3px}
+.qcard .ql{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu2);font-weight:600}
+.qcard .qv{font-family:Archivo,Inter,sans-serif;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.qcard .qc{margin-left:auto;font-size:14px;color:var(--mu)}
+.qcard .qt svg{transition:transform .2s}.qcard.open .qt svg{transform:rotate(180deg)}
+.qcard .qb{padding:6px 24px 24px;border-top:1px solid var(--line)}
+.qcard .qh{padding-top:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line)}
 .qcard .qe{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mu2);font-weight:600;margin-bottom:6px}
 .qcard .qp{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;letter-spacing:-.03em;font-size:clamp(44px,10vw,64px);line-height:1}
 .qcard .qd{color:var(--mu);font-size:14.5px;text-align:right}
@@ -45,7 +52,7 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
 .qcard li span{color:var(--mu);font-size:14.5px;text-align:right}
 .qcard .qn{background:var(--p2);border-radius:14px;padding:14px 16px;color:var(--mu);margin-top:8px;white-space:pre-wrap}
 .qcard .qf{margin-top:18px;font-size:14px;color:var(--mu)}.qcard .qf a{color:var(--tx);font-weight:600;text-decoration:underline}
-@media(max-width:700px){.qcard{padding:20px;border-radius:20px}.qcard .qd{text-align:left}}
+@media(max-width:700px){.qcard .qb{padding:4px 18px 20px}.qcard .qd{text-align:left}}
 .msg{min-height:60vh;display:grid;place-items:center;text-align:center;color:var(--mu);padding:0 22px}
 .msg h1{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;color:var(--tx);font-size:34px;margin-bottom:10px}
 .thanks{display:none;text-align:center;padding:90px 22px}.thanks.on{display:block}
@@ -114,10 +121,12 @@ function qrender(q){
  var items=[];try{items=JSON.parse(q.items||'[]')}catch(e){}
  var n=Number(q.price),price='$'+n.toLocaleString('en-US',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});
  function e(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
- box.innerHTML='<div class="qh"><div><div class="qe">Your quote</div><div class="qp">'+e(price)+'</div></div><div class="qd">Devo Productions<br>DJ, MC and sound</div></div>'+
+ box.innerHTML='<button type="button" class="qt" id="qtog" aria-expanded="false"><span class="ql">Your quote</span><span class="qv">'+e(price)+'</span><span class="qc">View details</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button><div class="qb" id="qbody" hidden><div class="qh"><div class="qd" style="text-align:left">Devo Productions · DJ, MC and sound</div></div>'+
   (items.length?'<ul>'+items.map(function(i){return '<li><b style="font-weight:600">'+e(i.t)+'</b><span>'+e(i.a)+'</span></li>'}).join('')+'</ul>':'')+
   (q.note?'<div class="qn">'+e(q.note)+'</div>':'')+
-  '<div class="qf">Questions about this? <a href="mailto:cade@devoproductionsllc.com?subject=Question%20about%20my%20quote">Email Cade</a>. The planning form is right below, so you can start whenever you are ready.</div>';
+  '<div class="qf">Questions about this? <a href="mailto:cade@devoproductionsllc.com?subject=Question%20about%20my%20quote">Email Cade</a>.</div></div>';
+ var tg=box.querySelector('#qtog'),bd=box.querySelector('#qbody');
+ tg.onclick=function(){var o=bd.hidden;bd.hidden=!o;tg.setAttribute('aria-expanded',o?'true':'false');box.classList.toggle('open',o);tg.querySelector('.qc').textContent=o?'Hide':'View details'};
  box.hidden=false}
 function chip(t){var i=document.createElement('i');i.textContent=t;return i}
 if(!T){$('load').hidden=true;$('bad').hidden=false;return}
