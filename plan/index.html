@@ -51,6 +51,7 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
 .qcard li:last-child{border-bottom:0}
 .qcard li span{color:var(--mu);font-size:14.5px;text-align:right}
 .qcard .qn{background:var(--p2);border-radius:14px;padding:14px 16px;color:var(--mu);margin-top:8px;white-space:pre-wrap}
+.qcard .qcp{all:unset;cursor:pointer;margin-left:6px;padding:4px 12px;border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:600;color:var(--tx)}
 .qcard .qf{margin-top:18px;font-size:14px;color:var(--mu)}.qcard .qf a{color:var(--tx);font-weight:600;text-decoration:underline}
 @media(max-width:700px){.qcard .qb{padding:4px 18px 20px}.qcard .qd{text-align:left}}
 .msg{min-height:60vh;display:grid;place-items:center;text-align:center;color:var(--mu);padding:0 22px}
@@ -124,8 +125,9 @@ function qrender(q){
  box.innerHTML='<button type="button" class="qt" id="qtog" aria-expanded="false"><span class="ql">Your quote</span><span class="qv">'+e(price)+'</span><span class="qc">View details</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button><div class="qb" id="qbody" hidden><div class="qh"><div class="qd" style="text-align:left">Devo Productions · DJ, MC and sound</div></div>'+
   (items.length?'<ul>'+items.map(function(i){return '<li><b style="font-weight:600">'+e(i.t)+'</b><span>'+e(i.a)+'</span></li>'}).join('')+'</ul>':'')+
   (q.note?'<div class="qn">'+e(q.note)+'</div>':'')+
-  '<div class="qf">Questions about this? <a href="mailto:cade@devoproductionsllc.com?subject=Question%20about%20my%20quote">Email Cade</a>.</div></div>';
+  '<div class="qf">Questions about this? Email <a href="mailto:cade@devoproductionsllc.com?subject=Question%20about%20my%20quote">cade@devoproductionsllc.com</a> <button type="button" class="qcp" id="qcp">Copy</button></div></div>';
  var tg=box.querySelector('#qtog'),bd=box.querySelector('#qbody');
+ var cp=box.querySelector('#qcp');cp.onclick=function(){var done=function(){cp.textContent='Copied'};try{navigator.clipboard.writeText('cade@devoproductionsllc.com').then(done,function(){cp.textContent='cade@devoproductionsllc.com'})}catch(x){cp.textContent='cade@devoproductionsllc.com'}};
  tg.onclick=function(){var o=bd.hidden;bd.hidden=!o;tg.setAttribute('aria-expanded',o?'true':'false');box.classList.toggle('open',o);tg.querySelector('.qc').textContent=o?'Hide':'View details'};
  box.hidden=false}
 function chip(t){var i=document.createElement('i');i.textContent=t;return i}
