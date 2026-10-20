@@ -539,10 +539,10 @@ function drawerRefresh(force){
  d.querySelectorAll('[data-st]').forEach(function(b){b.onclick=function(){setStage(c.id,b.dataset.st)}});
  d.querySelectorAll('[data-due]').forEach(function(i){i.onchange=function(){api('PATCH','needs/'+i.dataset.due,{due:i.value}).then(load).catch(function(e){toast(e.message)})}});
  d.querySelectorAll('[data-del]').forEach(function(b){b.onclick=function(){api('DELETE','needs/'+b.dataset.del).then(load)}});
- d.querySelectorAll('[data-dn]').forEach(function(b){b.onclick=function(){api('DELETE','notes/'+b.dataset.dn).then(load)}});
+ d.querySelectorAll('[data-dn]').forEach(function(b){b.onclick=function(){api('DELETE','notes/'+b.dataset.dn).then(load).then(function(){drawerRefresh(true)})}});
  var add=function(){var l=$('#nl').value.trim();if(!l)return;api('POST','contacts/'+c.id+'/needs',{label:l,due:$('#ndue').value}).then(load).catch(function(e){toast(e.message)})};
  $('#nadd').onclick=add;$('#nl').addEventListener('keydown',function(e){if(e.key==='Enter')add()});
- $('#ntadd').onclick=function(){var t=$('#nt').value.trim();if(!t)return;api('POST','contacts/'+c.id+'/notes',{text:t}).then(load).catch(function(e){toast(e.message)})};
+ $('#ntadd').onclick=function(){var el=$('#nt'),t=el.value.trim();if(!t)return;el.value='';el.blur();api('POST','contacts/'+c.id+'/notes',{text:t}).then(load).then(function(){drawerRefresh(true);toast('Note added')}).catch(function(e){el.value=t;toast(e.message)})};
  $('#del').onclick=function(){if(confirm('Delete '+c.name+' and everything attached to them? This cannot be undone.'))api('DELETE','contacts/'+c.id).then(function(){closeDrawer();return load()}).then(function(){toast('Deleted')})};
 }
 function df(l,k,v,t,full){return '<div'+(full?' class="full"':'')+'><label>'+l+'</label><input class="in" id="f_'+k+'" type="'+t+'" value="'+esc(v)+'"></div>'}
