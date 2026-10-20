@@ -703,7 +703,7 @@ function sheetHTML(c){
  var gear=GEAR[skey(c.service)]||GEAR.other,done=lst(p,'gear_list');
  var h='<div class="shi"><div class="shbar"><button class="ib" id="shx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>Event sheet</b></div><button class="btn sm" id="shw">Word doc</button><button class="btn ghost sm" id="shp">Print / PDF</button></div>'+
  '<h1 class="h shn">'+esc(c.name)+'</h1><div class="shm">'+[c.event_date&&fmt(c.event_date,true),c.service,p.guests&&p.guests+' guests'].filter(Boolean).map(function(x){return '<i>'+esc(x)+'</i>'}).join('')+'</div>'+
- sec('Where',[['Venue',ven],['Phone',c.phone],['Email',c.email]])+
+ sec('Where',[['Names',p.couple_names],['Announce as',p.announce_as],['Venue',ven],['Phone',c.phone],['Email',c.email]])+
  (TL.length?'<div class="sh tlbox"><h3>Timeline</h3>'+TL.map(function(r){return '<div class="sr tl"><span>'+esc(fmtT(p[r[0]]))+'</span><div><b>'+esc(r[1])+'</b>'+(r[2]?'<div class="sd">'+esc(r[2])+'</div>':'')+'</div></div>'}).join('')+'</div>':'<div class="sh"><h3>Timeline</h3><div class="sr"><div style="color:var(--mu2)">No times filled in yet.</div></div></div>')+
  '<!--S-->'+sec('People',[['Couple',p.couple_phone],['Day-of contact',personLine(p,'dayof')],['Officiant',personLine(p,'officiant')],['Photo / video',personLine(p,'photovideo')]])+
  (off('ceremony')?'':sec('Ceremony',[['Prelude',p.prelude],['Music / readings',p.readings],['Mics and audio',p.cer_mics],['Weather plan',p.weather]]))+

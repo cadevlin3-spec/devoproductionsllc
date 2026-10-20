@@ -11,7 +11,7 @@ function dayModel(c,p,couple){
  function songs(k){var a=lst(p,k).map(function(r,i){return (i+1)+'. '+[r.t,r.a].filter(Boolean).join(' - ')});return a.join('   ')}
  function people(k){return lst(p,k).map(function(r){return [r.t,r.a&&'('+r.a+')'].filter(Boolean).join(' ')}).join(', ')}
  var ven=[p.venue1||c.venue,p.venue2].filter(Boolean).join(' → ');
- var head=[['Couple',c.name],['Date',c.event_date&&fmt(c.event_date,true)],['Venue',ven],['Guests',p.guests],['Couple phone',p.couple_phone||(couple?'':c.phone)],['Email',couple?'':c.email],['DJ set-up',p.setup_time&&fmtT(p.setup_time)],['Day-of contact',personLine(p,'dayof')],['Officiant',personLine(p,'officiant')],['Photo / video',personLine(p,'photovideo')]];
+ var head=[['Couple',c.name],['Names',p.couple_names],['Announce as',p.announce_as],['Date',c.event_date&&fmt(c.event_date,true)],['Venue',ven],['Guests',p.guests],['Couple phone',p.couple_phone||(couple?'':c.phone)],['Email',couple?'':c.email],['DJ set-up',p.setup_time&&fmtT(p.setup_time)],['Day-of contact',personLine(p,'dayof')],['Officiant',personLine(p,'officiant')],['Photo / video',personLine(p,'photovideo')]];
  var trads=[['bouquet','Bouquet toss'],['garter','Garter toss'],['dollar','Dollar dance'],['cultural','Cultural'],['games','Games'],['other','Other']].map(function(t){var o=p['t_'+t[0]+'_on'],d=p['t_'+t[0]+'_d'];return o||d?[t[1],[o==='yes'?'Yes':o==='no'?'No':'',d].filter(Boolean).join(' · ')]:['','']});
  var S=[];
  function add(id,t,time,rows){rows=rows.filter(function(r){return r[1]});if(rows.length||time)S.push({t:t,time:time?fmtT(time):'',rows:rows})}

@@ -10,6 +10,8 @@
   // f: k key, l label, t type, h hint, o options, w wide
   var S = [
     { id: 'overview', t: 'Event overview', s: 'The basics for the day.', f: [
+      { k: 'couple_names', l: 'Your names', t: 'text', w: 1, h: 'Both of you, as you would like them on the plan' },
+      { k: 'announce_as', l: 'How should I announce you?', t: 'text', w: 1, h: 'Example: Mr. and Mrs. Smith, or first names only' },
       { k: 'venue1', l: 'Ceremony venue', t: 'text', h: 'Name and town' },
       { k: 'venue2', l: 'Reception venue', t: 'text', h: 'Only if different' },
       { k: 'guests', l: 'Guest count', t: 'num', h: 'Rough number is fine' },
