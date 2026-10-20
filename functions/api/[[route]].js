@@ -95,7 +95,7 @@ async function ensurePlans(db) {
   if (planReady) return;
   await db.prepare('CREATE TABLE IF NOT EXISTS plans (contact_id TEXT PRIMARY KEY, data TEXT, updated_at TEXT)').run();
   try { await db.prepare('ALTER TABLE contacts ADD COLUMN paid INTEGER DEFAULT 0').run(); } catch (e) { /* column already exists */ }
-  for (const col of ['token TEXT', 'submitted_at TEXT']) {
+  for (const col of ['token TEXT', 'submitted_at TEXT', 'updated_by TEXT']) {
     try { await db.prepare('ALTER TABLE plans ADD COLUMN ' + col).run(); } catch (e) { /* column already exists */ }
   }
   try { await db.prepare('CREATE INDEX IF NOT EXISTS idx_plans_token ON plans(token)').run(); } catch (e) { /* ignore */ }
@@ -122,8 +122,8 @@ async function savePlan(db, contactId, inc, who) {
   }
   const json = JSON.stringify(plan);
   if (json.length > 90000 || Object.keys(plan).length > 260) throw new Error('too big');
-  if (cur) await db.prepare('UPDATE plans SET data=?, updated_at=? WHERE contact_id=?').bind(json, now(), contactId).run();
-  else await db.prepare('INSERT INTO plans (contact_id,data,updated_at) VALUES (?,?,?)').bind(contactId, json, now()).run();
+  if (cur) await db.prepare('UPDATE plans SET data=?, updated_at=?, updated_by=? WHERE contact_id=?').bind(json, now(), who || null, contactId).run();
+  else await db.prepare('INSERT INTO plans (contact_id,data,updated_at,updated_by) VALUES (?,?,?,?)').bind(contactId, json, now(), who || null).run();
   // push useful answers back onto the customer record
   const c = await db.prepare('SELECT venue,phone FROM contacts WHERE id=?').bind(contactId).first();
   if (c) {
@@ -302,6 +302,11 @@ export async function onRequest({ request, env, params }) {
         const id = uid();
         await db.prepare('INSERT INTO needs (id,contact_id,label,done,due,sort,created_at) VALUES (?,?,?,?,?,?,?)').bind(id, b, label, 0, clip(body.due, 20) || null, mx.n, now()).run();
         return J({ id }, 201);
+      }
+      if (b && c === 'plan' && method === 'GET') {
+        await ensurePlans(db);
+        const r = await db.prepare('SELECT data, updated_at, updated_by, submitted_at FROM plans WHERE contact_id=?').bind(b).first();
+        return J(r ? { data: JSON.parse(r.data || '{}'), updated_at: r.updated_at, updated_by: r.updated_by, submitted_at: r.submitted_at } : { data: {}, updated_at: null, updated_by: null, submitted_at: null });
       }
       if (b && c === 'plan' && method === 'PATCH') {
         const inc = body.data && typeof body.data === 'object' ? body.data : {};

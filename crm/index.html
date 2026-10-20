@@ -178,6 +178,10 @@ textarea.in{resize:vertical;min-height:80px}
 .clink .t{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .clink .t b{font-size:14px}.clink small{display:block;color:var(--mu);font-size:12.5px;margin-top:3px}
 .clink .a{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.live{display:inline-flex;align-items:center;gap:6px;margin-left:12px;font-size:12px;color:var(--mu2)}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--mu2)}
+.live.hot{color:#30d158}.live.hot i{background:#30d158;animation:lv 1.2s infinite}
+@keyframes lv{50%{opacity:.3}}
 .mnew{display:none}
 @media(max-width:900px){.mnew{display:inline-flex}.pl{padding:0 16px 120px}.plbar{margin:0 -16px 14px;padding:12px 16px}}
 @media print{
@@ -538,10 +542,10 @@ function exportCsv(){
 function planRow(id){return D.plans.filter(function(p){return p.contact_id===id})[0]}
 function planOf(id){var r=planRow(id);try{return r?JSON.parse(r.data||'{}'):{}}catch(e){return {}}}
 function planPct(c){var p=planOf(c.id);if(!p.venue1&&c.venue)p.venue1=c.venue;return PlanForm.pct(function(k){return p[k]})}
-var planId=null,pend={},ptimer=null,pform=null;
+var planId=null,pend={},ptimer=null,pform=null,saveSeq=0,polling=null,liveFlash=0;
 function setSave(t){var e=$('#plsave');if(e)e.textContent=t}
 function planSet(k,v){
- var c=byId(planId);if(!c)return;pend[k]=v;setSave('Saving...');
+ var c=byId(planId);if(!c)return;pend[k]=v;saveSeq++;setSave('Saving...');
  var row=planRow(c.id);if(!row){row={contact_id:c.id,data:'{}'};D.plans.push(row)}
  var o={};try{o=JSON.parse(row.data||'{}')}catch(e){}if(v)o[k]=v;else delete o[k];row.data=JSON.stringify(o);
  var pc=$('#plpct');if(pc)pc.textContent=planPct(c)+'% filled out';
@@ -550,14 +554,15 @@ function planSet(k,v){
 function openPlan(id){
  planId=id;pend={};var c=byId(id);if(!c)return;
  var pl=$('#planner');
- pl.innerHTML='<div class="pl"><div class="plbar"><button class="ib" id="plx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>'+esc(c.name)+'</b><span id="plpct" style="color:var(--mu);font-size:13px">'+planPct(c)+'% filled out</span></div><span class="plsave" id="plsave"></span><button class="btn ghost sm" id="plprint">Print / PDF</button></div><div id="plform"></div></div>';
+ pl.innerHTML='<div class="pl"><div class="plbar"><button class="ib" id="plx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>'+esc(c.name)+'</b><span id="plpct" style="color:var(--mu);font-size:13px">'+planPct(c)+'% filled out</span><span class="live" id="pllive"><i></i><em>Live</em></span></div><span class="plsave" id="plsave"></span><button class="btn ghost sm" id="plprint">Print / PDF</button></div><div id="plform"></div></div>';
  $('#plx').onclick=closePlan;
  $('#plprint').onclick=function(){window.print()};
  pform=PlanForm.mount($('#plform'),{mode:'crm',topOffset:'68px',scroller:pl,scrollPad:68,scrollTo:true,
   get:function(k){var p=planOf(id);return k==='venue1'&&!p.venue1?(c.venue||''):p[k]},set:planSet});
  pl.classList.add('on');pl.setAttribute('aria-hidden','false');pl.scrollTop=0;closeDrawerSoft();
+ clearInterval(polling);polling=setInterval(pollPlan,3000);
 }
-function closePlan(){var id=planId;flushPlan().then(function(){planId=null;pform=null;$('#planner').classList.remove('on');$('#planner').setAttribute('aria-hidden','true');return load()}).then(function(){if(id)openDrawer(id)})}
+function closePlan(){var id=planId;clearInterval(polling);flushPlan().then(function(){planId=null;pform=null;$('#planner').classList.remove('on');$('#planner').setAttribute('aria-hidden','true');return load()}).then(function(){if(id)openDrawer(id)})}
 function closeDrawerSoft(){$('#drawer').classList.remove('on');$('#scrim').classList.remove('on')}
 var chain=Promise.resolve();
 function flushPlan(){
@@ -566,13 +571,30 @@ function flushPlan(){
  .catch(function(e){setSave('Not saved');toast(e.message);Object.keys(batch).forEach(function(k){if(pend[k]===undefined)pend[k]=batch[k]})});
  return chain;
 }
+
+function pollPlan(){
+ var id=planId;if(!id||document.hidden||!pform)return;
+ var seq=saveSeq;
+ api('GET','contacts/'+id+'/plan').then(function(r){
+  if(planId!==id||seq!==saveSeq||Object.keys(pend).length)return;
+  var row=planRow(id);if(!row){row={contact_id:id,data:'{}'};D.plans.push(row)}
+  var before=row.data;row.data=JSON.stringify(r.data||{});row.updated_at=r.updated_at;row.updated_by=r.updated_by;row.submitted_at=r.submitted_at;
+  var n=pform.sync();
+  var c=byId(id),pc=$('#plpct');if(c&&pc)pc.textContent=planPct(c)+'% filled out';
+  var lv=$('#pllive');if(!lv)return;
+  if(n)liveFlash=Date.now();
+  var recent=r.updated_at&&(Date.now()-new Date(r.updated_at))<25000&&r.updated_by==='couple';
+  lv.classList.toggle('hot',recent||Date.now()-liveFlash<6000);
+  lv.querySelector('em').textContent=recent?'Couple is filling this out':(Date.now()-liveFlash<6000?'Just updated':'Live');
+ }).catch(function(){});
+}
 /* couple link */
 function planUrl(t){return location.origin+'/plan/?t='+t}
 function linkBlock(c){
  var r=planRow(c.id),tok=r&&r.token;
  if(!tok)return '<div class="clink"><div class="t"><b>Let the couple fill it out</b></div><small>Makes a private link they can open on their phone. Their answers land here and check things off for you.</small><div class="a"><button class="btn sm" data-mklink="'+c.id+'">Create link for the couple</button></div></div>';
  var st=r.submitted_at?'<span class="chip w">Sent to you '+ago(r.submitted_at)+'</span>':'<span class="chip">Not sent in yet</span>';
- return '<div class="clink"><div class="t"><b>Couple link</b>'+st+'</div><small>'+esc(planUrl(tok).replace(/^https?:\/\//,''))+'</small><div class="a"><button class="btn ghost sm" data-copylink="'+c.id+'">Copy link</button>'+(c.email?'<button class="btn ghost sm" data-maillink="'+c.id+'">Email it</button>':'')+'<button class="btn ghost sm" data-offlink="'+c.id+'" style="color:#ff9a9a">Turn off</button></div></div>';
+ return '<div class="clink"><div class="t"><b>Couple link</b>'+st+'</div><small>'+(r.updated_by==='couple'&&r.updated_at?'Couple last edited '+ago(r.updated_at)+'<br>':'')+esc(planUrl(tok).replace(/^https?:\/\//,''))+'</small><div class="a"><button class="btn ghost sm" data-copylink="'+c.id+'">Copy link</button>'+(c.email?'<button class="btn ghost sm" data-maillink="'+c.id+'">Email it</button>':'')+'<button class="btn ghost sm" data-offlink="'+c.id+'" style="color:#ff9a9a">Turn off</button></div></div>';
 }
 function mkLink(id){api('POST','contacts/'+id+'/plan-link',{}).then(function(){return load()}).then(function(){toast('Link created');drawerRefresh(true)}).catch(function(e){toast(e.message)})}
 function copyLink(id){var r=planRow(id);if(!r||!r.token)return;var u=planUrl(r.token);
@@ -707,7 +729,7 @@ document.addEventListener('keydown',function(e){
  else if(e.key==='n'&&!e.metaKey&&!e.ctrlKey){e.preventDefault();newCustomer()}
 });
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&!$('#app').classList.contains('hide'))load().catch(function(){})});
-setInterval(function(){if(!document.hidden&&!$('#app').classList.contains('hide'))load().catch(function(){})},60000);
+setInterval(function(){if(!document.hidden&&!$('#app').classList.contains('hide')&&!planId)load().catch(function(){})},20000);
 
 api('GET','auth/status').then(function(s){if(!s.setup)showAuth(true);else if(!s.authed)showAuth(false);else start()}).catch(function(){showAuth(false);$('#aerr').textContent='Could not reach the server.'});
 })();
