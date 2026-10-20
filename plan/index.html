@@ -61,6 +61,7 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
 .thanks h1{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;font-size:clamp(36px,9vw,60px);line-height:1;margin-bottom:14px}
 .thanks p{color:var(--mu);max-width:460px;margin:0 auto 26px}
 .pf-btn.ghost{background:var(--p2)!important;color:var(--tx)!important;border:1px solid var(--line2)!important}
+.dlw{text-align:center;padding:26px 22px 0}.dlb{all:unset;cursor:pointer;display:inline-block;padding:11px 20px;min-height:44px;box-sizing:border-box;border:1px solid var(--line);border-radius:999px;font-weight:600;font-size:14.5px;background:#fff;color:var(--tx)}.dlb:hover{background:var(--p2)}.dlb:focus-visible{outline:2px solid var(--tx);outline-offset:2px}
 .foot{padding:30px 22px 50px;color:var(--mu2);font-size:13px;text-align:center;border-top:1px solid var(--line)}
 /* light overrides for the shared form */
 .pf-in{background:var(--p2)!important;border-color:var(--line)!important}
@@ -100,6 +101,7 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
  <div id="main" hidden><div id="quote" class="qcard" hidden></div><div id="form"></div></div>
  <div class="thanks" id="thanks"><div class="ck">&#10003;</div><h1>Got it. Thank you!</h1><p>Cade has your answers and will follow up if he has any questions. You can come back to this same link anytime to change something.</p><button class="pf-btn ghost" id="back">Keep editing</button></div>
 </div>
+<div class="dlw"><button type="button" class="dlb" id="dlword">Download a Word copy of your plan</button></div>
 <div class="foot">Devo Productions LLC · Williamsport, PA</div>
 <script src="/plan/form.js"></script>
 <script>
@@ -135,6 +137,7 @@ if(!T){$('load').hidden=true;$('bad').hidden=false;return}
 api('GET','').then(function(r){
  data=r.data||{};submitted=!!r.submitted_at;
  if(!data.venue1&&r.venue)data.venue1=r.venue;
+ meta={name:r.name,date:r.event_date,venue:r.venue};
  $('ttl').textContent=r.name||'Your planning form';
  var m=$('meta');if(r.event_date)m.appendChild(chip(fmtDate(r.event_date)));if(r.venue)m.appendChild(chip(r.venue));
  $('load').hidden=true;$('main').hidden=false;$('hero').hidden=false;qrender(r.quote);
@@ -142,6 +145,8 @@ api('GET','').then(function(r){
   onSubmit:function(){return flush().then(function(){return api('POST','/submit',{})}).then(function(){submitted=true;$('main').hidden=true;$('hero').hidden=true;$('thanks').classList.add('on');window.scrollTo(0,0)})}});
  bar();
 }).catch(function(e){console.error(e);$('load').hidden=true;$('bad').hidden=false;if(e.status===429)$('bad').querySelector('h1').textContent='Too many tries'});
+var meta={};
+$('dlword').onclick=function(){var b=$('dlword'),o=b.textContent;b.textContent='Building...';flush().then(function(){return new Promise(function(res,rej){if(window.DevoDoc)return res();var sc=document.createElement('script');sc.src='/plan/doc.js';sc.onload=res;sc.onerror=function(){rej(new Error('x'))};document.head.appendChild(sc)})}).then(function(){return DevoDoc.download({name:meta.name||'Wedding',event_date:meta.date,venue:meta.venue},data,{couple:true,toast:function(){}})}).then(function(){b.textContent='Downloaded'},function(){b.textContent='Could not build it. Try again.'}).then(function(){setTimeout(function(){b.textContent=o},2500)})};
 $('back').onclick=function(){$('thanks').classList.remove('on');$('main').hidden=false;$('hero').hidden=false;form.sendState();form.go(0)};
 document.addEventListener('visibilitychange',function(){if(document.hidden)flush()});
 window.addEventListener('pagehide',flush);
