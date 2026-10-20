@@ -187,6 +187,7 @@ textarea.in{resize:vertical;min-height:80px}
 @media print{
  body>*:not(#planner):not(#sheet){display:none!important}
  #planner:not(.on),#sheet:not(.on){display:none!important}
+ body.printsheet #planner{display:none!important}
  #sheet{position:static!important;transform:none!important;overflow:visible!important;background:#fff!important}
  #sheet *{color:#000!important;background:none!important;border-color:#bbb!important}
  .shbar,.noprint{display:none!important}
@@ -580,7 +581,7 @@ function openPlan(id){
  var pl=$('#planner');
  pl.innerHTML='<div class="pl"><div class="plbar"><button class="ib" id="plx" aria-label="Close">'+ICO.l+'</button><div class="grow"><b>'+esc(c.name)+'</b><span id="plpct" style="color:var(--mu);font-size:13px">'+planPct(c)+'% filled out</span><span class="live" id="pllive"><i></i><em>Live</em></span></div><span class="plsave" id="plsave"></span><button class="btn ghost sm" id="plprint">Print / PDF</button></div><div id="plform"></div></div>';
  $('#plx').onclick=closePlan;
- $('#plprint').onclick=function(){flushPlan().then(function(){openSheet(id);setTimeout(function(){window.print()},350)})};
+ $('#plprint').onclick=function(){flushPlan().then(function(){openSheet(id);document.body.classList.add('printsheet');setTimeout(function(){window.print()},350)})};
  pform=PlanForm.mount($('#plform'),{mode:'crm',topOffset:'68px',scroller:pl,scrollPad:68,scrollTo:true,
   get:function(k){var p=planOf(id);return k==='venue1'&&!p.venue1?(c.venue||''):p[k]},set:planSet});
  pl.classList.add('on');pl.setAttribute('aria-hidden','false');pl.scrollTop=0;closeDrawerSoft();
@@ -715,7 +716,7 @@ function openSheet(id){
  var c=byId(id);if(!c)return;
  var s=document.getElementById('sheet');if(!s){s=document.createElement('div');s.id='sheet';document.body.appendChild(s)}
  s.innerHTML=sheetHTML(c);s.classList.add('on');s.scrollTop=0;closeDrawerSoft();
- s.querySelector('#shx').onclick=function(){s.classList.remove('on');if(!planId)openDrawer(id)};
+ s.querySelector('#shx').onclick=function(){s.classList.remove('on');document.body.classList.remove('printsheet');if(!planId)openDrawer(id)};
  s.querySelector('#shp').onclick=function(){window.print()};
  s.querySelectorAll('[data-gear]').forEach(function(b){b.onchange=function(){var p=planOf(id),a=lst(p,'gear_list'),g=b.dataset.gear,i=a.indexOf(g);if(b.checked&&i<0)a.push(g);if(!b.checked&&i>-1)a.splice(i,1);var v=a.length?JSON.stringify(a):'';var row=planRow(id);if(!row){row={contact_id:id,data:'{}'};D.plans.push(row)}var o=planOf(id);if(v)o.gear_list=v;else delete o.gear_list;row.data=JSON.stringify(o);api('PATCH','contacts/'+id+'/plan',{data:{gear_list:v}}).catch(function(e){toast(e.message)})}});
 }
