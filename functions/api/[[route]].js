@@ -117,6 +117,7 @@ async function savePlan(db, contactId, inc, who) {
   const prev = { ...plan };
   for (const [k, v] of Object.entries(inc || {})) {
     if (!/^[a-z0-9_]{1,48}$/.test(k)) continue;
+    if (who === 'couple' && k.startsWith('quote_')) continue; // only Cade edits the quote
     const val = clip(v, /_list$/.test(k) ? 12000 : 2000);
     if (val) plan[k] = val; else delete plan[k];
   }
@@ -183,10 +184,13 @@ export async function onRequest({ request, env, params }) {
       if (!/^[A-Za-z0-9_-]{20,64}$/.test(b)) return J({ error: 'This link is not valid.' }, 404);
       if (await tooManyAttempts(db, 'plantoken', 60, 3600e3)) return J({ error: 'Too many requests.' }, 429);
       await ensurePlans(db);
-      const row = await db.prepare('SELECT p.contact_id, p.data, p.submitted_at, c.name, c.event_date, c.venue FROM plans p JOIN contacts c ON c.id=p.contact_id WHERE p.token=?').bind(b).first();
+      const row = await db.prepare('SELECT p.contact_id, p.data, p.submitted_at, c.name, c.event_date, c.venue, c.value FROM plans p JOIN contacts c ON c.id=p.contact_id WHERE p.token=?').bind(b).first();
       if (!row) { await logAttempt(db, 'plantoken'); return J({ error: 'This link is not valid.' }, 404); }
       if (method === 'GET') {
-        return J({ name: row.name, event_date: row.event_date, venue: row.venue, submitted_at: row.submitted_at, data: JSON.parse(row.data || '{}') });
+        const all = JSON.parse(row.data || '{}');
+        const data = {}, quote = all.quote_shown === 'yes' && row.value != null ? { price: row.value, items: all.quote_list || '[]', note: all.quote_note || '' } : null;
+        for (const [k, v] of Object.entries(all)) if (!k.startsWith('quote_')) data[k] = v; // quote is only shown once Cade turns it on
+        return J({ name: row.name, event_date: row.event_date, venue: row.venue, submitted_at: row.submitted_at, data, quote });
       }
       if (!(request.headers.get('Content-Type') || '').includes('application/json')) return J({ error: 'Bad request.' }, 400);
       const pb = await request.json().catch(() => ({}));

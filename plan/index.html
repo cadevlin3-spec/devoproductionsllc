@@ -33,6 +33,18 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
 .prog .b{flex:1;height:6px;background:var(--p3);border-radius:6px;overflow:hidden}.prog .b i{display:block;height:100%;background:var(--tx);width:0;border-radius:6px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
 .prog b{color:var(--tx);min-width:38px;text-align:right}
 #form{padding:6px 0 80px}
+.qcard{margin:26px 0 8px;background:#fff;border:1px solid var(--line);border-radius:24px;box-shadow:var(--cards);padding:28px;overflow:hidden}
+.qcard .qh{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.qcard .qe{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--mu2);font-weight:600;margin-bottom:6px}
+.qcard .qp{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;letter-spacing:-.03em;font-size:clamp(44px,10vw,64px);line-height:1}
+.qcard .qd{color:var(--mu);font-size:14.5px;text-align:right}
+.qcard ul{list-style:none;padding:0;margin:6px 0 0}
+.qcard li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid var(--line)}
+.qcard li:last-child{border-bottom:0}
+.qcard li span{color:var(--mu);font-size:14.5px;text-align:right}
+.qcard .qn{background:var(--p2);border-radius:14px;padding:14px 16px;color:var(--mu);margin-top:8px;white-space:pre-wrap}
+.qcard .qf{margin-top:18px;font-size:14px;color:var(--mu)}.qcard .qf a{color:var(--tx);font-weight:600;text-decoration:underline}
+@media(max-width:700px){.qcard{padding:20px;border-radius:20px}.qcard .qd{text-align:left}}
 .msg{min-height:60vh;display:grid;place-items:center;text-align:center;color:var(--mu);padding:0 22px}
 .msg h1{font-family:Archivo,Inter,sans-serif;font-weight:800;font-stretch:112%;color:var(--tx);font-size:34px;margin-bottom:10px}
 .thanks{display:none;text-align:center;padding:90px 22px}.thanks.on{display:block}
@@ -75,7 +87,7 @@ button,input,textarea{font:inherit;color:inherit}button{cursor:pointer;backgroun
 <div class="wrap">
  <div id="load" class="msg"><div>Loading your form...</div></div>
  <div id="bad" class="msg" hidden><div><h1>This link isn’t working</h1><p>It may have been replaced or turned off. Reach out to Cade and he will send you a fresh one.</p></div></div>
- <div id="main" hidden><div id="form"></div></div>
+ <div id="main" hidden><div id="quote" class="qcard" hidden></div><div id="form"></div></div>
  <div class="thanks" id="thanks"><div class="ck">&#10003;</div><h1>Got it. Thank you!</h1><p>Cade has your answers and will follow up if he has any questions. You can come back to this same link anytime to change something.</p><button class="pf-btn ghost" id="back">Keep editing</button></div>
 </div>
 <div class="foot">Devo Productions LLC · Williamsport, PA</div>
@@ -95,6 +107,16 @@ function flush(){clearTimeout(timer);if(!Object.keys(pend).length)return chain;v
  return chain}
 function set(k,v){if(v)data[k]=v;else delete data[k];pend[k]=v;say('Saving...',true);bar();clearTimeout(timer);timer=setTimeout(flush,350)}
 function fmtDate(d){if(!d)return '';var x=new Date(d+'T12:00:00');return isNaN(x)?d:x.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}
+function qrender(q){
+ var box=$('quote');if(!q){box.hidden=true;return}
+ var items=[];try{items=JSON.parse(q.items||'[]')}catch(e){}
+ var n=Number(q.price),price='$'+n.toLocaleString('en-US',{minimumFractionDigits:n%1?2:0,maximumFractionDigits:2});
+ function e(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+ box.innerHTML='<div class="qh"><div><div class="qe">Your quote</div><div class="qp">'+e(price)+'</div></div><div class="qd">Devo Productions<br>DJ, MC and sound</div></div>'+
+  (items.length?'<ul>'+items.map(function(i){return '<li><b style="font-weight:600">'+e(i.t)+'</b><span>'+e(i.a)+'</span></li>'}).join('')+'</ul>':'')+
+  (q.note?'<div class="qn">'+e(q.note)+'</div>':'')+
+  '<div class="qf">Questions about this? <a href="mailto:cade@devoproductionsllc.com?subject=Question%20about%20my%20quote">Email Cade</a>. The planning form is right below, so you can start whenever you are ready.</div>';
+ box.hidden=false}
 function chip(t){var i=document.createElement('i');i.textContent=t;return i}
 if(!T){$('load').hidden=true;$('bad').hidden=false;return}
 api('GET','').then(function(r){
@@ -102,11 +124,11 @@ api('GET','').then(function(r){
  if(!data.venue1&&r.venue)data.venue1=r.venue;
  $('ttl').textContent=r.name||'Your planning form';
  var m=$('meta');if(r.event_date)m.appendChild(chip(fmtDate(r.event_date)));if(r.venue)m.appendChild(chip(r.venue));
- $('load').hidden=true;$('main').hidden=false;$('hero').hidden=false;
+ $('load').hidden=true;$('main').hidden=false;$('hero').hidden=false;qrender(r.quote);
  form=PlanForm.mount($('form'),{mode:'couple',get:function(k){return data[k]},set:set,submitted:function(){return submitted},scrollTo:true,
   onSubmit:function(){return flush().then(function(){return api('POST','/submit',{})}).then(function(){submitted=true;$('main').hidden=true;$('hero').hidden=true;$('thanks').classList.add('on');window.scrollTo(0,0)})}});
  bar();
-}).catch(function(e){$('load').hidden=true;$('bad').hidden=false;if(e.status===429)$('bad').querySelector('h1').textContent='Too many tries'});
+}).catch(function(e){console.error(e);$('load').hidden=true;$('bad').hidden=false;if(e.status===429)$('bad').querySelector('h1').textContent='Too many tries'});
 $('back').onclick=function(){$('thanks').classList.remove('on');$('main').hidden=false;$('hero').hidden=false;form.sendState();form.go(0)};
 document.addEventListener('visibilitychange',function(){if(document.hidden)flush()});
 window.addEventListener('pagehide',flush);
